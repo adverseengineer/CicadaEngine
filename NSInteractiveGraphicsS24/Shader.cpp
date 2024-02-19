@@ -21,6 +21,11 @@ void Shader::SendMat4Uniform(const std::string& uniformName, const glm::mat4& ma
 	glUniformMatrix4fv(uniformMap[uniformName], 1, GL_FALSE, glm::value_ptr(mat));
 }
 
+void Shader::SendIntUniform(const std::string& uniformName, int value) {
+	glUseProgram(shaderProgram);
+	glUniform1i(uniformMap[uniformName], value);
+}
+
 void Shader::Init(void) {
 	shaderProgram = 0;
 }
@@ -29,8 +34,8 @@ unsigned int Shader::CompileShaderSource(int type, const std::string& shaderSour
 
 	unsigned shaderId = glCreateShader(type);
 
-	// Send the vertex shader source code to GL
-	// Note that std::string's .c_str is NULL character terminated.
+	//send the vertex shader source code to GL
+	//note that std::string's .c_str is NULL character terminated.
 	const char* temp = (const char*) shaderSource.c_str();
 	glShaderSource(shaderId, 1, &temp, 0);
 
@@ -66,14 +71,10 @@ void Shader::CreateShaderProgram(void) {
 
 	shaderProgram = glCreateProgram();
 
-	// Attach our shaders to our program
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
-
-	// Link our program
 	glLinkProgram(shaderProgram);
 
-	// Note the different functions here: glGetProgram* instead of glGetShader*.
 	int isLinked = 0;
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, (int*) &isLinked);
 	if(isLinked == GL_FALSE) {
@@ -92,7 +93,7 @@ void Shader::CreateShaderProgram(void) {
 		return;
 	}
 
-	// Always detach shaders after a successful link.
+	//always detach shaders after a successful link.
 	glDetachShader(shaderProgram, vertexShader);
 	glDetachShader(shaderProgram, fragmentShader);
 	Log("Linked shader program");

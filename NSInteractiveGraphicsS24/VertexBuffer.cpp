@@ -1,16 +1,23 @@
 #include "VertexBuffer.h"
 #include <cstdarg>
 
-
+//creates a new VertexBuffer with the specified number of elements per vertex
 VertexBuffer::VertexBuffer(unsigned int numElementsPerVertex) {
 	numberOfElementsPerVertex = numElementsPerVertex;
 	numberOfVertices = 0;
 	primitiveType = GL_TRIANGLES;
+	textureUnit = 0;
+	texturePtr = nullptr;
 	glGenBuffers(1, &vboId);
 }
 
 VertexBuffer::~VertexBuffer() {
 	glDeleteBuffers(1, &vboId);
+}
+
+void VertexBuffer::SelectTexture(void) const {
+	if (texturePtr != nullptr)
+		texturePtr->SelectToRender(textureUnit);
 }
 
 void VertexBuffer::AddVertexData(unsigned int count, ...) {
@@ -32,6 +39,8 @@ void VertexBuffer::AddVertexData(unsigned int count, ...) {
 void VertexBuffer::StaticAllocate() {
 	unsigned long long bytesToAllocate = vertexData.size() * sizeof(float);
 	glBufferData(GL_ARRAY_BUFFER, bytesToAllocate, vertexData.data(), GL_STATIC_DRAW);
+	if(texturePtr != nullptr)
+		texturePtr->Allocate();
 }
 
 void VertexBuffer::AddVertexAttribute(
