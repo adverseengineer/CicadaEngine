@@ -20,20 +20,97 @@
 #include "Shader.h"
 #include "TextFile.h"
 
-void OnWindowSizeChanged(GLFWwindow* window, int width, int height)
-{
+static void SetUpTexturedScene(std::shared_ptr<Shader>& texShadPtr, std::shared_ptr<Scene>& texScenePtr) {
+	
+	//set up the shader that will be used for textured objects
+	TextFile vertShadFile;
+	vertShadFile.ReadAllLines("texture.vert.glsl");
+	TextFile fragShadFile;
+	fragShadFile.ReadAllLines("texture.frag.glsl");
+	texShadPtr = std::make_shared<Shader>(vertShadFile.GetContents(), fragShadFile.GetContents());
+	texShadPtr->AddUniform("projection");
+	texShadPtr->AddUniform("world");
+	texShadPtr->AddUniform("view");
+	texShadPtr->AddUniform("texUnit");
+
+	#pragma region SetUpTexture1
+	std::shared_ptr<Texture> texPtr1 = std::make_shared<Texture>();
+	texPtr1->SetDimensions(4, 4);
+	unsigned char rawTextureData[64] = {
+		255, 255, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255,
+		0, 255, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 0, 255,
+		0, 255, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 255, 0, 255,
+		255, 255, 255, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 255, 255, 255
+	};
+	texPtr1->SetTextureData(64, rawTextureData);
+	texPtr1->SetWrapS(GL_CLAMP_TO_EDGE);
+	texPtr1->SetWrapT(GL_CLAMP_TO_EDGE);
+	texPtr1->SetMagFilter(GL_LINEAR);
+	#pragma endregion
+
+	#pragma region TexturedObject1
+	std::shared_ptr<GraphicsObject> objPtr1 = std::make_shared<GraphicsObject>();
+	std::shared_ptr<VertexBuffer> vertBufPtr1 = std::make_shared<VertexBuffer>(8);
+
+	//add vertices and uv's to the vertex buffer
+	vertBufPtr1->AddVertexData(8, -20.0f, 20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 3.0f);
+	vertBufPtr1->AddVertexData(8, -20.0f, -20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+	vertBufPtr1->AddVertexData(8, 20.0f, -20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 3.0f, 0.0f);
+	vertBufPtr1->AddVertexData(8, -20.0f, 20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 3.0f);
+	vertBufPtr1->AddVertexData(8, 20.0f, -20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 3.0f, 0.0f);
+	vertBufPtr1->AddVertexData(8, 20.0f, 20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 3.0f, 3.0f);
+	//add vertex attributes to the vertex buffer
+	vertBufPtr1->AddVertexAttribute("position", 0, 3, 0);
+	vertBufPtr1->AddVertexAttribute("vertexColor", 1, 3, 3);
+	vertBufPtr1->AddVertexAttribute("texCoord", 2, 2, 6);
+
+	vertBufPtr1->SetTexturePtr(texPtr1); //assign the texture to the vertex buffer
+	objPtr1->SetVertexBuffer(vertBufPtr1); //assign the vertex data to the object
+	objPtr1->SetPosition(glm::vec3(-30.0f, -20.0f, 0.0f)); //give the object a location
+	texScenePtr->AddObject(objPtr1); //and add it into the scene
+	#pragma endregion
+
+	#pragma region SetUpTexture2
+	std::shared_ptr<Texture> texPtr2 = std::make_shared<Texture>();
+	texPtr2->LoadTextureDataFromFile("gw.png");
+	#pragma endregion
+
+	#pragma region TexturedObject2
+	std::shared_ptr<GraphicsObject> objPtr2 = std::make_shared<GraphicsObject>();
+	std::shared_ptr<VertexBuffer> vertBufPtr2 = std::make_shared<VertexBuffer>(8);
+
+	//add vertices and uv's to the vertex buffer
+	vertBufPtr2->AddVertexData(8, -20.0f, 20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+	vertBufPtr2->AddVertexData(8, -20.0f, -20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+	vertBufPtr2->AddVertexData(8, 20.0f, -20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
+	vertBufPtr2->AddVertexData(8, -20.0f, 20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+	vertBufPtr2->AddVertexData(8, 20.0f, -20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
+	vertBufPtr2->AddVertexData(8, 20.0f, 20.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	//add vertex attributes to the vertex buffer
+	vertBufPtr2->AddVertexAttribute("position", 0, 3, 0);
+	vertBufPtr2->AddVertexAttribute("vertexColor", 1, 3, 3);
+	vertBufPtr2->AddVertexAttribute("texCoord", 2, 2, 6);
+
+	vertBufPtr2->SetTexturePtr(texPtr2); //assign the texture to the vertex buffer
+	objPtr2->SetVertexBuffer(vertBufPtr2); //assign the vertex data to the object
+	objPtr2->SetPosition(glm::vec3(30.0f, 20.0f, 0.0f)); //give the object a location
+	texScenePtr->AddObject(objPtr2); //and add it into the scene
+	#pragma endregion
+}
+
+void OnWindowSizeChanged(GLFWwindow* window, int width, int height) {
+
 	glViewport(0, 0, width, height);
 }
 
-void ProcessInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+void ProcessInput(GLFWwindow* window) {
+
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	}
 }
 
-static glm::mat4 CreateViewMatrix(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up)
-{
+static glm::mat4 CreateViewMatrix(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up) {
+
 	glm::vec3 right = glm::cross(direction, up);
 	right = glm::normalize(right);
 
@@ -51,8 +128,8 @@ static glm::mat4 CreateViewMatrix(const glm::vec3& position, const glm::vec3& di
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
-	_In_ int       nCmdShow)
-{
+	_In_ int       nCmdShow) {
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -71,10 +148,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return -1;
 	}
 
+	//enables transparency in textures
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glViewport(0, 0, 1200, 800);
 	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
 	//glfwMaximizeWindow(window);
-
+;
 	TextFile vertShadFile;
 	vertShadFile.ReadAllLines("basic.vert.glsl");
 	TextFile fragShadFile;
@@ -139,6 +220,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	rend.AllocateVertexBuffer(scene->GetObjects());
 
+	std::shared_ptr<Shader> texShadPtr;
+	std::shared_ptr<Scene> texScenePtr = std::make_shared<Scene>();
+	SetUpTexturedScene(texShadPtr, texScenePtr);
+	Renderer texRend = Renderer(texShadPtr);
+
+	texRend.AllocateVertexBuffer(texScenePtr->GetObjects());
+
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -151,12 +239,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	glUseProgram(shaderProgram);
 
 	shader->SendMat4Uniform("projection", projection);
+	texShadPtr->SendMat4Uniform("projection", projection);
 
 	float angle = 0, childAngle = 0;
 	float cameraX = -10, cameraY = 0;
 	glm::mat4 view;
-
-
 
 	while (!glfwWindowShouldClose(window)) {
 		ProcessInput(window);
@@ -170,7 +257,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			glm::vec3(0.0f, 1.0f, 0.0f)
 		);
 
-		// Update the objects in the scene
+		//update the objects in the scene
 		for (auto& object : scene->GetObjects()) {
 			object->ResetOrientation();
 			object->RotateLocalZ(angle);
@@ -180,6 +267,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
+		texRend.RenderScene(texScenePtr, view);
 		rend.RenderScene(scene, view);
 
 		#pragma region ImGui Update

@@ -23,6 +23,12 @@ void Renderer::RenderObject(const GraphicsObject& object) {
 
 	auto& buffer = object.GetVertexBuffer();
 	buffer->Select();
+	
+	if (buffer->HasTexture()) {
+		shader->SendIntUniform("texUnit", buffer->GetTextureUnit());
+		buffer->GetTexturePtr()->SelectToRender();
+	}
+
 	buffer->SetUpAttributeInterpretration();
 	glDrawArrays(buffer->GetPrimitiveType(), 0, buffer->GetNumberOfVertices());
 
