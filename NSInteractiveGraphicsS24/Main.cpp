@@ -13,6 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "VertexBuffer.h"
+#include "GraphicsEnvironment.h"
 #include "GraphicsObject.h"
 #include "Scene.h"
 
@@ -130,31 +131,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow) {
 
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(1200, 800, "ETSU Computing Interactive Graphics", NULL, NULL);
-	if (window == NULL) {
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-
-	//enables transparency in textures
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport(0, 0, 1200, 800);
-	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
-	//glfwMaximizeWindow(window);
+	GraphicsEnvironment glfw;
+	glfw.Init(4, 3);
+	bool created = glfw.SetWindow(
+		1200, 800, "ETSU Computing Interactive Graphics");
+	if (created == false) return -1;
+	bool loaded = glfw.InitGlad();
+	if (loaded == false) return -1;
+	glfw.SetupGraphics();
+	GLFWwindow* window = glfw.GetWindow();
 ;
 	TextFile vertShadFile;
 	vertShadFile.ReadAllLines("basic.vert.glsl");
@@ -179,10 +164,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	right *= aspectRatio;
 	glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 
-	Renderer rend(shader);
+	std::shared_ptr<Scene> scenePtr = std::make_shared<Scene>();
+	Renderer rend(shader, scenePtr);
 
-	std::shared_ptr<Scene> scene = std::make_shared<Scene>();
-
+	#pragma region square
 	std::shared_ptr<GraphicsObject> square = std::make_shared<GraphicsObject>();
 	std::shared_ptr<VertexBuffer> buffer = std::make_shared<VertexBuffer>(6);
 	buffer->AddVertexData(6, -5.0f, 5.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -194,8 +179,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	buffer->AddVertexAttribute("position", 0, 3);
 	buffer->AddVertexAttribute("color", 1, 3, 3);
 	square->SetVertexBuffer(buffer);
-	scene->AddObject(square);
+	scenePtr->AddObject(square);
+	#pragma endregion
 
+	#pragma region triangle
 	std::shared_ptr<GraphicsObject> triangle = std::make_shared<GraphicsObject>();
 	std::shared_ptr<VertexBuffer> buffer2 = std::make_shared<VertexBuffer>(6);
 	buffer2->AddVertexData(6, -5.0f, 5.0f, 0.0f, 0.0f, 1.0f, 0.0f);
@@ -205,8 +192,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	buffer2->AddVertexAttribute("color", 1, 3, 3);
 	triangle->SetVertexBuffer(buffer2);
 	triangle->SetPosition(glm::vec3(30.0f, 0.0f, 0.0f));
-	scene->AddObject(triangle);
+	scenePtr->AddObject(triangle);
+	#pragma endregion
 
+	#pragma region line
 	std::shared_ptr<GraphicsObject> line = std::make_shared<GraphicsObject>();
 	std::shared_ptr<VertexBuffer> buffer3 = std::make_shared<VertexBuffer>(6);
 	buffer3->SetPrimitiveType(GL_LINES);
@@ -217,22 +206,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	line->SetVertexBuffer(buffer3);
 	line->SetPosition(glm::vec3(5.0f, -10.0f, 0.0f));
 	triangle->AddChild(line);
+	#pragma endregion
 
-	rend.AllocateVertexBuffer(scene->GetObjects());
+	rend.AllocateVertexBuffer(scenePtr->GetObjects());
 
 	std::shared_ptr<Shader> texShadPtr;
 	std::shared_ptr<Scene> texScenePtr = std::make_shared<Scene>();
 	SetUpTexturedScene(texShadPtr, texScenePtr);
-	Renderer texRend = Renderer(texShadPtr);
+	Renderer texRend = Renderer(texShadPtr, texScenePtr);
 
 	texRend.AllocateVertexBuffer(texScenePtr->GetObjects());
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 430");
 
 	glm::vec3 clearColor = { 0.2f, 0.3f, 0.3f };
 
@@ -245,6 +228,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	float cameraX = -10, cameraY = 0;
 	glm::mat4 view;
 
+	ImGuiIO& io = ImGui::GetIO();
 	while (!glfwWindowShouldClose(window)) {
 		ProcessInput(window);
 
@@ -257,8 +241,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			glm::vec3(0.0f, 1.0f, 0.0f)
 		);
 
+		texRend.SetView(view);
+		rend.SetView(view);
+
 		//update the objects in the scene
-		for (auto& object : scene->GetObjects()) {
+		for (auto& object : scenePtr->GetObjects()) {
 			object->ResetOrientation();
 			object->RotateLocalZ(angle);
 			for (auto& child : object->GetChildren()) {
@@ -267,8 +254,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
-		texRend.RenderScene(texScenePtr, view);
-		rend.RenderScene(scene, view);
+		texRend.RenderScene();
+		rend.RenderScene();
 
 		#pragma region ImGui Update
 		ImGui_ImplOpenGL3_NewFrame();

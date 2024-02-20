@@ -2,9 +2,10 @@
 #include "Shader.h"
 #include "Renderer.h"
 
-Renderer::Renderer(std::shared_ptr<Shader> shader) : shader(shader) {
+Renderer::Renderer(const std::shared_ptr<Shader>& shadPtr, const std::shared_ptr<Scene>& scenePtr) : shadPtr(shadPtr), scenePtr(scenePtr) {
 
 	glGenVertexArrays(1, &vaoId);
+	view = glm::mat4();
 }
 
 void Renderer::AllocateVertexBuffer(const std::vector<std::shared_ptr<GraphicsObject>>& objects) const {
@@ -19,13 +20,14 @@ void Renderer::AllocateVertexBuffer(const std::vector<std::shared_ptr<GraphicsOb
 
 void Renderer::RenderObject(const GraphicsObject& object) {
 
-	shader->SendMat4Uniform("world", object.GetReferenceFrame());
+	//send the model matrix to the shader
+	shadPtr->SendMat4Uniform("world", object.GetReferenceFrame());
 
 	auto& buffer = object.GetVertexBuffer();
 	buffer->Select();
 	
 	if (buffer->HasTexture()) {
-		shader->SendIntUniform("texUnit", buffer->GetTextureUnit());
+		shadPtr->SendIntUniform("texUnit", buffer->GetTextureUnit());
 		buffer->GetTexturePtr()->SelectToRender();
 	}
 
@@ -38,18 +40,18 @@ void Renderer::RenderObject(const GraphicsObject& object) {
 		RenderObject(*child);
 }
 
-void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const glm::mat4& view) {
+void Renderer::RenderScene(void) {
 
-	if(shader->IsCreated()) {
+	if(shadPtr->IsCreated()) {
 
-		glUseProgram(shader->GetShaderProgram());
+		glUseProgram(shadPtr->GetShaderProgram());
 		glBindVertexArray(vaoId);
 
 		//we must send the view matrix to the shader every frame
-		shader->SendMat4Uniform("view", view);
+		shadPtr->SendMat4Uniform("view", view);
 
 		//for each object in the scene, render it separately
-		for(auto& object : scene->GetObjects())
+		for(auto& object : scenePtr->GetObjects())
 			RenderObject(*object);
 
 		glDisableVertexAttribArray(0); //position
