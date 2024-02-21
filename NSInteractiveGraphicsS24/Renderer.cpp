@@ -6,13 +6,14 @@ Renderer::Renderer(const std::shared_ptr<Shader>& shadPtr, const std::shared_ptr
 
 	glGenVertexArrays(1, &vaoId);
 	view = glm::mat4();
+	proj = glm::mat4();
 }
 
-void Renderer::AllocateVertexBuffer(const std::vector<std::shared_ptr<GraphicsObject>>& objects) const {
+void Renderer::StaticAllocateVertexBuffer(void) const {
 
 	glBindVertexArray(vaoId); //bind it
 
-	for(auto& obj : objects)
+	for(auto& obj : scenePtr->GetObjects())
 		obj->StaticAllocateVertexBuffer();
 
 	glBindVertexArray(0); //unbind it

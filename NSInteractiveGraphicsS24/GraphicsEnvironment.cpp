@@ -1,4 +1,5 @@
 #include "GraphicsEnvironment.h"
+#include "Shader.h"
 
 void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
 	glfwInit();
@@ -28,14 +29,7 @@ bool GraphicsEnvironment::InitGlad(void) {
 	return true;
 }
 
-void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-}
-
 void GraphicsEnvironment::SetupGraphics(void) {
-	//enable transparency in textures
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//set up a callback for whenever the window is resized
 	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
 	//set up ImGui
@@ -44,4 +38,31 @@ void GraphicsEnvironment::SetupGraphics(void) {
 	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 430");
+
+	//enable transparency in textures
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
+void GraphicsEnvironment::CreateRenderer(const std::string& name, std::shared_ptr<Shader> shadPtr, std::shared_ptr<Scene> scenePtr) {
+	rendererMap.emplace(name, std::make_shared<Renderer>(shadPtr, scenePtr));
+}
+
+std::shared_ptr<Renderer> GraphicsEnvironment::GetRenderer(const std::string& name) const {
+	//don't worry about not found exceptions, its better than returning null from this. change over to std::optional eventually
+	return rendererMap.at(name);
+}
+
+void GraphicsEnvironment::StaticAllocate(void) const {
+	for(auto& kv : rendererMap)
+		kv.second->StaticAllocateVertexBuffer();
+}
+
+void GraphicsEnvironment::Render(void) const {
+	for(auto& kv : rendererMap)
+		kv.second->RenderScene();
 }

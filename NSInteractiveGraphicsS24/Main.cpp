@@ -162,7 +162,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	float top = 50.0f;
 	left *= aspectRatio;
 	right *= aspectRatio;
-	glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+	glm::mat4 projection;
 
 	std::shared_ptr<Scene> scenePtr = std::make_shared<Scene>();
 	Renderer rend(shader, scenePtr);
@@ -208,21 +208,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	triangle->AddChild(line);
 	#pragma endregion
 
-	rend.AllocateVertexBuffer(scenePtr->GetObjects());
+	rend.StaticAllocateVertexBuffer();
 
 	std::shared_ptr<Shader> texShadPtr;
 	std::shared_ptr<Scene> texScenePtr = std::make_shared<Scene>();
 	SetUpTexturedScene(texShadPtr, texScenePtr);
 	Renderer texRend = Renderer(texShadPtr, texScenePtr);
 
-	texRend.AllocateVertexBuffer(texScenePtr->GetObjects());
+	texRend.StaticAllocateVertexBuffer();
 
 	glm::vec3 clearColor = { 0.2f, 0.3f, 0.3f };
 
 	glUseProgram(shaderProgram);
-
-	shader->SendMat4Uniform("projection", projection);
-	texShadPtr->SendMat4Uniform("projection", projection);
 
 	float angle = 0, childAngle = 0;
 	float cameraX = -10, cameraY = 0;
@@ -231,6 +228,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	ImGuiIO& io = ImGui::GetIO();
 	while (!glfwWindowShouldClose(window)) {
 		ProcessInput(window);
+		glfwGetWindowSize(window, &width, &height);
 
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -240,6 +238,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			glm::vec3(0.0f, 0.0f, -1.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f)
 		);
+		projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+		shader->SendMat4Uniform("projection", projection);
+		texShadPtr->SendMat4Uniform("projection", projection);
+
+		if (width >= height) {
+			aspectRatio = width / (height * 1.0f);
+		}
+		else {
+			aspectRatio = height / (width * 1.0f);
+		}
 
 		texRend.SetView(view);
 		rend.SetView(view);
