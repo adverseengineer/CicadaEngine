@@ -1,5 +1,6 @@
 #include "GraphicsEnvironment.h"
 #include "Shader.h"
+#include <ext/matrix_clip_space.hpp>
 
 void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
 	glfwInit();
@@ -9,13 +10,13 @@ void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVers
 }
 
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
-	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-	if (window == NULL) {
+	winPtr = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+	if (winPtr == NULL) {
 		Log("Failed to create GLFW window");
 		glfwTerminate();
 		return false;
 	}
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(winPtr);
 	Log("Created GLFW window");
 	return true;
 }
@@ -31,12 +32,12 @@ bool GraphicsEnvironment::InitGlad(void) {
 
 void GraphicsEnvironment::SetupGraphics(void) {
 	//set up a callback for whenever the window is resized
-	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
+	glfwSetFramebufferSizeCallback(winPtr, OnWindowSizeChanged);
 	//set up ImGui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplGlfw_InitForOpenGL(winPtr, true);
 	ImGui_ImplOpenGL3_Init("#version 430");
 
 	//enable transparency in textures
@@ -58,11 +59,124 @@ std::shared_ptr<Renderer> GraphicsEnvironment::GetRenderer(const std::string& na
 }
 
 void GraphicsEnvironment::StaticAllocate(void) const {
-	for(auto& kv : rendererMap)
-		kv.second->StaticAllocateVertexBuffer();
+	for(auto& pair : rendererMap)
+		pair.second->StaticAllocateVertexBuffer();
 }
 
 void GraphicsEnvironment::Render(void) const {
-	for(auto& kv : rendererMap)
-		kv.second->RenderScene();
+	for(auto& pair : rendererMap)
+		pair.second->RenderScene();
+}
+
+void GraphicsEnvironment::ProcessInput(void) const {
+	if (glfwGetKey(winPtr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(winPtr, true);
+}
+
+glm::mat4 GraphicsEnvironment::CreateViewMatrix(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up) {
+
+	glm::vec3 right = glm::cross(direction, up);
+	right = glm::normalize(right);
+
+	glm::vec3 vUp = glm::cross(right, direction);
+	vUp = glm::normalize(vUp);
+
+	glm::mat4 view(1.0f);
+	view[0] = glm::vec4(right, 0.0f);
+	view[1] = glm::vec4(up, 0.0f);
+	view[2] = glm::vec4(direction, 0.0f);
+	view[3] = glm::vec4(position, 1.0f);
+	return glm::inverse(view);
+}
+
+void GraphicsEnvironment::Run2D(void) const {
+
+	float camX = -10, camY = 0;
+
+	int width, height;
+	glfwGetWindowSize(winPtr, &width, &height);
+	float aspectRatio = width / (height * 1.0f);
+
+	float left = -50.0f;
+	float right = 50.0f;
+	float bottom = -50.0f;
+	float top = 50.0f;
+	left *= aspectRatio;
+	right *= aspectRatio;
+
+	glm::mat4 view, projection;
+	glm::vec3 clearColor = { 0.1f, 0.9f, 0.2f };
+	
+	float angle = 3.141592654f, childAngle = 22.0f;
+
+	ImGuiIO& io = ImGui::GetIO();
+	while (!glfwWindowShouldClose(winPtr)) {
+
+		ProcessInput();
+
+		//if the window size has changed, recalculate the aspect ratio 
+		glfwGetWindowSize(winPtr, &width, &height);
+		if (width >= height)
+			aspectRatio = width / (height * 1.0f);
+		else
+			aspectRatio = height / (width * 1.0f);
+
+		//clear the screen
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		view = GraphicsEnvironment::CreateViewMatrix(
+			glm::vec3(camX, camY, 1.0f),
+			glm::vec3(0.0f, 0.0f, -1.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+		projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+		//update the view matrix for each renderer, and send the view and projection to the shader
+		for (auto& pair : rendererMap) {
+			pair.second->SetView(view);
+			pair.second->GetShader()->SendMat4Uniform("view", view);
+			pair.second->GetShader()->SendMat4Uniform("projection", projection);
+		}
+
+		//do the rotate thing for the plain untextured objects
+		for (auto& object : GetRenderer("plain renderer")->GetScene()->GetObjects()) {
+			object->ResetOrientation();
+			object->RotateLocalZ(angle);
+			for (auto& child : object->GetChildren()) {
+				child->ResetOrientation();
+				child->RotateLocalZ(childAngle);
+			}
+		}
+
+		//update each textured object
+		for (auto& object : GetRenderer("textured renderer")->GetScene()->GetObjects()) {
+			//TODO: something to each of the textured objects
+		}
+
+		//let each renderer do their thing
+		for (auto& pair : rendererMap) {
+			pair.second->RenderScene();
+		}
+
+		#pragma region ImGui Update
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		ImGui::Begin("Computing Interactive Graphics");
+		ImGui::Text(BaseObject::GetLog().c_str());
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		ImGui::ColorEdit3("Background color", (float*)&clearColor.r);
+		ImGui::SliderFloat("Angle", &angle, 0, 360);
+		ImGui::SliderFloat("Child Angle", &childAngle, 0, 360);
+		ImGui::SliderFloat("Camera X", &camX, left, right);
+		ImGui::SliderFloat("Camera Y", &camY, bottom, top);
+		ImGui::End();
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		#pragma endregion
+
+		glfwSwapBuffers(winPtr);
+		glfwPollEvents();
+	}
 }
