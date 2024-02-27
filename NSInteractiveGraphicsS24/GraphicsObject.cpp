@@ -5,9 +5,9 @@ GraphicsObject::GraphicsObject() : referenceFrame(1.0f), parent(nullptr) {}
 GraphicsObject::~GraphicsObject() {}
 
 const glm::mat4 GraphicsObject::GetReferenceFrame() const {
-	if (parent != nullptr) {
+	if (parent != nullptr)
 		return parent->referenceFrame * referenceFrame;
-	}
+
 	return referenceFrame;
 }
 
@@ -23,9 +23,8 @@ void GraphicsObject::StaticAllocateVertexBuffer(void) {
 	buffer->Select();
 	buffer->StaticAllocate();
 	buffer->Deselect();
-	for (auto& child : children) {
+	for (auto& child : children)
 		child->StaticAllocateVertexBuffer();
-	}
 }
 
 void GraphicsObject::AddChild(std::shared_ptr<GraphicsObject> child) {
@@ -44,9 +43,5 @@ void GraphicsObject::ResetOrientation() {
 }
 
 void GraphicsObject::RotateLocalZ(float degrees) {
-	referenceFrame = glm::rotate(
-		referenceFrame,
-		glm::radians(degrees),
-		glm::vec3(0.0f, 0.0f, 1.0f)
-	);
+	referenceFrame = glm::rotate(referenceFrame, glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f));
 }

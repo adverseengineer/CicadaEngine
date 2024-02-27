@@ -1,12 +1,14 @@
 #include "GraphicsEnvironment.h"
 #include "Shader.h"
 #include <ext/matrix_clip_space.hpp>
+#include <ext/matrix_transform.hpp>
 
 void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4); //adds antialiasing capabilities
 }
 
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
@@ -43,6 +45,14 @@ void GraphicsEnvironment::SetupGraphics(void) {
 	//enable transparency in textures
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//enable culling of backfaces
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	//enable depth testing
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	//enable antialiasing
+	glEnable(GL_MULTISAMPLE);
 }
 
 void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int height) {
@@ -175,6 +185,90 @@ void GraphicsEnvironment::Run2D(void) const {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		#pragma endregion
+
+		glfwSwapBuffers(winPtr);
+		glfwPollEvents();
+	}
+}
+
+void GraphicsEnvironment::Run3D(void) const {
+
+	float camX = 0, camY = 0, camZ = 0;
+
+	int scrWidth, scrHeight;
+	glfwGetWindowSize(winPtr, &scrWidth, &scrHeight);
+	float aspectRatio = scrWidth / (scrHeight * 1.0f);
+
+	float left = -50.0f;
+	float right = 50.0f;
+	float bottom = -50.0f;
+	float top = 50.0f;
+	left *= aspectRatio;
+	right *= aspectRatio;
+
+	float fov = 60.0f;
+	float nearClip = 0.01f;
+	float farClip = 200.0f;
+
+	glm::vec3 clearColor = { 0.1f, 0.1f, 0.2f };
+
+	glm::vec3 camPos = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 camFacing = { 0.0f, 0.0f, 1.0f };
+	glm::vec3 camUp = { 0.0f, 1.0f, 0.0f }; 
+	glm::mat4 model, view, projection;
+
+	float cubeXAngle = 50, cubeYAngle = 0, cubeZAngle = 0;
+
+	ImGuiIO& io = ImGui::GetIO();
+	while (!glfwWindowShouldClose(winPtr)) {
+
+		ProcessInput();
+		glfwGetWindowSize(winPtr, &scrWidth, &scrHeight);
+
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(cubeYAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(cubeXAngle), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(cubeZAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		view = glm::lookAt(camPos, camFacing + camPos, camUp);
+
+		if (scrWidth >= scrHeight)
+			aspectRatio = scrWidth / (scrHeight * 1.0f);
+		else
+			aspectRatio = scrHeight / (scrWidth * 1.0f);
+
+		projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
+
+		//update the view matrix for each renderer, and send the view and projection to the shader
+		for (auto& pair : rendererMap) {
+			pair.second->SetView(view);
+			pair.second->GetShader()->SendMat4Uniform("view", view);
+			pair.second->GetShader()->SendMat4Uniform("projection", projection);
+		}
+
+		//and finally call render
+		for (auto& pair : rendererMap) {
+			pair.second->RenderScene();
+		}
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		ImGui::Begin("Computing Interactive Graphics");
+		ImGui::ColorEdit3("Background color", (float*)&clearColor.r);
+		ImGui::SliderFloat("Cube X Angle", &cubeXAngle, 0, 360);
+		ImGui::SliderFloat("Cube Y Angle", &cubeYAngle, 0, 360);
+		ImGui::SliderFloat("Cube Z Angle", &cubeZAngle, 0, 360);
+		ImGui::SliderFloat("Camera X", &camPos.x, left, right);
+		ImGui::SliderFloat("Camera Y", &camPos.y, bottom, top);
+		ImGui::SliderFloat("Camera Z", &camPos.z, -50, 50);
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		ImGui::Text(BaseObject::GetLog().c_str());
+		ImGui::End();
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(winPtr);
 		glfwPollEvents();

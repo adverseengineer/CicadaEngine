@@ -13,6 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "VertexBuffer.h"
+#include "Generate.h"
 #include "GraphicsEnvironment.h"
 #include "GraphicsObject.h"
 #include "Scene.h"
@@ -78,9 +79,9 @@ static void SetUpPlainScene(std::shared_ptr<Shader>& shadPtr, std::shared_ptr<Sc
 	#pragma endregion
 }
 
-static void SetUpTexturedScene(std::shared_ptr<Shader>& texShadPtr, std::shared_ptr<Scene>& texScenePtr) {
+static void SetUpTexturedScene(std::shared_ptr<Shader>& shadPtr, std::shared_ptr<Scene>& scenePtr) {
 	
-	texScenePtr = std::make_shared<Scene>();
+	scenePtr = std::make_shared<Scene>();
 
 	#pragma region SetUpShader
 	//set up the shader that will be used for textured objects
@@ -88,11 +89,11 @@ static void SetUpTexturedScene(std::shared_ptr<Shader>& texShadPtr, std::shared_
 	vertShadFile.ReadAllLines("texture.vert.glsl");
 	TextFile fragShadFile;
 	fragShadFile.ReadAllLines("texture.frag.glsl");
-	texShadPtr = std::make_shared<Shader>(vertShadFile.GetContents(), fragShadFile.GetContents());
-	texShadPtr->AddUniform("projection");
-	texShadPtr->AddUniform("world");
-	texShadPtr->AddUniform("view");
-	texShadPtr->AddUniform("texUnit");
+	shadPtr = std::make_shared<Shader>(vertShadFile.GetContents(), fragShadFile.GetContents());
+	shadPtr->AddUniform("projection");
+	shadPtr->AddUniform("world");
+	shadPtr->AddUniform("view");
+	shadPtr->AddUniform("texUnit");
 	#pragma endregion
 
 	#pragma region SetUpTexture1
@@ -134,7 +135,7 @@ static void SetUpTexturedScene(std::shared_ptr<Shader>& texShadPtr, std::shared_
 	vertBufPtr1->SetTexturePtr(texPtr1); //assign the texture to the vertex buffer
 	objPtr1->SetVertexBuffer(vertBufPtr1); //assign the vertex data to the object
 	objPtr1->SetPosition(glm::vec3(-30.0f, -20.0f, 0.0f)); //give the object a location
-	texScenePtr->AddObject(objPtr1); //and add it into the scene
+	scenePtr->AddObject(objPtr1); //and add it into the scene
 	#pragma endregion
 
 	#pragma region TexturedObject2
@@ -156,10 +157,68 @@ static void SetUpTexturedScene(std::shared_ptr<Shader>& texShadPtr, std::shared_
 	vertBufPtr2->SetTexturePtr(texPtr2); //assign the texture to the vertex buffer
 	objPtr2->SetVertexBuffer(vertBufPtr2); //assign the vertex data to the object
 	objPtr2->SetPosition(glm::vec3(30.0f, 20.0f, 0.0f)); //give the object a location
-	texScenePtr->AddObject(objPtr2); //and add it into the scene
+	scenePtr->AddObject(objPtr2); //and add it into the scene
 	#pragma endregion
 }
 
+static void SetUp3DScene1(std::shared_ptr<Shader>& shadPtr, std::shared_ptr<Scene>& scenePtr) {
+
+	scenePtr = std::make_shared<Scene>();
+
+	#pragma region SetUpShader
+	//set up the shader that will be used for textured objects
+	TextFile vertShadFile;
+	vertShadFile.ReadAllLines("texture.vert.glsl");
+	TextFile fragShadFile;
+	fragShadFile.ReadAllLines("texture.frag.glsl");
+	shadPtr = std::make_shared<Shader>(vertShadFile.GetContents(), fragShadFile.GetContents());
+	shadPtr->AddUniform("projection");
+	shadPtr->AddUniform("world");
+	shadPtr->AddUniform("view");
+	shadPtr->AddUniform("texUnit");
+	#pragma endregion
+
+	#pragma region RawTexture
+	auto rawTexPtr = std::make_shared<Texture>();
+	rawTexPtr->SetDimensions(2, 2);
+	unsigned char rawTextureData[16] = { 255, 0, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 0, 255, 255 };
+	rawTexPtr->SetTextureData(16, rawTextureData);
+	rawTexPtr->SetWrapS(GL_REPEAT);
+	rawTexPtr->SetWrapT(GL_REPEAT);
+	rawTexPtr->SetMagFilter(GL_NEAREST);
+	#pragma endregion
+
+	#pragma region SetUpCube1
+	auto cubeVBufPtr1 = Generate::Cuboid(10, 10, 10, {0,0,0},{10,10});
+	cubeVBufPtr1->SetTexturePtr(rawTexPtr);
+	auto cubePtr1 = std::make_shared<GraphicsObject>();
+	cubePtr1->SetVertexBuffer(cubeVBufPtr1);
+	cubePtr1->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
+	scenePtr->AddObject(cubePtr1);
+	#pragma endregion
+
+	#pragma region SetUpCube2
+	auto crateTexPtr = std::make_shared<Texture>();
+	crateTexPtr->LoadTextureDataFromFile("crate.png");
+	auto cubeVBufPtr2 = Generate::Cuboid(1, 2, 3);
+	cubeVBufPtr2->SetTexturePtr(crateTexPtr);
+	auto cubePtr2 = std::make_shared<GraphicsObject>();
+	cubePtr2->SetVertexBuffer(cubeVBufPtr2);
+	cubePtr2->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
+	scenePtr->AddObject(cubePtr2);
+	#pragma endregion
+
+	#pragma region SetUpPlane
+	auto planeVBufPtr = Generate::Plane(200, 200, {0,0,0}, {800,800});
+	auto floorTexPtr = std::make_shared<Texture>();
+	floorTexPtr->LoadTextureDataFromFile("floor.png");
+	planeVBufPtr->SetTexturePtr(floorTexPtr);
+	auto planePtr = std::make_shared<GraphicsObject>();
+	planePtr->SetVertexBuffer(planeVBufPtr);
+	planePtr->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	scenePtr->AddObject(planePtr);
+	#pragma endregion
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
 
@@ -174,19 +233,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	glfw.SetupGraphics();
 
-	std::shared_ptr<Shader> plainShadPtr;
-	std::shared_ptr<Scene> plainScenePtr;
-	SetUpPlainScene(plainShadPtr, plainScenePtr);
+	std::shared_ptr<Shader> threeDShadPtr;
+	std::shared_ptr<Scene> threeDScenePtr;
+	SetUp3DScene1(threeDShadPtr, threeDScenePtr);
 
-	std::shared_ptr<Shader> texShadPtr;
-	std::shared_ptr<Scene> texScenePtr;
-	SetUpTexturedScene(texShadPtr, texScenePtr);
-
-	glfw.CreateRenderer("plain renderer", plainShadPtr, plainScenePtr);
-	glfw.CreateRenderer("textured renderer", texShadPtr, texScenePtr);
+	glfw.CreateRenderer("3D renderer", threeDShadPtr, threeDScenePtr);
 	glfw.StaticAllocate();
 
-	glfw.Run2D();
+	glfw.Run3D();
 
 	return 0;
 }
