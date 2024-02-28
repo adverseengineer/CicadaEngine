@@ -218,6 +218,7 @@ void GraphicsEnvironment::Run3D(void) const {
 	glm::mat4 model, view, projection;
 
 	float cubeXAngle = 50, cubeYAngle = 0, cubeZAngle = 0;
+	float cubeXAngleOld = 50, cubeYAngleOld = 0, cubeZAngleOld = 0;
 
 	ImGuiIO& io = ImGui::GetIO();
 	while (!glfwWindowShouldClose(winPtr)) {
@@ -246,6 +247,19 @@ void GraphicsEnvironment::Run3D(void) const {
 			pair.second->SetView(view);
 			pair.second->GetShader()->SendMat4Uniform("view", view);
 			pair.second->GetShader()->SendMat4Uniform("projection", projection);
+		}
+
+		for (auto& pair : rendererMap) {
+			for (auto& obj : pair.second->GetScene()->GetObjects()) {
+
+				if ((cubeXAngle != cubeXAngleOld) || (cubeYAngle != cubeYAngleOld) || (cubeZAngle != cubeZAngleOld)) {
+					obj->ResetOrientation();
+					obj->RotateLocal(cubeXAngle, cubeYAngle, cubeZAngle);
+					cubeXAngleOld = cubeXAngle;
+					cubeYAngleOld = cubeYAngle;
+					cubeZAngleOld = cubeZAngle;
+				}
+			}
 		}
 
 		//and finally call render

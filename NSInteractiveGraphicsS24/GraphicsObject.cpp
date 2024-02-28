@@ -2,7 +2,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 GraphicsObject::GraphicsObject() : referenceFrame(1.0f), parent(nullptr) {}
-GraphicsObject::~GraphicsObject() {}
 
 const glm::mat4 GraphicsObject::GetReferenceFrame() const {
 	if (parent != nullptr)
@@ -12,22 +11,22 @@ const glm::mat4 GraphicsObject::GetReferenceFrame() const {
 }
 
 void GraphicsObject::CreateVertexBuffer(unsigned int numberOfElementsPerVertex) {
-	buffer = std::make_shared<VertexBuffer>(numberOfElementsPerVertex);
+	vBuf = std::make_shared<VertexBuffer>(numberOfElementsPerVertex);
 }
 
-void GraphicsObject::SetVertexBuffer(std::shared_ptr<VertexBuffer> buffer) {
-	this->buffer = buffer;
+void GraphicsObject::SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vBuf) {
+	this->vBuf = vBuf;
 }
 
 void GraphicsObject::StaticAllocateVertexBuffer(void) {
-	buffer->Select();
-	buffer->StaticAllocate();
-	buffer->Deselect();
+	vBuf->Select();
+	vBuf->StaticAllocate();
+	vBuf->Deselect();
 	for (auto& child : children)
 		child->StaticAllocateVertexBuffer();
 }
 
-void GraphicsObject::AddChild(std::shared_ptr<GraphicsObject> child) {
+void GraphicsObject::AddChild(const std::shared_ptr<GraphicsObject>& child) {
 	children.push_back(child);
 	child->parent = this;
 }
@@ -42,6 +41,20 @@ void GraphicsObject::ResetOrientation() {
 	referenceFrame[3] = position;
 }
 
+void GraphicsObject::RotateLocalX(float degrees) {
+	referenceFrame = glm::rotate(referenceFrame, glm::radians(degrees), glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
+void GraphicsObject::RotateLocalY(float degrees) {
+	referenceFrame = glm::rotate(referenceFrame, glm::radians(degrees), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
 void GraphicsObject::RotateLocalZ(float degrees) {
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(degrees), glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+void GraphicsObject::RotateLocal(float xDeg, float yDeg, float zDeg) {
+	referenceFrame = glm::rotate(referenceFrame, glm::radians(xDeg), glm::vec3(1.0f, 0.0f, 0.0f));
+	referenceFrame = glm::rotate(referenceFrame, glm::radians(yDeg), glm::vec3(0.0f, 1.0f, 0.0f));
+	referenceFrame = glm::rotate(referenceFrame, glm::radians(zDeg), glm::vec3(0.0f, 0.0f, 1.0f));
 }

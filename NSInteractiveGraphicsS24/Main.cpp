@@ -189,7 +189,7 @@ static void SetUp3DScene1(std::shared_ptr<Shader>& shadPtr, std::shared_ptr<Scen
 	#pragma endregion
 
 	#pragma region SetUpCube1
-	auto cubeVBufPtr1 = Generate::Cuboid(10, 10, 10, {0,0,0},{10,10});
+	auto cubeVBufPtr1 = Generate::Cuboid(10, 10, 10, {0,0,0},{1,1});
 	cubeVBufPtr1->SetTexturePtr(rawTexPtr);
 	auto cubePtr1 = std::make_shared<GraphicsObject>();
 	cubePtr1->SetVertexBuffer(cubeVBufPtr1);
@@ -209,7 +209,7 @@ static void SetUp3DScene1(std::shared_ptr<Shader>& shadPtr, std::shared_ptr<Scen
 	#pragma endregion
 
 	#pragma region SetUpPlane
-	auto planeVBufPtr = Generate::Plane(200, 200, {0,0,0}, {800,800});
+	auto planeVBufPtr = Generate::Plane(200, 200, {0,0,0}, {8,8});
 	auto floorTexPtr = std::make_shared<Texture>();
 	floorTexPtr->LoadTextureDataFromFile("floor.png");
 	planeVBufPtr->SetTexturePtr(floorTexPtr);

@@ -12,47 +12,47 @@ std::shared_ptr<VertexBuffer> Generate::Cuboid(float width, float height, float 
 	float hd = depth / 2;
 
 	//front
-	vBufPtr->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, tex.s, tex.t);
-	vBufPtr->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, tex.t);
-	vBufPtr->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, tex.s, tex.t);
-	vBufPtr->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, tex.s, tex.t);
-	vBufPtr->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, tex.s, tex.t);
+	vBufPtr->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
+	vBufPtr->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
 	vBufPtr->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, tex.s, tex.t);
 	//right
-	vBufPtr->AddVertexData(8, hw, hh, hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, hw, -hh, hd, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, hh, hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	vBufPtr->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
+	vBufPtr->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
 	//back
-	vBufPtr->AddVertexData(8, hw, hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	vBufPtr->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, 0.0f, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
 	//left
-	vBufPtr->AddVertexData(8, -hw, hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, hh, hd, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	vBufPtr->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, 0.0f, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, tex.s, tex.t);
 	//top
-	vBufPtr->AddVertexData(8, -hw, hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, -hw, hh, hd, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, hh, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, hw, hh, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	vBufPtr->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
+	vBufPtr->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
 	//bottom
-	vBufPtr->AddVertexData(8, hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, hw, -hh, hd, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, -hh, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	vBufPtr->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
 	#pragma endregion
 
 	//add vertex attributes to the vertex buffer
@@ -70,12 +70,12 @@ std::shared_ptr<VertexBuffer> Generate::Plane(float width, float depth, glm::vec
 	float hw = width / 2;
 	float hd = depth / 2;
 
-	vBufPtr->AddVertexData(8, -hw, 0, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, -hw, 0, hd, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, 0, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, -hw, 0, -hd, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-	vBufPtr->AddVertexData(8, hw, 0, hd, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f);
-	vBufPtr->AddVertexData(8, hw, 0, -hd, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	vBufPtr->AddVertexData(8, -hw, 0, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, -hw, 0, hd, color.r, color.g, color.b, 0.0f, 0.0f);
+	vBufPtr->AddVertexData(8, hw, 0, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, -hw, 0, -hd, color.r, color.g, color.b, 0.0f, tex.t);
+	vBufPtr->AddVertexData(8, hw, 0, hd, color.r, color.g, color.b, tex.s, 0.0f);
+	vBufPtr->AddVertexData(8, hw, 0, -hd, color.r, color.g, color.b, tex.s, tex.t);
 
 	//add vertex attributes to the vertex buffer
 	vBufPtr->AddVertexAttribute("position", 0, 3, 0);
