@@ -67,6 +67,12 @@
     <ClCompile Include="Animation.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="RotateAnimation.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexBuffer.h">
@@ -106,6 +112,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateAnimation.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

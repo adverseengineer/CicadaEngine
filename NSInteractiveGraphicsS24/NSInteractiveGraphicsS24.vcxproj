@@ -142,6 +142,8 @@
     <ClCompile Include="..\3rdparty\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\3rdparty\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="RotateAnimation.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Generate.cpp" />
     <ClCompile Include="GraphicsEnvironment.cpp" />
@@ -158,11 +160,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Generate.h" />
     <ClInclude Include="GraphicsEnvironment.h" />
     <ClInclude Include="GraphicsObject.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RotateAnimation.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="TextFile.h" />

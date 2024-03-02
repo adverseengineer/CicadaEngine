@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
+#include "RotateAnimation.h"
 
 void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
 	glfwInit();
@@ -228,6 +229,10 @@ void GraphicsEnvironment::Run3D(void) {
 
 	float cubeXAngle = 50, cubeYAngle = 0, cubeZAngle = 0;
 	float cubeXAngleOld = 50, cubeYAngleOld = 0, cubeZAngleOld = 0;
+
+	std::shared_ptr<RotateAnimation> rotateAnimation = std::make_shared<RotateAnimation>();
+	rotateAnimation->SetObject(objManager.GetObject("cube 2"));
+	objManager.GetObject("cube 2")->SetAnimation(rotateAnimation);
 
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;

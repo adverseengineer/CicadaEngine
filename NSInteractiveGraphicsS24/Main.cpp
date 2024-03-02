@@ -62,7 +62,7 @@ static void SetUp3DScene1(std::shared_ptr<Shader>& shad, std::shared_ptr<Scene>&
 	#pragma region SetUpCube2
 	auto crateTex = std::make_shared<Texture>();
 	crateTex->LoadTextureDataFromFile("crate.png");
-	auto cubeVBuf2 = Generate::Cuboid(1, 2, 3);
+	auto cubeVBuf2 = Generate::Cuboid(6, 2, 5);
 	cubeVBuf2->SetTexturePtr(crateTex);
 	auto cube2 = std::make_shared<GraphicsObject>();
 	cube2->SetVertexBuffer(cubeVBuf2);
