@@ -1,139 +1,157 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\Third Party">
-      <UniqueIdentifier>{c8e2e950-b91b-4a7f-bc7f-d8b86af94e0a}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="BaseObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\glad\src\glad.c">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\imgui\imgui.cpp">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\imgui\imgui_demo.cpp">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\imgui\imgui_draw.cpp">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\imgui\imgui_impl_glfw.cpp">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\imgui\imgui_tables.cpp">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdparty\imgui\imgui_widgets.cpp">
-      <Filter>Source Files\Third Party</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsEnvironment.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Generate.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsEnvironment.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextFile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\glad\src\glad.c">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui.cpp">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui_demo.cpp">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui_draw.cpp">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui_impl_glfw.cpp">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui_tables.cpp">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\imgui\imgui_widgets.cpp">
+      <Filter>Source\Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextFile.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Util.h">
-      <Filter>Header Files</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Timer.h">
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="TextFile.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsObject.h">
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsEnvironment.h">
-      <Filter>Header Files</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Generate.h">
-      <Filter>Header Files</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">
+      <Filter>Resources\Images</Filter>
+    </Image>
+    <Image Include="floor.png">
+      <Filter>Resources\Images</Filter>
+    </Image>
+    <Image Include="gw.png">
+      <Filter>Resources\Images</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.frag.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="basic.vert.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="texture.vert.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="texture.frag.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="texture.vert.glsl">
+      <Filter>Resources\Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="gw.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="floor.png">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <Filter Include="Source">
+      <UniqueIdentifier>{492909ec-ca7f-4364-af38-04ca844ff543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{e4f6c815-aa6c-47f8-a626-b93cc90b5cc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{63685aba-fd89-459d-a5b0-650f703bb8ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Third Party">
+      <UniqueIdentifier>{0b6d481e-9b96-4c3b-b77a-d8095c777c5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{845a6caf-4c09-4506-ac6b-8c0050b63a53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Images">
+      <UniqueIdentifier>{61cc2e49-a1ef-4dae-ae71-eaf0df993ebe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

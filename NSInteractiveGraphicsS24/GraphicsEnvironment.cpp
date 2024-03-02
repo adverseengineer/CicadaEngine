@@ -1,5 +1,6 @@
 #include "GraphicsEnvironment.h"
 #include "Shader.h"
+#include "Timer.h"
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
 
@@ -14,21 +15,21 @@ void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVers
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
 	winPtr = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (winPtr == NULL) {
-		Log("Failed to create GLFW window");
+		Util::Log("Failed to create GLFW window");
 		glfwTerminate();
 		return false;
 	}
 	glfwMakeContextCurrent(winPtr);
-	Log("Created GLFW window");
+	Util::Log("Created GLFW window");
 	return true;
 }
 
 bool GraphicsEnvironment::InitGlad(void) {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		Log("Failed to initialize GLAD");
+		Util::Log("Failed to initialize GLAD");
 		return false;
 	}
-	Log("Initialized GLAD");
+	Util::Log("Initialized GLAD");
 	return true;
 }
 
@@ -99,7 +100,15 @@ glm::mat4 GraphicsEnvironment::CreateViewMatrix(const glm::vec3& position, const
 	return glm::inverse(view);
 }
 
-void GraphicsEnvironment::Run2D(void) const {
+void GraphicsEnvironment::AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj) {
+	objManager.SetObject(key, obj);
+}
+
+std::shared_ptr<GraphicsObject> GraphicsEnvironment::GetObject(const std::string& key) const {
+	return objManager.GetObject(key);
+}
+
+void GraphicsEnvironment::Run2D(void) {
 
 	float camX = -10, camY = 0;
 
@@ -174,7 +183,7 @@ void GraphicsEnvironment::Run2D(void) const {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		ImGui::Begin("Computing Interactive Graphics");
-		ImGui::Text(BaseObject::GetLog().c_str());
+		ImGui::Text(Util::GetLog().c_str());
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		ImGui::ColorEdit3("Background color", (float*)&clearColor.r);
 		ImGui::SliderFloat("Angle", &angle, 0, 360);
@@ -191,7 +200,7 @@ void GraphicsEnvironment::Run2D(void) const {
 	}
 }
 
-void GraphicsEnvironment::Run3D(void) const {
+void GraphicsEnvironment::Run3D(void) {
 
 	float camX = 0, camY = 0, camZ = 0;
 
@@ -212,7 +221,7 @@ void GraphicsEnvironment::Run3D(void) const {
 
 	glm::vec3 clearColor = { 0.1f, 0.1f, 0.2f };
 
-	glm::vec3 camPos = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 camPos = { 0.0f, 15.0f, -30.0f };
 	glm::vec3 camFacing = { 0.0f, 0.0f, 1.0f };
 	glm::vec3 camUp = { 0.0f, 1.0f, 0.0f }; 
 	glm::mat4 model, view, projection;
@@ -221,7 +230,9 @@ void GraphicsEnvironment::Run3D(void) const {
 	float cubeXAngleOld = 50, cubeYAngleOld = 0, cubeZAngleOld = 0;
 
 	ImGuiIO& io = ImGui::GetIO();
+	Timer timer;
 	while (!glfwWindowShouldClose(winPtr)) {
+		double deltaTime = timer.GetElapsedTimeInSeconds();
 
 		ProcessInput();
 		glfwGetWindowSize(winPtr, &scrWidth, &scrHeight);
@@ -262,6 +273,8 @@ void GraphicsEnvironment::Run3D(void) const {
 			}
 		}
 
+		objManager.Update(deltaTime);
+
 		//and finally call render
 		for (auto& pair : rendererMap) {
 			pair.second->RenderScene();
@@ -279,7 +292,7 @@ void GraphicsEnvironment::Run3D(void) const {
 		ImGui::SliderFloat("Camera Y", &camPos.y, bottom, top);
 		ImGui::SliderFloat("Camera Z", &camPos.z, -50, 50);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		ImGui::Text(BaseObject::GetLog().c_str());
+		ImGui::Text(Util::GetLog().c_str());
 		ImGui::End();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

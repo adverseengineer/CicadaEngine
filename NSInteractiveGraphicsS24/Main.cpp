@@ -1,28 +1,28 @@
-#include <Windows.h>
+#include <glad/glad.h> 
+#include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <glad/glad.h> 
-#include <GLFW/glfw3.h>
+#include <Windows.h>
 
-#include <iostream>
-#include <vector>
-#include <sstream>
-#include <string>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "VertexBuffer.h"
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
 #include "GraphicsObject.h"
 #include "Scene.h"
+#include "VertexBuffer.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "Renderer.h"
 #include "Shader.h"
 #include "TextFile.h"
 
-static void SetUp3DScene1(std::shared_ptr<Shader>& shad, std::shared_ptr<Scene>& scene) {
+static void SetUp3DScene1(std::shared_ptr<Shader>& shad, std::shared_ptr<Scene>& scene, GraphicsEnvironment& ge) {
 
 	scene = std::make_shared<Scene>();
 
@@ -56,6 +56,7 @@ static void SetUp3DScene1(std::shared_ptr<Shader>& shad, std::shared_ptr<Scene>&
 	cube1->SetVertexBuffer(cubeVBuf1);
 	cube1->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
 	scene->AddObject(cube1);
+	ge.AddObject("cube 1", cube1);
 	#pragma endregion
 
 	#pragma region SetUpCube2
@@ -67,6 +68,7 @@ static void SetUp3DScene1(std::shared_ptr<Shader>& shad, std::shared_ptr<Scene>&
 	cube2->SetVertexBuffer(cubeVBuf2);
 	cube2->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
 	scene->AddObject(cube2);
+	ge.AddObject("cube 2", cube2);
 	#pragma endregion
 
 	#pragma region SetUpPlane
@@ -78,6 +80,7 @@ static void SetUp3DScene1(std::shared_ptr<Shader>& shad, std::shared_ptr<Scene>&
 	plane->SetVertexBuffer(planeVBuf);
 	plane->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	scene->AddObject(plane);
+	ge.AddObject("plane", plane);
 	#pragma endregion
 }
 
@@ -96,7 +99,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	std::shared_ptr<Shader> shad3D;
 	std::shared_ptr<Scene> scene3D;
-	SetUp3DScene1(shad3D, scene3D);
+	SetUp3DScene1(shad3D, scene3D, ge);
 
 	ge.CreateRenderer("3D renderer", shad3D, scene3D);
 	ge.StaticAllocate();

@@ -58,3 +58,6 @@ void GraphicsObject::RotateLocal(float xDeg, float yDeg, float zDeg) {
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(yDeg), glm::vec3(0.0f, 1.0f, 0.0f));
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(zDeg), glm::vec3(0.0f, 0.0f, 1.0f));
 }
+
+void GraphicsObject::Update(double elapsedSeconds) {
+}

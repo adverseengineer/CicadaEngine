@@ -31,4 +31,6 @@ public:
 	void RotateLocalY(float degrees);
 	void RotateLocalZ(float degrees);
 	void RotateLocal(float xDeg, float yDeg, float zDeg);
+
+	void Update(double elapsedSeconds);
 };

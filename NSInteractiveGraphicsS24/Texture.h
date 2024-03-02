@@ -1,10 +1,8 @@
 #pragma once
-
-#include "BaseObject.h"
-
+#include "Util.h"
 #include <glad/glad.h>
 
-class Texture : BaseObject {
+class Texture {
 	
 protected:
 	unsigned char* textureData;

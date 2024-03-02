@@ -54,11 +54,11 @@ unsigned int Shader::CompileShaderSource(int type, const std::string& shaderSour
 		// We don't need the shader anymore.
 		glDeleteShader(shaderId);
 
-		Log(infoLog);
+		Util::Log(infoLog);
 		return -1;
 	}
 
-	Log("Compiled shader type " + std::to_string(type));
+	Util::Log("Compiled shader type " + std::to_string(type));
 	return shaderId;
 }
 
@@ -84,7 +84,7 @@ void Shader::CreateShaderProgram(void) {
 
 		std::vector<GLchar> infoLog(maxLength);
 		glGetProgramInfoLog(shaderProgram, maxLength, &maxLength, &infoLog[0]);
-		Log(infoLog);
+		Util::Log(infoLog);
 
 		glDeleteProgram(shaderProgram); //we don't need the program anymore
 		glDeleteShader(vertexShader); //delete them to avoid memory leaks
@@ -96,6 +96,6 @@ void Shader::CreateShaderProgram(void) {
 	//always detach shaders after a successful link.
 	glDetachShader(shaderProgram, vertexShader);
 	glDetachShader(shaderProgram, fragmentShader);
-	Log("Linked shader program");
+	Util::Log("Linked shader program");
 	return;
 }

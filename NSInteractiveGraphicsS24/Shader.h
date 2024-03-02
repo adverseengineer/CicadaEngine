@@ -1,11 +1,11 @@
 #pragma once
-#include <string>
-#include <sstream>
-#include <unordered_map>
+#include "Util.h"
 #include <glm/glm.hpp>
-#include "BaseObject.h"
+#include <sstream>
+#include <string>
+#include <unordered_map>
 
-class Shader : public BaseObject {
+class Shader {
 protected:
 	std::string vertexSource;
 	std::string fragmentSource;
