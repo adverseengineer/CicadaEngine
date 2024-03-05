@@ -148,6 +148,12 @@
     <None Include="texture.vert.glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="lighting.frag.glsl">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="lighting.vert.glsl">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

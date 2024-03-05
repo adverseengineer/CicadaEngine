@@ -55,6 +55,7 @@ void GraphicsEnvironment::SetupGraphics(void) {
 	//enable culling of backfaces
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -85,7 +86,7 @@ void GraphicsEnvironment::Render(void) const {
 		pair.second->RenderScene();
 }
 
-static bool freeCamMode = false;
+static bool freeCamMode = true;
 
 void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 
@@ -321,10 +322,10 @@ void GraphicsEnvironment::Run3D(void) {
 		projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
 
 		//update the view matrix for each renderer, and send the view and projection to the shader
-		for (auto& pair : rendererMap) {
-			pair.second->SetView(view);
-			pair.second->GetShader()->SendMat4Uniform("view", view);
-			pair.second->GetShader()->SendMat4Uniform("projection", projection);
+		for (const auto& [name, object] : rendererMap) {
+			object->SetView(view);
+			object->GetShader()->SendMat4Uniform("view", view);
+			object->GetShader()->SendMat4Uniform("projection", projection);
 		}
 
 		objManager.GetObject("cube 1")->ResetOrientation();
@@ -333,8 +334,8 @@ void GraphicsEnvironment::Run3D(void) {
 		objManager.Update(deltaTime);
 
 		//and finally call render
-		for (auto& pair : rendererMap) {
-			pair.second->RenderScene();
+		for (const auto& [name, renderer] : rendererMap) {
+			renderer->RenderScene();
 		}
 
 		cam->SetMoveSpeed(camSpeed);
