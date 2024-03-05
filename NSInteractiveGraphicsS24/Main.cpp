@@ -104,6 +104,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	ge.CreateRenderer("3D renderer", shad3D, scene3D);
 	ge.StaticAllocate();
 
+	auto cam = std::make_shared<Camera>();
+	ge.SetCamera(cam);
+
 	ge.Run3D();
 
 	return 0;

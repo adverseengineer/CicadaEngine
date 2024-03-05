@@ -164,6 +164,7 @@
     <ClInclude Include="Generate.h" />
     <ClInclude Include="GraphicsEnvironment.h" />
     <ClInclude Include="GraphicsObject.h" />
+    <ClInclude Include="GraphicsStructures.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RotateAnimation.h" />
