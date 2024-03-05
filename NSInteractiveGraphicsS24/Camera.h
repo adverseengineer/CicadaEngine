@@ -12,7 +12,9 @@ public:
 	inline Camera(void) : referenceFrame(1), lookFrame(1) {}
 
 	inline void SetLookFrame(const glm::mat4& lookFrame) { this->lookFrame = lookFrame; }
+	inline glm::mat4 GetLookFrame(void) const { return this->lookFrame; }
 	inline void SetMoveSpeed(float moveSpeed) { this->moveSpeed = moveSpeed; }
+	inline float GetMoveSpeed(void) const { return this->moveSpeed; }
 	inline void SetPosition(const glm::vec3& position) { referenceFrame[3] = glm::vec4(position, 1.0f); }
 	inline glm::vec3 GetPosition(void) const { return referenceFrame[3]; }
 
@@ -22,5 +24,4 @@ public:
 	inline void MoveX(float delta, int direction = 1) { referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[0]; }
 	inline void MoveY(float delta, int direction = 1) { referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[1]; }
 	inline void MoveZ(float delta, int direction = 1) { referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[2]; }
-	
 };

@@ -85,26 +85,50 @@ void GraphicsEnvironment::Render(void) const {
 		pair.second->RenderScene();
 }
 
+static bool freeCamMode = false;
+
 void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 
 	//if the user hits escape, close the window
 	if (glfwGetKey(winPtr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(winPtr, true);
 
-	if (glfwGetKey(winPtr, GLFW_KEY_W) == GLFW_PRESS)
-		cam->MoveZ(elapsedSeconds);
-	else if (glfwGetKey(winPtr, GLFW_KEY_S) == GLFW_PRESS)
-		cam->MoveZ(elapsedSeconds, -1);
+	if(freeCamMode) {
 
-	if (glfwGetKey(winPtr, GLFW_KEY_A) == GLFW_PRESS)
-		cam->MoveX(elapsedSeconds);
-	else if (glfwGetKey(winPtr, GLFW_KEY_D) == GLFW_PRESS)
-		cam->MoveX(elapsedSeconds, -1);
+		if (glfwGetKey(winPtr, GLFW_KEY_W) == GLFW_PRESS)
+			cam->MoveZ(elapsedSeconds);
+		else if (glfwGetKey(winPtr, GLFW_KEY_S) == GLFW_PRESS)
+			cam->MoveZ(elapsedSeconds, -1);
 
-	if (glfwGetKey(winPtr, GLFW_KEY_Q) == GLFW_PRESS)
-		cam->MoveY(elapsedSeconds);
-	else if (glfwGetKey(winPtr, GLFW_KEY_E) == GLFW_PRESS)
-		cam->MoveY(elapsedSeconds, -1);
+		if (glfwGetKey(winPtr, GLFW_KEY_A) == GLFW_PRESS)
+			cam->MoveX(elapsedSeconds);
+		else if (glfwGetKey(winPtr, GLFW_KEY_D) == GLFW_PRESS)
+			cam->MoveX(elapsedSeconds, -1);
+
+		if (glfwGetKey(winPtr, GLFW_KEY_Q) == GLFW_PRESS)
+			cam->MoveY(elapsedSeconds);
+		else if (glfwGetKey(winPtr, GLFW_KEY_E) == GLFW_PRESS)
+			cam->MoveY(elapsedSeconds, -1);
+	}
+
+	else {
+		if (glfwGetKey(winPtr, GLFW_KEY_1) == GLFW_PRESS) {
+			cam->SetPosition({ 0.0f, 5.0f, 30.0f });
+			cam->SetLookFrame(cam->LookAt(cam->GetPosition() + glm::vec3(0.0f, 0.0f, -1.0f)));
+		}
+		else if (glfwGetKey(winPtr, GLFW_KEY_2) == GLFW_PRESS) {
+			cam->SetPosition({ 30.0f, 5.0f, 0.0f });
+			cam->SetLookFrame(cam->LookAt(cam->GetPosition() + glm::vec3(-1.0f, 0.0f, 0.0f)));
+		}
+		else if (glfwGetKey(winPtr, GLFW_KEY_3) == GLFW_PRESS) {
+			cam->SetPosition({ 0.0f, 5.0f, -30.0f });
+			cam->SetLookFrame(cam->LookAt(cam->GetPosition() + glm::vec3(0.0f, 0.0f, 1.0f)));
+		}
+		else if (glfwGetKey(winPtr, GLFW_KEY_4) == GLFW_PRESS) {
+			cam->SetPosition({ -30.0f, 5.0f, 0.0f });
+			cam->SetLookFrame(cam->LookAt(cam->GetPosition() + glm::vec3(1.0f, 0.0f, 0.0f)));
+		}
+	}
 }
 
 glm::mat4 GraphicsEnvironment::CreateViewMatrix(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up) {
@@ -267,6 +291,9 @@ void GraphicsEnvironment::Run3D(void) {
 
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
+
+	float camSpeed = 10;
+
 	while (!glfwWindowShouldClose(winPtr)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
 
@@ -310,7 +337,6 @@ void GraphicsEnvironment::Run3D(void) {
 			pair.second->RenderScene();
 		}
 
-		float camSpeed = 10;
 		cam->SetMoveSpeed(camSpeed);
 
 		ImGui_ImplOpenGL3_NewFrame();
