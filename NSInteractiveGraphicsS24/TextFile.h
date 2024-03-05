@@ -1,11 +1,9 @@
 #pragma once
 
+#include "Util.h"
 #include <string>
 
-#include "BaseObject.h"
-
-class TextFile : BaseObject
-{
+class TextFile {
 private:
 	std::string contents;
 

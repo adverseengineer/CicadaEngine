@@ -1,24 +1,32 @@
 #pragma once
-#include "BaseObject.h"
-
+#include "Camera.h"
+#include "GraphicsStructures.h"
+#include "ObjectManager.h"
+#include "Renderer.h"
+#include "Scene.h"
+#include "Util.h"
+#include <glad/glad.h> 
+#include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <glad/glad.h> 
-#include <GLFW/glfw3.h>
-
 #include <iostream>
-#include "Scene.h"
-#include "Renderer.h"
 
-class GraphicsEnvironment : public BaseObject {
+class GraphicsEnvironment {
 
 protected:
 	GLFWwindow* winPtr;
+	ObjectManager objManager;
 	std::unordered_map<std::string, std::shared_ptr<Renderer>> rendererMap;
+	std::shared_ptr<Camera> cam;
+
+	static GraphicsEnvironment* self;
+	MouseParams mouse;
+
 public:
 	inline GraphicsEnvironment(void) {
 		winPtr = nullptr;
+		self = this;
 	}
 	inline ~GraphicsEnvironment(void) {
 		ImGui_ImplOpenGL3_Shutdown();
@@ -40,9 +48,16 @@ public:
 	void StaticAllocate(void) const;
 	void Render(void) const;
 
-	void ProcessInput(void) const;
+	void ProcessInput(float elapsedSeconds) const;
 	static glm::mat4 CreateViewMatrix(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up);
 
-	void Run2D(void) const;
-	void Run3D(void) const;
+	void AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj);
+	std::shared_ptr<GraphicsObject> GetObject(const std::string& key) const;
+
+	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
+
+	static void OnMouseMove(GLFWwindow* window, double mouseX, double mouseY);
+
+	void Run2D(void);
+	void Run3D(void);
 };

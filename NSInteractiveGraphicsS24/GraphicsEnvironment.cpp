@@ -1,7 +1,11 @@
 #include "GraphicsEnvironment.h"
 #include "Shader.h"
+#include "Timer.h"
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
+#include "RotateAnimation.h"
+
+GraphicsEnvironment* GraphicsEnvironment::self;
 
 void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
 	glfwInit();
@@ -14,27 +18,30 @@ void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVers
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
 	winPtr = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (winPtr == NULL) {
-		Log("Failed to create GLFW window");
+		Util::Log("Failed to create GLFW window");
 		glfwTerminate();
 		return false;
 	}
 	glfwMakeContextCurrent(winPtr);
-	Log("Created GLFW window");
+	Util::Log("Created GLFW window");
 	return true;
 }
 
 bool GraphicsEnvironment::InitGlad(void) {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		Log("Failed to initialize GLAD");
+		Util::Log("Failed to initialize GLAD");
 		return false;
 	}
-	Log("Initialized GLAD");
+	Util::Log("Initialized GLAD");
 	return true;
 }
 
 void GraphicsEnvironment::SetupGraphics(void) {
 	//set up a callback for whenever the window is resized
 	glfwSetFramebufferSizeCallback(winPtr, OnWindowSizeChanged);
+	glfwSetCursorPosCallback(winPtr, OnMouseMove);
+	glfwSetInputMode(winPtr, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	//set up ImGui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -78,9 +85,26 @@ void GraphicsEnvironment::Render(void) const {
 		pair.second->RenderScene();
 }
 
-void GraphicsEnvironment::ProcessInput(void) const {
+void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
+
+	//if the user hits escape, close the window
 	if (glfwGetKey(winPtr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(winPtr, true);
+
+	if (glfwGetKey(winPtr, GLFW_KEY_W) == GLFW_PRESS)
+		cam->MoveZ(elapsedSeconds);
+	else if (glfwGetKey(winPtr, GLFW_KEY_S) == GLFW_PRESS)
+		cam->MoveZ(elapsedSeconds, -1);
+
+	if (glfwGetKey(winPtr, GLFW_KEY_A) == GLFW_PRESS)
+		cam->MoveX(elapsedSeconds);
+	else if (glfwGetKey(winPtr, GLFW_KEY_D) == GLFW_PRESS)
+		cam->MoveX(elapsedSeconds, -1);
+
+	if (glfwGetKey(winPtr, GLFW_KEY_Q) == GLFW_PRESS)
+		cam->MoveY(elapsedSeconds);
+	else if (glfwGetKey(winPtr, GLFW_KEY_E) == GLFW_PRESS)
+		cam->MoveY(elapsedSeconds, -1);
 }
 
 glm::mat4 GraphicsEnvironment::CreateViewMatrix(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up) {
@@ -99,7 +123,27 @@ glm::mat4 GraphicsEnvironment::CreateViewMatrix(const glm::vec3& position, const
 	return glm::inverse(view);
 }
 
-void GraphicsEnvironment::Run2D(void) const {
+void GraphicsEnvironment::AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj) {
+	objManager.SetObject(key, obj);
+}
+
+std::shared_ptr<GraphicsObject> GraphicsEnvironment::GetObject(const std::string& key) const {
+	return objManager.GetObject(key);
+}
+
+void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double mouseY) {
+
+	self->mouse.x = mouseX;
+	self->mouse.y = mouseY;
+
+	float xPercent = static_cast<float>(self->mouse.x / self->mouse.windowWidth);
+	float yPercent = static_cast<float>(self->mouse.y / self->mouse.windowHeight);
+
+	self->mouse.spherical.theta = 90.0f - (xPercent * 180); // left/right
+	self->mouse.spherical.phi = 180.0f - (yPercent * 180); // up/down
+}
+
+void GraphicsEnvironment::Run2D(void) {
 
 	float camX = -10, camY = 0;
 
@@ -122,7 +166,7 @@ void GraphicsEnvironment::Run2D(void) const {
 	ImGuiIO& io = ImGui::GetIO();
 	while (!glfwWindowShouldClose(winPtr)) {
 
-		ProcessInput();
+		ProcessInput(0);
 
 		//if the window size has changed, recalculate the aspect ratio 
 		glfwGetWindowSize(winPtr, &width, &height);
@@ -174,7 +218,7 @@ void GraphicsEnvironment::Run2D(void) const {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		ImGui::Begin("Computing Interactive Graphics");
-		ImGui::Text(BaseObject::GetLog().c_str());
+		ImGui::Text(Util::GetLog().c_str());
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		ImGui::ColorEdit3("Background color", (float*)&clearColor.r);
 		ImGui::SliderFloat("Angle", &angle, 0, 360);
@@ -191,13 +235,13 @@ void GraphicsEnvironment::Run2D(void) const {
 	}
 }
 
-void GraphicsEnvironment::Run3D(void) const {
+void GraphicsEnvironment::Run3D(void) {
 
 	float camX = 0, camY = 0, camZ = 0;
 
-	int scrWidth, scrHeight;
-	glfwGetWindowSize(winPtr, &scrWidth, &scrHeight);
-	float aspectRatio = scrWidth / (scrHeight * 1.0f);
+	int windowWidth, windowHeight;
+	glfwGetWindowSize(winPtr, &windowWidth, &windowHeight);
+	float aspectRatio = windowWidth / (windowHeight * 1.0f);
 
 	float left = -50.0f;
 	float right = 50.0f;
@@ -210,21 +254,27 @@ void GraphicsEnvironment::Run3D(void) const {
 	float nearClip = 0.01f;
 	float farClip = 200.0f;
 
-	glm::vec3 clearColor = { 0.1f, 0.1f, 0.2f };
+	glm::vec3 clearColor = { 0.66f, 0.66f, 0.66f };
 
-	glm::vec3 camPos = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 camFacing = { 0.0f, 0.0f, 1.0f };
-	glm::vec3 camUp = { 0.0f, 1.0f, 0.0f }; 
+	cam->SetPosition({ 0.0f, 15.0f, -30.0f });
 	glm::mat4 model, view, projection;
 
-	float cubeXAngle = 50, cubeYAngle = 0, cubeZAngle = 0;
-	float cubeXAngleOld = 50, cubeYAngleOld = 0, cubeZAngleOld = 0;
+	float cubeXAngle = 0, cubeYAngle = 0, cubeZAngle = 0;
+
+	std::shared_ptr<RotateAnimation> rotateAnimation = std::make_shared<RotateAnimation>();
+	rotateAnimation->SetObject(objManager.GetObject("cube 2"));
+	objManager.GetObject("cube 2")->SetAnimation(rotateAnimation);
 
 	ImGuiIO& io = ImGui::GetIO();
+	Timer timer;
 	while (!glfwWindowShouldClose(winPtr)) {
+		double deltaTime = timer.GetElapsedTimeInSeconds();
 
-		ProcessInput();
-		glfwGetWindowSize(winPtr, &scrWidth, &scrHeight);
+		mouse.windowWidth = windowWidth;
+		mouse.windowHeight = windowHeight;
+
+		ProcessInput(deltaTime);
+		glfwGetWindowSize(winPtr, &windowWidth, &windowHeight);
 
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -233,12 +283,13 @@ void GraphicsEnvironment::Run3D(void) const {
 		model = glm::rotate(model, glm::radians(cubeXAngle), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(cubeZAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 
-		view = glm::lookAt(camPos, camFacing + camPos, camUp);
+		cam->SetLookFrame(mouse.spherical.ToMat4());
+		view = cam->LookForward();
 
-		if (scrWidth >= scrHeight)
-			aspectRatio = scrWidth / (scrHeight * 1.0f);
+		if (windowWidth >= windowHeight)
+			aspectRatio = windowWidth / (windowHeight * 1.0f);
 		else
-			aspectRatio = scrHeight / (scrWidth * 1.0f);
+			aspectRatio = windowHeight / (windowWidth * 1.0f);
 
 		projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
 
@@ -249,23 +300,18 @@ void GraphicsEnvironment::Run3D(void) const {
 			pair.second->GetShader()->SendMat4Uniform("projection", projection);
 		}
 
-		for (auto& pair : rendererMap) {
-			for (auto& obj : pair.second->GetScene()->GetObjects()) {
+		objManager.GetObject("cube 1")->ResetOrientation();
+		objManager.GetObject("cube 1")->RotateLocal(cubeXAngle, cubeYAngle, cubeZAngle);
 
-				if ((cubeXAngle != cubeXAngleOld) || (cubeYAngle != cubeYAngleOld) || (cubeZAngle != cubeZAngleOld)) {
-					obj->ResetOrientation();
-					obj->RotateLocal(cubeXAngle, cubeYAngle, cubeZAngle);
-					cubeXAngleOld = cubeXAngle;
-					cubeYAngleOld = cubeYAngle;
-					cubeZAngleOld = cubeZAngle;
-				}
-			}
-		}
+		objManager.Update(deltaTime);
 
 		//and finally call render
 		for (auto& pair : rendererMap) {
 			pair.second->RenderScene();
 		}
+
+		float camSpeed = 10;
+		cam->SetMoveSpeed(camSpeed);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -275,11 +321,9 @@ void GraphicsEnvironment::Run3D(void) const {
 		ImGui::SliderFloat("Cube X Angle", &cubeXAngle, 0, 360);
 		ImGui::SliderFloat("Cube Y Angle", &cubeYAngle, 0, 360);
 		ImGui::SliderFloat("Cube Z Angle", &cubeZAngle, 0, 360);
-		ImGui::SliderFloat("Camera X", &camPos.x, left, right);
-		ImGui::SliderFloat("Camera Y", &camPos.y, bottom, top);
-		ImGui::SliderFloat("Camera Z", &camPos.z, -50, 50);
+		ImGui::SliderFloat("Camera Speed", &camSpeed, 0, 20);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		ImGui::Text(BaseObject::GetLog().c_str());
+		ImGui::Text(Util::GetLog().c_str());
 		ImGui::End();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

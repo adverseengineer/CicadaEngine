@@ -3,9 +3,10 @@
 
 GraphicsObject::GraphicsObject() : referenceFrame(1.0f), parent(nullptr) {}
 
-const glm::mat4 GraphicsObject::GetReferenceFrame() const {
+glm::mat4 GraphicsObject::GetReferenceFrame(void) const {
+
 	if (parent != nullptr)
-		return parent->referenceFrame * referenceFrame;
+		return referenceFrame * parent->referenceFrame;
 
 	return referenceFrame;
 }
@@ -57,4 +58,10 @@ void GraphicsObject::RotateLocal(float xDeg, float yDeg, float zDeg) {
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(xDeg), glm::vec3(1.0f, 0.0f, 0.0f));
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(yDeg), glm::vec3(0.0f, 1.0f, 0.0f));
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(zDeg), glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+void GraphicsObject::Update(double elapsedSeconds) {
+	if (animation != nullptr) {
+		animation->Update(elapsedSeconds);
+	}
 }

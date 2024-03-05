@@ -1,13 +1,12 @@
 #pragma once
-#include <sstream>
-#include <vector>
-
-#include "BaseObject.h"
 #include "GraphicsObject.h"
 #include "Scene.h"
 #include "Shader.h"
+#include "Util.h"
+#include <sstream>
+#include <vector>
 
-class Renderer : BaseObject {
+class Renderer {
 private:
 	unsigned int vaoId;
 	std::shared_ptr<Shader> shadPtr;

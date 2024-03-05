@@ -1,8 +1,10 @@
 #pragma once
+#include "Animation.h"
+#include "VertexBuffer.h"
 #include <glm/glm.hpp>
 #include <memory>
 
-#include "VertexBuffer.h"
+class Animation;
 
 class GraphicsObject {
 protected:
@@ -10,12 +12,13 @@ protected:
 	std::shared_ptr<VertexBuffer> vBuf;
 	GraphicsObject* parent;
 	std::vector<std::shared_ptr<GraphicsObject>> children;
+	std::shared_ptr<Animation> animation;
 
 public:
-	GraphicsObject();
-	virtual ~GraphicsObject() = default;
+	GraphicsObject(void);
+	virtual ~GraphicsObject(void) = default;
 
-	const glm::mat4 GetReferenceFrame() const;
+	glm::mat4 GetReferenceFrame(void) const;
 	void CreateVertexBuffer(unsigned int numberOfElementsPerVertex);
 	void SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vBuf);
 	inline const std::shared_ptr<VertexBuffer>& GetVertexBuffer() const { return vBuf; }
@@ -31,4 +34,8 @@ public:
 	void RotateLocalY(float degrees);
 	void RotateLocalZ(float degrees);
 	void RotateLocal(float xDeg, float yDeg, float zDeg);
+
+	void Update(double elapsedSeconds);
+	inline void SetAnimation(const std::shared_ptr<Animation>& animation) { this->animation = animation; }
+	inline glm::mat4& GetLocalReferenceFrame(void) { return referenceFrame; }
 };

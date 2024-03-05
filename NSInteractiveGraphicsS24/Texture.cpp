@@ -28,7 +28,7 @@ void Texture::SetTextureData(unsigned int count, unsigned char* data) {
 	textureData = new unsigned char[count];
 	std::memcpy(textureData, data, count);
 	isLoadedFromFile = false;
-	Log("Texture data loaded");
+	Util::Log("Texture data loaded");
 }
 
 void Texture::SetDimensions(unsigned int width, unsigned int height) {

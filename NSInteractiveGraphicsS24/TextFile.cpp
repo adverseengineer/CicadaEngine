@@ -10,7 +10,7 @@ bool TextFile::ReadAllLines(const std::string& path) {
 	std::ifstream fin{};
 	fin.open(path.c_str());
 	if (fin.fail()) {
-		Log("Failed to open " + path);
+		Util::Log("Failed to open " + path);
 		return false;
 	}
 	std::string line;
@@ -21,7 +21,7 @@ bool TextFile::ReadAllLines(const std::string& path) {
 		if (line != "")
 			ss << line << std::endl;
 	}
-	Log("Read " + std::to_string(numLines) + " lines from " + path);
+	Util::Log("Read " + std::to_string(numLines) + " lines from " + path);
 	fin.close();
 	contents = ss.str();
 }
