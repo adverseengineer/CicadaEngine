@@ -130,7 +130,7 @@ std::shared_ptr<VertexBuffer> Generate::CuboidWithNormals(float width, float hei
 	//add vertex attributes to the vertex buffer
 	vBuf->AddVertexAttribute("position", 0, 3, 0);
 	vBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
-	vBuf->AddVertexAttribute("normal", 2, 3, 7);
+	vBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
 	vBuf->AddVertexAttribute("texCoord", 3, 2, 10);
 
 	return vBuf;
@@ -138,7 +138,7 @@ std::shared_ptr<VertexBuffer> Generate::CuboidWithNormals(float width, float hei
 
 std::shared_ptr<VertexBuffer> Generate::Plane(float width, float depth, glm::vec3 color, glm::vec2 tex) {
 	
-	auto vBuf = std::make_shared<VertexBuffer>(12);
+	auto vBuf = std::make_shared<VertexBuffer>(8);
 
 	float hw = width / 2;
 	float hd = depth / 2;
@@ -165,17 +165,17 @@ std::shared_ptr<VertexBuffer> Generate::PlaneWithNormals(float width, float dept
 	float hw = width / 2;
 	float hd = depth / 2;
 
-	vBuf->AddVertexData(8, -hw, 0, -hd, color.r, color.g, color.b, color.a, up, 0.0f, tex.t);
-	vBuf->AddVertexData(8, -hw, 0, hd, color.r, color.g, color.b, color.a, up, 0.0f, 0.0f);
-	vBuf->AddVertexData(8, hw, 0, hd, color.r, color.g, color.b, color.a, up, tex.s, 0.0f);
-	vBuf->AddVertexData(8, -hw, 0, -hd, color.r, color.g, color.b, color.a, up, 0.0f, tex.t);
-	vBuf->AddVertexData(8, hw, 0, hd, color.r, color.g, color.b, color.a, up, tex.s, 0.0f);
-	vBuf->AddVertexData(8, hw, 0, -hd, color.r, color.g, color.b, color.a, up, tex.s, tex.t);
+	vBuf->AddVertexData(12, -hw, 0, -hd, color.r, color.g, color.b, color.a, up, 0.0f, tex.t);
+	vBuf->AddVertexData(12, -hw, 0, hd, color.r, color.g, color.b, color.a, up, 0.0f, 0.0f);
+	vBuf->AddVertexData(12, hw, 0, hd, color.r, color.g, color.b, color.a, up, tex.s, 0.0f);
+	vBuf->AddVertexData(12, -hw, 0, -hd, color.r, color.g, color.b, color.a, up, 0.0f, tex.t);
+	vBuf->AddVertexData(12, hw, 0, hd, color.r, color.g, color.b, color.a, up, tex.s, 0.0f);
+	vBuf->AddVertexData(12, hw, 0, -hd, color.r, color.g, color.b, color.a, up, tex.s, tex.t);
 
 	//add vertex attributes to the vertex buffer
 	vBuf->AddVertexAttribute("position", 0, 3, 0);
 	vBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
-	vBuf->AddVertexAttribute("normal", 2, 3, 7);
+	vBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
 	vBuf->AddVertexAttribute("texCoord", 3, 2, 10);
 
 	return vBuf;

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "VertexBuffer.h"
 #include <glm.hpp>
 
@@ -11,4 +10,3 @@ public:
 	static std::shared_ptr<VertexBuffer> Plane(float width, float depth, glm::vec3 color = { 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
 	static std::shared_ptr<VertexBuffer> PlaneWithNormals(float width, float depth, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
 };
-
