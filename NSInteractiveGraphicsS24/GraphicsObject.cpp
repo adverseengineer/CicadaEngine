@@ -1,35 +1,15 @@
 #include "GraphicsObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-GraphicsObject::GraphicsObject() : referenceFrame(1.0f), parent(nullptr) {}
-
-glm::mat4 GraphicsObject::GetReferenceFrame(void) const {
-
-	if (parent != nullptr)
-		return referenceFrame * parent->referenceFrame;
-
-	return referenceFrame;
+bool GraphicsObject::AddChild(const std::shared_ptr<GraphicsObject>& child) {
+	const auto result = children.insert(child);
+	if (result.second)
+		child->parent = this;
+	return result.second;
 }
 
-void GraphicsObject::CreateVertexBuffer(unsigned int numberOfElementsPerVertex) {
-	vBuf = std::make_shared<VertexBuffer>(numberOfElementsPerVertex);
-}
-
-void GraphicsObject::SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vBuf) {
-	this->vBuf = vBuf;
-}
-
-void GraphicsObject::StaticAllocateVertexBuffer(void) {
-	vBuf->Select();
-	vBuf->StaticAllocate();
-	vBuf->Deselect();
-	for (auto& child : children)
-		child->StaticAllocateVertexBuffer();
-}
-
-void GraphicsObject::AddChild(const std::shared_ptr<GraphicsObject>& child) {
-	children.push_back(child);
-	child->parent = this;
+const auto& GraphicsObject::GetPosition() const {
+	return glm::vec3(referenceFrame[3]);
 }
 
 void GraphicsObject::SetPosition(const glm::vec3& position) {
@@ -60,8 +40,17 @@ void GraphicsObject::RotateLocal(float xDeg, float yDeg, float zDeg) {
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(zDeg), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
+void GraphicsObject::StaticAllocateVertexBuffer() const {
+	vertBuf->Select();
+	vertBuf->StaticAllocate();
+	vertBuf->Deselect();
+	for (auto& child : children)
+		child->StaticAllocateVertexBuffer();
+}
+
 void GraphicsObject::Update(double elapsedSeconds) {
 	if (animation != nullptr) {
 		animation->Update(elapsedSeconds);
 	}
+	//TODO: any other per-frame updates that an object may need
 }
