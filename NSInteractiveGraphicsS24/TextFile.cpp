@@ -1,9 +1,7 @@
-
-#include <sstream>
-#include <fstream>
-
 #include "TextFile.h"
 #include "util.h"
+#include <fstream>
+#include <sstream>
 
 bool TextFile::ReadAllLines(const std::string& path) {
 	std::stringstream ss;
