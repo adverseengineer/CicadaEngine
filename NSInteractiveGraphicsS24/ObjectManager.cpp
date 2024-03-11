@@ -11,12 +11,8 @@ bool ObjectManager::AddObject(const std::string& key, const std::shared_ptr<Grap
 }
 
 bool ObjectManager::SetObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj) {
-	if(objectMap.contains(key)) {
-		objectMap.at(key) = obj;
-		return true;
-	}
-	else
-		return false;
+	const auto& result = objectMap.insert_or_assign(key, obj);
+	return result.second;
 }
 
 void ObjectManager::Update(double elapsedSeconds) {
