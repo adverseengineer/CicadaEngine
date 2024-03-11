@@ -1,5 +1,4 @@
 #include "Shader.h"
-
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -11,7 +10,7 @@ Shader::Shader(const std::string& vertexSource, const std::string& fragmentSourc
 }
 
 void Shader::AddUniform(const std::string& uniformName) {
-	if(uniformMap.contains(uniformName)) return;
+	if (uniformMap.contains(uniformName)) return;
 	int uniformLocation = glGetUniformLocation(shaderProgram, uniformName.c_str());
 	uniformMap.emplace(uniformName, uniformLocation);
 }
@@ -21,9 +20,20 @@ void Shader::SendMat4Uniform(const std::string& uniformName, const glm::mat4& ma
 	glUniformMatrix4fv(uniformMap[uniformName], 1, GL_FALSE, glm::value_ptr(mat));
 }
 
+void Shader::SendVec3Uniform(const std::string& uniformName, const glm::vec3& vec) {
+	glUseProgram(shaderProgram);
+	auto ptr = glm::value_ptr(vec);
+	glUniform3fv(uniformMap[uniformName], 1, ptr);
+}
+
 void Shader::SendIntUniform(const std::string& uniformName, int value) {
 	glUseProgram(shaderProgram);
 	glUniform1i(uniformMap[uniformName], value);
+}
+
+void Shader::SendFloatUniform(const std::string& uniformName, float value) {
+	glUseProgram(shaderProgram);
+	glUniform1f(uniformMap[uniformName], value);
 }
 
 void Shader::Init(void) {
@@ -62,7 +72,7 @@ unsigned int Shader::CompileShaderSource(int type, const std::string& shaderSour
 	return shaderId;
 }
 
-void Shader::CreateShaderProgram(void) {
+void Shader::CreateShaderProgram() {
 	unsigned int vertexShader = CompileShaderSource(GL_VERTEX_SHADER, vertexSource);
 	if (vertexShader == -1) return;
 
