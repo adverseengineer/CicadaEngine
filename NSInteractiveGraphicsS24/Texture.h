@@ -2,8 +2,7 @@
 #include "Util.h"
 #include <glad/glad.h>
 
-class Texture {
-	
+class Texture {	
 protected:
 	unsigned char* textureData;
 	bool isLoadedFromFile = false;
@@ -20,26 +19,35 @@ protected:
 	unsigned int minFilter = GL_NEAREST;
 	int numberOfChannels = 4;
 
-	void CleanUp(void);
+	void CleanUp();
 
 public:
-	Texture(void);
-	~Texture(void);
+	Texture();
+	~Texture();
 
-	inline bool IsLoadedFromFile(void) const { return isLoadedFromFile; }
-	inline unsigned char* GetTextureData(void) const { return textureData; }
-	inline unsigned int GetTextureId(void) const { return textureId; }
-	inline int GetNumberOfChannels(void) const { return numberOfChannels; }
+	inline bool IsLoadedFromFile() const { return isLoadedFromFile; }
+	inline unsigned char* GetTextureData() const { return textureData; }
+	inline unsigned int GetTextureId() const { return textureId; }
+	inline int GetNumberOfChannels() const { return numberOfChannels; }
 
-	void SetTextureData(unsigned int count, unsigned char* data);
-	void SetDimensions(unsigned int width, unsigned int height);
-	void SetWrapS(unsigned int wrapS);
-	void SetWrapT(unsigned int wrapT);
-	void SetMagFilter(unsigned int magFilter);
-	void SetMinFilter(unsigned int minFilter);
-	void SelectToChange(void) const;
-	void Deselect(void) const;
-	void SelectToRender(int textureUnit = 0) const;
-	void Allocate(void);
 	void LoadTextureDataFromFile(const std::string& filepath);
+	void SetTextureData(unsigned int count, unsigned char* data);
+	
+	inline void SetWidth(unsigned int width) { this->width = width; }
+	inline void SetHeight(unsigned int height) { this->height = height; }
+	inline void SetDimensions(unsigned int width, unsigned int height) {
+		this->width = width;
+		this->height = height;
+	}
+
+	inline void SetWrapS(unsigned int wrapS) { this->wrapS = wrapS; }
+	inline void SetWrapT(unsigned int wrapT) { this->wrapT = wrapT; }
+
+	inline void SetMagFilter(unsigned int magFilter) { this->magFilter = magFilter; }
+	inline void SetMinFilter(unsigned int minFilter) { this->minFilter = minFilter; }
+
+	void SelectToChange() const;
+	void SelectToRender(int textureUnit = 0) const;
+	void Deselect() const;
+	void Allocate();
 };
