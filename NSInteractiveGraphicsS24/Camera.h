@@ -9,26 +9,23 @@ private:
 
 public:
 
-	inline Camera() :
-		referenceFrame(1),
-		lookFrame(1) {
-	}
+	inline Camera() : referenceFrame(1), lookFrame(1) {}
 
-	inline auto& GetPosition() { return referenceFrame[3]; }
-	inline void SetPosition(const glm::vec3& position) { referenceFrame[3] = glm::vec4(position, 1.0f); }
+	const glm::vec3& GetPosition() const;
+	void SetPosition(const glm::vec3& position);
 	
 	inline const auto& GetReferenceFrame() const { return referenceFrame; }
 	inline void SetReferenceFrame(const glm::mat4& referenceFrame) { this->referenceFrame = referenceFrame; }
 
-	inline const auto& GetLookFrame() const { return lookFrame; }	
+	inline const glm::mat4& GetLookFrame() const { return lookFrame; }	
 	inline void SetLookFrame(const glm::mat4& lookFrame) { this->lookFrame = lookFrame; }
 
 	inline float GetMoveSpeed() const { return moveSpeed; }
 	inline void SetMoveSpeed(float moveSpeed) { this->moveSpeed = moveSpeed; }
 	
-	inline void MoveX(float delta, int direction = 1) { referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[0]; }
-	inline void MoveY(float delta, int direction = 1) { referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[1]; }
-	inline void MoveZ(float delta, int direction = 1) { referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[2]; }
+	void MoveX(float delta, int direction = 1);
+	void MoveY(float delta, int direction = 1);
+	void MoveZ(float delta, int direction = 1);
 
 	glm::mat4 LookForward() const;
 	glm::mat4 LookAt(const glm::vec3& point) const;
