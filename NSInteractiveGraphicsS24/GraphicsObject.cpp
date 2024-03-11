@@ -8,7 +8,7 @@ bool GraphicsObject::AddChild(const std::shared_ptr<GraphicsObject>& child) {
 	return result.second;
 }
 
-const auto& GraphicsObject::GetPosition() const {
+const glm::vec3& GraphicsObject::GetPosition() const {
 	return glm::vec3(referenceFrame[3]);
 }
 
