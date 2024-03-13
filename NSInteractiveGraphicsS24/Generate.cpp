@@ -1,5 +1,12 @@
 #include "Generate.h"
 
+#define up 0.0f, 1.0f, 0.0f
+#define down 0.0f, -1.0f, 0.0f
+#define left -1.0f, 0.0f, 0.0f
+#define right 1.0f, 0.0f, 0.0f
+#define forward 0.0f, 0.0f, -1.0f
+#define backward 0.0f, 0.0f, 1.0f
+
 std::shared_ptr<VertexBuffer> Generate::Cuboid(float width, float height, float depth, glm::vec3 color, glm::vec2 tex) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(8);
@@ -71,17 +78,9 @@ std::shared_ptr<VertexBuffer> Generate::CuboidWithNormals(float width, float hei
 	//3 vertex per triangle, 2 triangles per face, 6 faces
 	//3*2*6 = 36 vertices
 
-
 	float hw = width / 2;
 	float hh = height / 2;
 	float hd = depth / 2;
-
-	#define up 0.0f, 1.0f, 0.0f
-	#define down 0.0f, -1.0f, 0.0f
-	#define left -1.0f, 0.0f, 0.0f
-	#define right 1.0f, 0.0f, 0.0f
-	#define forward 0.0f, 0.0f, 1.0f
-	#define backward 0.0f, 0.0f, -1.0f
 
 	//front
 	vertBuf->AddVertexData(12, -hw, hh, hd, color.r, color.g, color.b, color.a, backward, 0.0f, tex.t);
