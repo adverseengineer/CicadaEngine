@@ -29,6 +29,11 @@ void Texture::LoadTextureDataFromFile(const std::string& filepath) {
 	int width, height;
 	stbi_set_flip_vertically_on_load(true);
 	textureData = stbi_load(filepath.c_str(), &width, &height, &numberOfChannels, 0);
+	if (textureData == nullptr) {
+		Util::Log("Failed to load texture data from file: " + filepath);
+		return;
+	}
+	
 	this->width = width;
 	this->height = height;
 	if (numberOfChannels == 3) {
