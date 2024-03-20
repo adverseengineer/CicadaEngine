@@ -14,7 +14,7 @@ public:
 		str.erase(0, str.find_first_not_of(delimiters));
 	}
 
-	inline static const std::string& GetLog(void) {
+	inline static const std::string GetLog() {
 		return _log.str();
 	}
 	
