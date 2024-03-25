@@ -144,6 +144,8 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="RotateAnimation.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="FallbackTexture.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Generate.cpp" />
     <ClCompile Include="GraphicsEnvironment.cpp" />
@@ -170,6 +172,7 @@
     <ClInclude Include="RotateAnimation.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="TextFile.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
@@ -188,6 +191,7 @@
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png" />
     <Image Include="floor.png" />
     <Image Include="gw.png" />
+    <Image Include="lightbulb.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
