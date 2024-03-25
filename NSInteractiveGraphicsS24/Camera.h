@@ -11,7 +11,7 @@ public:
 
 	inline Camera() : referenceFrame(1), lookFrame(1) {}
 
-	const glm::vec3& GetPosition() const;
+	const glm::vec3 GetPosition() const;
 	void SetPosition(const glm::vec3& position);
 	
 	inline const auto& GetReferenceFrame() const { return referenceFrame; }

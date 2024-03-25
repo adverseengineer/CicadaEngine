@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include <ext/matrix_transform.hpp>
 
-const glm::vec3& Camera::GetPosition() const {
+const glm::vec3 Camera::GetPosition() const {
 	return glm::vec3(referenceFrame[3]);
 }
 
