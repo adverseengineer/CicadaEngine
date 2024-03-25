@@ -60,9 +60,6 @@ void Texture::SetTextureData(unsigned int count, const unsigned char* data) {
 	textureData = new unsigned char[count];
 	std::memcpy(textureData, data, count);
 	isLoadedFromFile = false;
-	char addrBuf[18];
-	snprintf(addrBuf, 18, "0x%p", data);
-	Util::Log("Texture data loaded from memory: " + std::string(addrBuf));
 }
 
 void Texture::SelectToChange() const {
