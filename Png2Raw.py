@@ -3,7 +3,7 @@ import io
 import numpy as np
 from struct import unpack, pack
 
-image = Image.open("img.png")
+image = Image.open("fallback.png")
 array = np.frombuffer(image.tobytes(), dtype=np.float32)
 
 row = []
