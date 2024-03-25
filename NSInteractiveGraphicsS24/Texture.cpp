@@ -23,6 +23,17 @@ void Texture::CleanUp() {
 	textureData = nullptr;
 }
 
+void Texture::SetUpFallbackTexture() {
+	SetDimensions(64, 64);
+	SetTextureData(64 * 64 * 4, FALLBACK_DATA);
+	SetWrapS(GL_REPEAT);
+	SetWrapT(GL_REPEAT);
+	SetMagFilter(GL_NEAREST);
+	char addrBuf[18];
+	snprintf(addrBuf, 18, "0x%p", FALLBACK_DATA);
+	Util::Log("Loaded fallback data from: " + std::string(addrBuf));
+}
+
 void Texture::LoadTextureDataFromFile(const std::string& filepath) {
 
 	CleanUp();
@@ -31,6 +42,7 @@ void Texture::LoadTextureDataFromFile(const std::string& filepath) {
 	textureData = stbi_load(filepath.c_str(), &width, &height, &numberOfChannels, 0);
 	if (textureData == nullptr) {
 		Util::Log("Failed to load texture data from file: " + filepath);
+		SetUpFallbackTexture();
 		return;
 	}
 	
@@ -43,12 +55,11 @@ void Texture::LoadTextureDataFromFile(const std::string& filepath) {
 	Util::Log("Texture data loaded from file: " + filepath);
 }
 
-void Texture::SetTextureData(unsigned int count, unsigned char* data) {
+void Texture::SetTextureData(unsigned int count, const unsigned char* data) {
 	CleanUp();
 	textureData = new unsigned char[count];
 	std::memcpy(textureData, data, count);
 	isLoadedFromFile = false;
-	
 	char addrBuf[18];
 	snprintf(addrBuf, 18, "0x%p", data);
 	Util::Log("Texture data loaded from memory: " + std::string(addrBuf));

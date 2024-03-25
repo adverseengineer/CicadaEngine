@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 
 class Texture {	
+private:
+	static const unsigned char FALLBACK_DATA[64*64*4];
 protected:
 	unsigned char* textureData;
 	bool isLoadedFromFile = false;
@@ -30,8 +32,9 @@ public:
 	inline unsigned int GetTextureId() const { return textureId; }
 	inline int GetNumberOfChannels() const { return numberOfChannels; }
 
+	void SetUpFallbackTexture();
 	void LoadTextureDataFromFile(const std::string& filepath);
-	void SetTextureData(unsigned int count, unsigned char* data);
+	void SetTextureData(unsigned int count, const unsigned char* data);
 	
 	inline void SetWidth(unsigned int width) { this->width = width; }
 	inline void SetHeight(unsigned int height) { this->height = height; }
@@ -45,6 +48,7 @@ public:
 
 	inline void SetMagFilter(unsigned int magFilter) { this->magFilter = magFilter; }
 	inline void SetMinFilter(unsigned int minFilter) { this->minFilter = minFilter; }
+
 
 	void SelectToChange() const;
 	void SelectToRender(int textureUnit = 0) const;
