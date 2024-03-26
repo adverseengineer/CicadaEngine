@@ -3,8 +3,7 @@
 #include <ratio>
 #include <chrono>
 
-class Timer
-{
+class Timer {
 protected:
 	std::chrono::high_resolution_clock::time_point startTime, endTime;
 
@@ -13,4 +12,3 @@ public:
 	void StartTiming();
 	double GetElapsedTimeInSeconds();
 };
-

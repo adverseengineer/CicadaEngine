@@ -31,3 +31,24 @@ struct MouseParams {
     int windowWidth = 0, windowHeight = 0;
     float fieldOfView = 60.0f;
 };
+
+struct Material {
+    float ambientIntensity;  // 0 to 1
+    float specularIntensity; // 0 to 1
+    float shininess;         // 0 to infinity
+
+    inline Material(float ambientIntensity, float specularIntensity, float shininess) :
+        ambientIntensity(ambientIntensity), specularIntensity(specularIntensity), shininess(shininess) {
+    }
+};
+
+struct Light {
+    glm::vec3 position;
+    glm::vec3 color;
+    float intensity;
+    float attenuationCoef;
+
+    inline Light(const glm::vec3& position, const glm::vec3& color, float intensity, float attenuationCoef) :
+        position(position), color(color), intensity(intensity), attenuationCoef(attenuationCoef) {
+    }
+};

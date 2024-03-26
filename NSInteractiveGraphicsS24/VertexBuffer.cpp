@@ -7,7 +7,7 @@ VertexBuffer::VertexBuffer(unsigned int numElementsPerVertex) {
 	numberOfVertices = 0;
 	primitiveType = GL_TRIANGLES;
 	textureUnit = 0;
-	texturePtr = nullptr;
+	texture = nullptr;
 	glGenBuffers(1, &vboId);
 }
 
@@ -15,9 +15,17 @@ VertexBuffer::~VertexBuffer() {
 	glDeleteBuffers(1, &vboId);
 }
 
+void VertexBuffer::Select() const {
+	glBindBuffer(GL_ARRAY_BUFFER, vboId);
+}
+
+void VertexBuffer::Deselect() const {
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void VertexBuffer::SelectTexture(void) const {
-	if (texturePtr != nullptr)
-		texturePtr->SelectToRender(textureUnit);
+	if (texture != nullptr)
+		texture->SelectToRender(textureUnit);
 }
 
 void VertexBuffer::AddVertexData(unsigned int count, ...) {
@@ -36,35 +44,39 @@ void VertexBuffer::AddVertexData(unsigned int count, ...) {
 	va_end(args);
 }
 
-void VertexBuffer::StaticAllocate() {
+void VertexBuffer::StaticAllocate() const {
 	unsigned long long bytesToAllocate = vertexData.size() * sizeof(float);
 	glBufferData(GL_ARRAY_BUFFER, bytesToAllocate, vertexData.data(), GL_STATIC_DRAW);
-	if(texturePtr != nullptr)
-		texturePtr->Allocate();
+	if(texture != nullptr)
+		texture->Allocate();
 }
 
-void VertexBuffer::AddVertexAttribute(
-	const std::string& name, unsigned int index,
-	unsigned int numberOfElements, unsigned int offsetCount)
-{
+void VertexBuffer::AddVertexAttribute(const std::string& name, unsigned int index, unsigned int numberOfElements, unsigned int offsetCount) {
 	unsigned int vertexSizeInBytes = sizeof(float) * numberOfElementsPerVertex;
 	unsigned int bytesToNext = vertexSizeInBytes;
 	unsigned long long offsetBytes = sizeof(float) * offsetCount;
 	VertexAttribute attr = {
-		index, numberOfElements, GL_FLOAT, GL_FALSE,
-		bytesToNext, (void*)offsetBytes
+		index,
+		numberOfElements,
+		GL_FLOAT,
+		GL_FALSE,
+		bytesToNext,
+		(void*)offsetBytes
 	};
 	attributeMap[name] = attr;
 }
 
-void VertexBuffer::SetUpAttributeInterpretration()
-{
+void VertexBuffer::SetUpAttributeInterpretration() const {
 	for (const std::pair<const std::string, VertexAttribute>& item : attributeMap) {
 		const auto& attr = item.second;
 		glEnableVertexAttribArray(attr.index);
 		glVertexAttribPointer(
-			attr.index, attr.numberOfComponents, attr.type,
-			attr.isNormalized, attr.bytesToNext, attr.byteOffset
+			attr.index,
+			attr.numberOfComponents,
+			attr.type,
+			attr.isNormalized,
+			attr.bytesToNext,
+			attr.byteOffset
 		);
 	}
 }

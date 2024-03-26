@@ -10,6 +10,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IGTesting", "IGTesting\IGTe
 		{75BE1E37-C53F-43AF-9412-68E72406FD85} = {75BE1E37-C53F-43AF-9412-68E72406FD85}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AE1CCCAF-4BBC-4521-8767-4D2D573280A8}"
+	ProjectSection(SolutionItems) = preProject
+		fallback.png = fallback.png
+		Png2Raw.py = Png2Raw.py
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

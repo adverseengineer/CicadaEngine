@@ -1,35 +1,42 @@
-
-#include "Shader.h"
 #include "Renderer.h"
+#include "Shader.h"
 
-Renderer::Renderer(const std::shared_ptr<Shader>& shadPtr, const std::shared_ptr<Scene>& scenePtr) : shadPtr(shadPtr), scenePtr(scenePtr) {
-
+Renderer::Renderer(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Scene>& scene) :
+	shader(shader),
+	scene(scene),
+	view(1.0f),
+	proj(1.0f) {
 	glGenVertexArrays(1, &vaoId);
-	view = glm::mat4();
-	proj = glm::mat4();
 }
 
 void Renderer::StaticAllocateVertexBuffer(void) const {
 
 	glBindVertexArray(vaoId); //bind it
 
-	for(auto& obj : scenePtr->GetObjects())
+	for(const auto& obj : scene->GetObjects())
 		obj->StaticAllocateVertexBuffer();
 
 	glBindVertexArray(0); //unbind it
 }
 
-void Renderer::RenderObject(const GraphicsObject& object) {
+void Renderer::RenderObject(GraphicsObject& object) {
 
 	//send the model matrix to the shader
-	shadPtr->SendMat4Uniform("world", object.GetReferenceFrame());
+	shader->SendMat4Uniform("world", object.GetGlobalReferenceFrame());
 
 	auto& buffer = object.GetVertexBuffer();
 	buffer->Select();
 	
 	if (buffer->HasTexture()) {
-		shadPtr->SendIntUniform("texUnit", buffer->GetTextureUnit());
-		buffer->GetTexturePtr()->SelectToRender();
+		shader->SendIntUniform("texUnit", buffer->GetTextureUnit());
+		buffer->GetTexture()->SelectToRender();
+	}
+
+	auto& material = object.GetMaterial();
+	if (material != nullptr) {
+		shader->SendFloatUniform("ambientIntensity", material->ambientIntensity);
+		shader->SendFloatUniform("specularIntensity", material->specularIntensity);
+		shader->SendFloatUniform("shininess", material->shininess);
 	}
 
 	buffer->SetUpAttributeInterpretration();
@@ -41,18 +48,34 @@ void Renderer::RenderObject(const GraphicsObject& object) {
 		RenderObject(*child);
 }
 
-void Renderer::RenderScene(void) {
+void Renderer::RenderScene(const std::shared_ptr<Camera>& cam) {
 
-	if(shadPtr->IsCreated()) {
+	if(shader->IsCreated()) {
 
-		glUseProgram(shadPtr->GetShaderProgram());
+		glUseProgram(shader->GetShaderProgram());
 		glBindVertexArray(vaoId);
 
 		//we must send the view matrix to the shader every frame
-		shadPtr->SendMat4Uniform("view", view);
+		shader->SendMat4Uniform("view", view);
+		
+		//send the data for the global light source
+		auto& globalLight = scene->GetGlobalLight();
+		shader->SendVec3Uniform("globalLightPosition", globalLight->position);
+		shader->SendVec3Uniform("globalLightColor", globalLight->color);
+		shader->SendFloatUniform("globalLightIntensity", globalLight->intensity);
+
+		//send the data for the local light source
+		auto& localLight = scene->GetLocalLight();
+		shader->SendVec3Uniform("localLightPosition", localLight->position);
+		shader->SendVec3Uniform("localLightColor", localLight->color);
+		shader->SendFloatUniform("localLightIntensity", localLight->intensity);
+		shader->SendFloatUniform("localLightAttenuationCoef", localLight->attenuationCoef);
+
+		//send the camera position
+		shader->SendVec3Uniform("viewPosition", cam->GetPosition());
 
 		//for each object in the scene, render it separately
-		for(auto& object : scenePtr->GetObjects())
+		for(auto& object : scene->GetObjects())
 			RenderObject(*object);
 
 		glDisableVertexAttribArray(0); //position

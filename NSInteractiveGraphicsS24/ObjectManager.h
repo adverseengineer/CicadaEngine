@@ -1,5 +1,4 @@
 #pragma once
-
 #include "GraphicsObject.h"
 #include <optional>
 
@@ -9,12 +8,13 @@ private:
 	std::unordered_map<std::string, std::shared_ptr<GraphicsObject>> objectMap;
 
 public:
-	ObjectManager() = default;
-	~ObjectManager() = default;
+	inline ObjectManager() = default;
+	inline ~ObjectManager() = default;
 	
-	void SetObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj);
-	std::shared_ptr<GraphicsObject> GetObject(const std::string& key) const;
-
+	const std::shared_ptr<GraphicsObject>& GetObject(const std::string& key) const;
+	bool AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj);
+	bool SetObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj);
+	
 	void Update(double elapsedSeconds);
 };
 

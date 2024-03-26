@@ -1,15 +1,25 @@
 #pragma once
-#include <memory>
-#include <vector>
 #include "GraphicsObject.h"
+#include "GraphicsStructures.h"
+#include <memory>
+#include <unordered_set>
 
 class Scene {
 private:
-	std::vector<std::shared_ptr<GraphicsObject>> objects;
+	std::unordered_set<std::shared_ptr<GraphicsObject>> objects;
+	std::shared_ptr<Light> globalLight;
+	std::shared_ptr<Light> localLight;
 
 public:
-	Scene() = default;
-	~Scene() = default;
-	inline const std::vector<std::shared_ptr<GraphicsObject>>& GetObjects() const { return objects; }
-	void AddObject(std::shared_ptr<GraphicsObject> object);
+	inline Scene() : globalLight(nullptr), localLight(nullptr) {}
+	inline ~Scene() = default;
+	
+	inline const std::unordered_set<std::shared_ptr<GraphicsObject>>& GetObjects() const { return objects; }
+	inline void AddObject(const std::shared_ptr<GraphicsObject>& object) { objects.insert(object); }
+
+	inline const std::shared_ptr<Light>& GetGlobalLight() const { return globalLight; }
+	inline void SetGlobalLight(const std::shared_ptr<Light>& globalLight) { this->globalLight = globalLight; }
+
+	inline const std::shared_ptr<Light>& GetLocalLight() const { return localLight; }
+	inline void SetLocalLight(const std::shared_ptr<Light>& localLight) { this->localLight = localLight; }
 };
