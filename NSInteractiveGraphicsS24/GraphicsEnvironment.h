@@ -15,49 +15,51 @@
 class GraphicsEnvironment {
 
 protected:
-	GLFWwindow* winPtr;
+	GLFWwindow* window;
 	ObjectManager objManager;
 	std::unordered_map<std::string, std::shared_ptr<Renderer>> rendererMap;
 	std::shared_ptr<Camera> cam;
 
-	static GraphicsEnvironment* self;
-	MouseParams mouse;
+	static MouseParams mouse;
 
 public:
-	inline GraphicsEnvironment(void) {
-		winPtr = nullptr;
-		self = this;
-	}
-	inline ~GraphicsEnvironment(void) {
+	inline GraphicsEnvironment() : window(nullptr) {}
+	inline ~GraphicsEnvironment() {
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 		glfwTerminate();
 	}
 
-	inline GLFWwindow* GetWindow(void) { return winPtr; }
+	inline GLFWwindow* GetWindow() { return window; }
 
 	void Init(unsigned int majorVersion, unsigned int minorVersion);
 	bool SetWindow(unsigned int width, unsigned int height, const std::string& title);
-	bool InitGlad(void);
-	void SetupGraphics(void);
+	bool InitGlad();
+	void SetupGraphics();
 	static void OnWindowSizeChanged(GLFWwindow* window, int width, int height);
 
-	void CreateRenderer(const std::string& name, std::shared_ptr<Shader> shadPtr, std::shared_ptr<Scene> scenePtr);
-	std::shared_ptr<Renderer> GetRenderer(const std::string& name) const;
-	void StaticAllocate(void) const;
-	void Render(void) const;
+	inline void AddRenderer(const std::string& name, std::shared_ptr<Shader> shad, std::shared_ptr<Scene> scene) {
+		rendererMap.emplace(name, std::make_shared<Renderer>(shad, scene));
+	}
+	inline std::shared_ptr<Renderer> GetRenderer(const std::string& name) const {
+		//don't worry about not found exceptions, its better than returning null from this. change over to std::optional eventually
+		return rendererMap.at(name);
+	}
+
+	inline const std::shared_ptr<Camera>& GetCamera() const { return cam; }
+	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
+
+	void StaticAllocate() const;
+	void Render() const;
 
 	void ProcessInput(float elapsedSeconds) const;
-	static glm::mat4 CreateViewMatrix(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up);
 
-	void AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj);
-	std::shared_ptr<GraphicsObject> GetObject(const std::string& key) const;
-
-	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
+	inline void AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj) { objManager.SetObject(key, obj); }
+	inline std::shared_ptr<GraphicsObject> GetObject(const std::string& key) const { return objManager.GetObject(key); }
 
 	static void OnMouseMove(GLFWwindow* window, double mouseX, double mouseY);
 
-	void Run2D(void);
-	void Run3D(void);
+	//void Run2D();
+	void Run3D();
 };

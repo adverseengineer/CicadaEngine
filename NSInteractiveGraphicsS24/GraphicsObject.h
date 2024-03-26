@@ -59,6 +59,7 @@ public:
 	void RotateLocalY(float degrees);
 	void RotateLocalZ(float degrees);
 	void RotateLocal(float xDeg, float yDeg, float zDeg);
+	void RotateToFace(const glm::vec3& target);
 
 	void StaticAllocateVertexBuffer() const;
 	void Update(double elapsedSeconds);
