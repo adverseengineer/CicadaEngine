@@ -27,6 +27,5 @@ public:
 	void MoveY(float delta, int direction = 1);
 	void MoveZ(float delta, int direction = 1);
 
-	glm::mat4 LookForward() const;
-	glm::mat4 LookAt(const glm::vec3& point) const;
+	glm::mat4 GetView() const;
 };
