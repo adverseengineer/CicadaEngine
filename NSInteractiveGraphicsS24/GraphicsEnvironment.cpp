@@ -196,10 +196,9 @@ void GraphicsEnvironment::Run3D() {
 			renderer->GetShader()->SendMat4Uniform("projection", projection);
 		}
 
-		objManager.GetObject("sprite")->RotateToFace(cam->GetPosition());
-		objManager.GetObject("sprite")->SetPosition(
-			rendererMap["3D renderer"]->GetScene()->GetLocalLight()->position
-		);
+		auto& sprite = objManager.GetObject("sprite");
+		sprite->RotateToFace(cam->GetPosition());
+		sprite->SetPosition(rendererMap["3D renderer"]->GetScene()->GetLocalLight()->position);
 
 		objManager.Update(deltaTime);
 
