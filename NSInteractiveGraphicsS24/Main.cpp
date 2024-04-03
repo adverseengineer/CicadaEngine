@@ -1,25 +1,7 @@
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
-#include "GraphicsObject.h"
-#include "Renderer.h"
 #include "RotateAnimation.h"
-#include "Scene.h"
-#include "Shader.h"
-#include "ShaderManager.h"
 #include "TextFile.h"
-#include "VertexBuffer.h"
-#include <glad/glad.h> 
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
 #include <Windows.h>
 
 static void SetUp3DScene(GraphicsEnvironment& ge) {
