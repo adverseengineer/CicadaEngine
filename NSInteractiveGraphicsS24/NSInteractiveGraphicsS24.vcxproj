@@ -189,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png" />
+    <Image Include="cipher.png" />
     <Image Include="floor.png" />
     <Image Include="gw.png" />
     <Image Include="lightbulb.png" />

@@ -34,9 +34,9 @@ void Renderer::RenderObject(GraphicsObject& object) {
 
 	auto& material = object.GetMaterial();
 	if (material != nullptr) {
-		shader->SendFloatUniform("ambientIntensity", material->ambientIntensity);
-		shader->SendFloatUniform("specularIntensity", material->specularIntensity);
-		shader->SendFloatUniform("shininess", material->shininess);
+		shader->SendFloatUniform("materialAmbientIntensity", material->ambientIntensity);
+		shader->SendFloatUniform("materialSpecularIntensity", material->specularIntensity);
+		shader->SendFloatUniform("MaterialShininess", material->shininess);
 	}
 
 	buffer->SetUpAttributeInterpretration();
@@ -80,7 +80,7 @@ void Renderer::RenderScene(const std::shared_ptr<Camera>& cam) {
 
 		glDisableVertexAttribArray(0); //position
 		glDisableVertexAttribArray(1); //color
-		glUseProgram(0); //reset to zero
-		glBindVertexArray(0); //unbind it
+		glUseProgram(0); //unbind shader
+		glBindVertexArray(0); //unbind vao
 	}
 }

@@ -22,8 +22,7 @@ void Shader::SendMat4Uniform(const std::string& uniformName, const glm::mat4& ma
 
 void Shader::SendVec3Uniform(const std::string& uniformName, const glm::vec3& vec) {
 	glUseProgram(shaderProgram);
-	auto ptr = glm::value_ptr(vec);
-	glUniform3fv(uniformMap[uniformName], 1, ptr);
+	glUniform3fv(uniformMap[uniformName], 1, glm::value_ptr(vec));
 }
 
 void Shader::SendIntUniform(const std::string& uniformName, int value) {

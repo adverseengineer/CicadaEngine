@@ -196,9 +196,10 @@ void GraphicsEnvironment::Run3D() {
 			renderer->GetShader()->SendMat4Uniform("projection", projection);
 		}
 
-		auto& sprite = objManager.GetObject("sprite");
+		auto& sprite = objManager.GetObject("lightbulb");
+		auto& litScene = GetRenderer("lit renderer")->GetScene();
 		sprite->RotateToFace(cam->GetPosition());
-		sprite->SetPosition(rendererMap["3D renderer"]->GetScene()->GetLocalLight()->position);
+		sprite->SetPosition(litScene->GetLocalLight()->position);
 
 		objManager.Update(deltaTime);
 
@@ -220,18 +221,17 @@ void GraphicsEnvironment::Run3D() {
 
 		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));
 
-		auto& scene = rendererMap["3D renderer"]->GetScene();
-		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(scene->GetLocalLight()->color));
-		ImGui::DragFloat3("Local Light Position", glm::value_ptr(scene->GetLocalLight()->position));
-		ImGui::SliderFloat("Local Intensity", &scene->GetLocalLight()->intensity, 0, 1);
-		ImGui::SliderFloat("Local Attenuation", &scene->GetLocalLight()->attenuationCoef, 0, 1);
+		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(litScene->GetLocalLight()->color));
+		ImGui::DragFloat3("Local Light Position", glm::value_ptr(litScene->GetLocalLight()->position));
+		ImGui::SliderFloat("Local Intensity", &litScene->GetLocalLight()->intensity, 0, 1);
+		ImGui::SliderFloat("Local Attenuation", &litScene->GetLocalLight()->attenuationCoef, 0, 1);
 		
-		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(scene->GetGlobalLight()->color));
-		ImGui::DragFloat3("Global Light Position", glm::value_ptr(scene->GetGlobalLight()->position));
-		ImGui::SliderFloat("Global Intensity", &scene->GetGlobalLight()->intensity, 0, 1);
-		ImGui::SliderFloat("Global Attenuation", &scene->GetGlobalLight()->attenuationCoef, 0, 1);
+		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(litScene->GetGlobalLight()->color));
+		ImGui::DragFloat3("Global Light Position", glm::value_ptr(litScene->GetGlobalLight()->position));
+		ImGui::SliderFloat("Global Intensity", &litScene->GetGlobalLight()->intensity, 0, 1);
+		ImGui::SliderFloat("Global Attenuation", &litScene->GetGlobalLight()->attenuationCoef, 0, 1);
 		
-		auto& mat = objManager.GetObject("cube 1")->GetMaterial();
+		auto& mat = objManager.GetObject("crate")->GetMaterial();
 		ImGui::SliderFloat("Material Ambient Intensity", (float*)&mat->ambientIntensity, 0, 1);
 		ImGui::SliderFloat("Material Specular Intensity", (float*)&mat->specularIntensity, 0, 1);
 		ImGui::SliderFloat("Material Shininess", (float*)&mat->shininess, 0, 100);
@@ -248,7 +248,7 @@ void GraphicsEnvironment::Run3D() {
 			camLook[0][2], camLook[1][2], camLook[2][2]
 		);
 		
-		auto& frm = objManager.GetObject("cube 2")->GetLocalReferenceFrame();
+		auto& frm = objManager.GetObject("dummy cube")->GetLocalReferenceFrame();
 		ImGui::Text(
 			"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
 			frm[0][0], frm[1][0], frm[2][0], frm[3][0],
