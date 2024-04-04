@@ -41,7 +41,7 @@ void GraphicsEnvironment::SetupGraphics() {
 	//set up a callback for whenever the window is resized
 	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
 	glfwSetCursorPosCallback(window, OnMouseMove);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	//set up ImGui
 	IMGUI_CHECKVERSION();
@@ -80,6 +80,12 @@ void GraphicsEnvironment::Render() const {
 
 static bool freeCamMode = true;
 static bool correctGamma = true;
+
+static bool spaceCurrent = false;
+static bool spaceOld = false;
+
+static bool on = false;
+static bool onOld = false;
 
 void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 
@@ -216,6 +222,16 @@ void GraphicsEnvironment::Run3D() {
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
+		auto& camPos = cam->GetPosition();
+		ImGui::Text("CamPos: (%.3f, %.3f, %.3f)", camPos.x, camPos.y, camPos.z);
+		auto& camLook = cam->GetLookFrame();
+		ImGui::Text(
+			"[%.3f %.3f %.3f]\n[%.3f %.3f %.3f]\n[%.3f %.3f %.3f]",
+			camLook[0][0], camLook[1][0], camLook[2][0],
+			camLook[0][1], camLook[1][1], camLook[2][1],
+			camLook[0][2], camLook[1][2], camLook[2][2]
+		);
+
 		ImGui::Checkbox("Free Cam", &freeCamMode);
 		ImGui::Checkbox("Correct Gamma", &correctGamma);
 
@@ -237,25 +253,6 @@ void GraphicsEnvironment::Run3D() {
 		ImGui::SliderFloat("Material Shininess", (float*)&mat->shininess, 0, 100);
 
 		ImGui::Text(Util::GetLog().c_str());
-
-		auto& camPos = cam->GetPosition();
-		ImGui::Text("CamPos: (%.3f, %.3f, %.3f)", camPos.x, camPos.y, camPos.z);
-		auto& camLook = cam->GetLookFrame();
-		ImGui::Text(
-			"[%.3f %.3f %.3f]\n[%.3f %.3f %.3f]\n[%.3f %.3f %.3f]",
-			camLook[0][0], camLook[1][0], camLook[2][0],
-			camLook[0][1], camLook[1][1], camLook[2][1],
-			camLook[0][2], camLook[1][2], camLook[2][2]
-		);
-		
-		auto& frm = objManager.GetObject("dummy cube")->GetLocalReferenceFrame();
-		ImGui::Text(
-			"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
-			frm[0][0], frm[1][0], frm[2][0], frm[3][0],
-			frm[0][1], frm[1][1], frm[2][1], frm[3][1],
-			frm[0][2], frm[1][2], frm[2][2], frm[3][2],
-			frm[0][3], frm[1][3], frm[2][3], frm[3][3]
-		);
 
 		ImGui::End();
 		ImGui::Render();

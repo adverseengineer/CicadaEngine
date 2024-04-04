@@ -31,17 +31,17 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	ge.AddRenderer("lit renderer", litShader, litScene);
 	#pragma endregion
 	
-	#pragma region SetUpFlatShader
-	vertText.ReadAllLines("texture.vert.glsl");
-	fragText.ReadAllLines("texture.frag.glsl");
-	auto flatShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
-	flatShader->AddUniform("world");
-	flatShader->AddUniform("view");
-	flatShader->AddUniform("projection");
-	flatShader->AddUniform("texUnit");
-	auto flatScene = std::make_shared<Scene>();
-	//ge.AddRenderer("flat renderer", flatShader, flatScene);
-	#pragma endregion
+	//#pragma region SetUpFlatShader
+	//vertText.ReadAllLines("texture.vert.glsl");
+	//fragText.ReadAllLines("texture.frag.glsl");
+	//auto flatShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
+	//flatShader->AddUniform("world");
+	//flatShader->AddUniform("view");
+	//flatShader->AddUniform("projection");
+	//flatShader->AddUniform("texUnit");
+	//auto flatScene = std::make_shared<Scene>();
+	////ge.AddRenderer("flat renderer", flatShader, flatScene);
+	//#pragma endregion
 
 	#pragma region SetUpDummyCube
 	auto dummyCubeVBuf = Generate::CuboidWithNormals(6, 2, 5);
@@ -51,7 +51,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto dummyCube = std::make_shared<GraphicsObject>();
 	dummyCube->SetVertexBuffer(dummyCubeVBuf);
 	dummyCube->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
-	auto mat = std::make_shared<Material>(1.0f, 1.0f, 1.0f);
+	auto mat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	dummyCube->SetMaterial(mat);
 	auto rotateAnimation = std::make_shared<RotateAnimation>(glm::vec3{ 0.0f,1.0f,0.0f }, 90.0f);
 	rotateAnimation->SetObject(dummyCube);
@@ -92,8 +92,8 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto localLight = std::make_shared<Light>(localLightPos, localLightColor, 1.0f, 1.0f);
 	litScene->SetLocalLight(localLight);
 	auto globalLightPos = glm::vec3{ 20.0f, 20.0f, 20.0f };
-	auto globalLightColor = glm::vec3{ 1.0f, 1.0f, 1.0f };
-	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 1.0f);
+	auto globalLightColor = glm::vec3{ 1.0f, 0.0f, 1.0f };
+	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 0.2f, 1.0f);
 	litScene->SetGlobalLight(globalLight);
 
 	#pragma region Lightbulb
@@ -105,7 +105,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto lightbulb = std::make_shared<GraphicsObject>();
 	lightbulb->SetVertexBuffer(lightbulbVBuf);
 	lightbulb->SetPosition(localLightPos);
-	auto fullbrightMat = std::make_shared<Material>(1.0f, 1.0f, 1.0f);
+	auto fullbrightMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	lightbulb->SetMaterial(fullbrightMat);
 	//flatScene->AddObject(lightbulb);
 	litScene->AddObject(lightbulb);

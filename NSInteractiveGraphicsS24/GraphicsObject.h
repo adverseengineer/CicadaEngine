@@ -1,6 +1,6 @@
 #pragma once
 #include "Animation.h"
-//#include "BoundingBox.h"
+#include "BoundingBox.h"
 #include "GraphicsStructures.h"
 #include "VertexBuffer.h"
 #include <glm/glm.hpp>
@@ -18,7 +18,7 @@ protected:
 	GraphicsObject* parent;
 	std::shared_ptr<Animation> animation;
 	std::shared_ptr<Material> material;
-	//std::shared_ptr<BoundingBox> boundingBox;
+	std::shared_ptr<BoundingBox> boundingBox;
 
 public:
 	inline GraphicsObject() : referenceFrame(1.0f), parent(nullptr), material(nullptr) {}
@@ -53,9 +53,9 @@ public:
 	inline const std::shared_ptr<Material>& GetMaterial() const { return material; }
 	inline void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }
 
-	//inline bool HasBoundingBox() const { return boundingBox != nullptr; }
-	//inline const std::shared_ptr<BoundingBox>& GetBoundingBox() const { return boundingBox; }
-	//inline void SetBoundingBox(const std::shared_ptr<BoundingBox>& boundingBox) { this->boundingBox = boundingBox; }
+	inline bool HasBoundingBox() const { return boundingBox != nullptr; }
+	inline const std::shared_ptr<BoundingBox>& GetBoundingBox() const { return boundingBox; }
+	inline void SetBoundingBox(const std::shared_ptr<BoundingBox>& boundingBox) { this->boundingBox = boundingBox; }
 
 	const glm::vec3& GetPosition() const;
 	void SetPosition(const glm::vec3& position);
