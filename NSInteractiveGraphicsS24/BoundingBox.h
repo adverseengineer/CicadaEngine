@@ -1,11 +1,13 @@
 #pragma once
-#include <ext/matrix_float4x4.hpp>
+#include <glm/glm.hpp>
+#include "GeometricPlane.h"
 #include <vector>
+#include "ReferenceFrame.h"
 
-#include "BoundingPlane.h"
+class Ray;
 
-class BoundingBox {
-friend class Ray;
+class BoundingBox
+{
 public:
 	static const int FRONT = 0;
 	static const int BACK = 1;
@@ -16,16 +18,33 @@ public:
 
 protected:
 	float width = 1.0f, height = 1.0f, depth = 1.0f;
-	glm::mat4 frame;
-	glm::mat4 invFrame;
-	BoundingPlane planes[6];
+	ReferenceFrame referenceFrame;
+	glm::mat4 inverseMat;
+	GeometricPlane planes[6];
+	std::vector<Intersection> intersections;
+	glm::vec3 intersectionPoint{};
 
 public:
-	BoundingBox(float width, float height, float depth, const glm::mat4& frame);
+	BoundingBox();
 
-	inline void SetReferenceFrame(const glm::mat4& frameIn) {
-		frame = glm::mat4(frameIn);
-		invFrame = glm::inverse(frame);
+	void SetReferenceFrame(const ReferenceFrame& referenceFrame) {
+		this->referenceFrame.SetMatrix4(referenceFrame.GetMatrix());
+		inverseMat = this->referenceFrame.GetInverseMatrix();
 	}
-	inline glm::mat4 GetReferenceFrame() const { return frame; }
+
+	const std::vector<Intersection>& GetIntersections() const {
+		return intersections;
+	}
+
+	void Create(float width = 1.0f, float height = 1.0f, float depth = 1.0f);
+	
+	bool IsIntersectingWithRay(const Ray& ray);
+	const glm::vec3& GetIntersectionPoint() const {
+		return intersectionPoint;
+	}
+
+	const Intersection& GetIntersection(int whichPlane) {
+		return intersections[whichPlane];
+	}
 };
+

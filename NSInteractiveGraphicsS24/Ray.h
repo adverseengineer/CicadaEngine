@@ -1,20 +1,40 @@
 #pragma once
-#include <array>
-#include <corecrt_math.h>
-#include <ext/matrix_float4x4.hpp>
-#include <ext/vector_float3.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "GeometricLine.h"
+#include "GeometricPlane.h"
+#include <vector>
 
-#include "BoundingBox.h"
-#include "Intersection.h"
+class GraphicsObject;
+class BoundingBox;
 
-struct Ray {
-	glm::vec3 origin;
-	glm::vec3 direction; //always normalized
+class Ray
+{
+protected:
+	glm::vec3 rayStart{};
+	glm::vec3 rayDir{};
 
-	Ray(const glm::vec3& origin, const glm::vec3& direction);
-	Ray(float screenX, float screenY, const glm::mat4& proj, const glm::mat4& view);
+public:
+	Ray() = default;
+	~Ray() = default;
+	void Create(
+		float screenX, float screenY, 
+		const glm::mat4& proj, const glm::mat4& view);
 
-	glm::vec3 GetPositionAlong(float offset) const;
-	Intersection GetIntersection(const BoundingPlane& plane) const;
-	std::array<Intersection,6> GetIntersection(const BoundingBox& boundingBox) const;
+	void SetStart(glm::vec3 start) { rayStart = start; }
+	void SetDirection(glm::vec3 dir) { rayDir = glm::normalize(dir); }
+
+	const glm::vec3& GetStart() const { return rayStart; }
+	const glm::vec3& GetDirection() const { return rayDir; }
+
+	glm::vec3 GetPosition(float offset) const {
+		return rayStart + (offset * rayDir);
+	}
+
+	Intersection GetIntersectionWithPlane(const GeometricPlane& plane) const;
+	Intersection GetIntersectionWithBoundingBox(
+		const BoundingBox& boundingBox) const;
+	bool IsIntersectingObject(const GraphicsObject& object) const;
+	//bool IsPointAlongRay(glm::vec3 point) const;
 };
+
