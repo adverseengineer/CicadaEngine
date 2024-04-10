@@ -28,7 +28,7 @@ public:
 	VertexBuffer(unsigned int numElementsPerVertex = 3);
 	~VertexBuffer();
 
-	inline unsigned int GetNumberOfVertices() const { return vertexData.size(); }
+	inline std::size_t GetNumberOfVertices() const { return vertexData.size(); }
 
 	inline int GetPrimitiveType() const { return primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->primitiveType = primitiveType; }
