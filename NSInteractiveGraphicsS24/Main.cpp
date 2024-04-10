@@ -103,13 +103,13 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto localLight = std::make_shared<Light>(localLightPos, localLightColor, 1.0f, 1.0f);
 	litScene->SetLocalLight(localLight);
 	auto globalLightPos = glm::vec3{ 20.0f, 20.0f, 20.0f };
-	auto globalLightColor = glm::vec3{ 1.0f, 0.0f, 1.0f };
-	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 0.2f, 1.0f);
+	auto globalLightColor = glm::vec3{ 0.0f, 0.0f, 1.0f };
+	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 1.0f);
 	litScene->SetGlobalLight(globalLight);
 
 	#pragma region Lightbulb
-	//auto lightbulbVBuf = Generate::PlaneXY(1, 1, { 1, 1, 1 }, { 1, 1 });
-	auto lightbulbVBuf = Generate::PlaneXYWithNormals(1, 1, { 1, 1, 1, 1 }, { 1, 1 });
+	auto lightbulbVBuf = Generate::PlaneXY(1, 1, { 1, 1, 1 }, { 1, 1 });
+	//auto lightbulbVBuf = Generate::PlaneXYWithNormals(1, 1, { 1, 1, 1, 1 }, { 1, 1 });
 	auto lightbulbTex = std::make_shared<Texture>();
 	lightbulbTex->LoadTextureDataFromFile("lightbulb.png");
 	lightbulbVBuf->SetTexture(lightbulbTex);
@@ -118,8 +118,8 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	lightbulb->SetPosition(localLightPos);
 	auto fullbrightMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	lightbulb->SetMaterial(fullbrightMat);
-	//flatScene->AddObject(lightbulb);
-	litScene->AddObject(lightbulb);
+	flatScene->AddObject(lightbulb);
+	//litScene->AddObject(lightbulb);
 	ge.AddObject("lightbulb", lightbulb);
 	#pragma endregion
 
@@ -135,14 +135,14 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	auto cylinderVBuf = Generate::LineCylinderVertices(5, 4, 24);
 	cylinderVBuf->SetPrimitiveType(GL_LINES);
-	auto cylinderIBuf = Generate::LineCylinderIndices(4, true);
+	auto cylinderIBuf = Generate::LineCylinderIndices(24, true);
 	auto cylinder = std::make_shared<GraphicsObject>();
 	cylinder->SetVertexBuffer(cylinderVBuf);
 	cylinder->SetIndexBuffer(cylinderIBuf);
 	cylinder->SetPosition({ -10.0f, 10.0f, 10.0f });
 	basicScene->AddObject(cylinder);
 	ge.AddObject("cylinder", cylinder);
-#pragma endregion
+	#pragma endregion
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {

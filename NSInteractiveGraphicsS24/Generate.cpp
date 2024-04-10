@@ -264,8 +264,10 @@ std::shared_ptr<VertexBuffer> Generate::LineCylinderVertices(float radius, float
 	float tau = 2 * M_PI;
 	float radiansPerStep = tau / numSegments;
 	for (float theta = 0.0f; theta < tau; theta += radiansPerStep) {
-		vertBuf->AddVertexData(6, radius * cos(theta), hh, radius * sin(theta), color.r, color.g, color.b);
-		vertBuf->AddVertexData(6, radius * cos(theta), -hh, radius * sin(theta), color.r, color.g, color.b);
+		float c = cos(theta);
+		float s = sin(theta);
+		vertBuf->AddVertexData(6, radius * c, hh, radius * s, color.r, color.g, color.b);
+		vertBuf->AddVertexData(6, radius * c, -hh, radius * s, color.r, color.g, color.b);
 	}
 
 	vertBuf->AddVertexAttribute("position", 0, 3, 0);
