@@ -17,7 +17,6 @@ struct VertexAttribute {
 class VertexBuffer {
 protected:
 	unsigned int numberOfElementsPerVertex;
-	unsigned int numberOfVertices;
 	unsigned int vboId;
 	int primitiveType;
 	std::vector<float> vertexData;
@@ -29,7 +28,7 @@ public:
 	VertexBuffer(unsigned int numElementsPerVertex = 3);
 	~VertexBuffer();
 
-	inline unsigned int GetNumberOfVertices() const { return numberOfVertices; }
+	inline unsigned int GetNumberOfVertices() const { return vertexData.size(); }
 
 	inline int GetPrimitiveType() const { return primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->primitiveType = primitiveType; }

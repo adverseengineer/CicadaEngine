@@ -8,6 +8,13 @@
 
 MouseParams GraphicsEnvironment::mouse;
 
+GraphicsEnvironment::~GraphicsEnvironment() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	glfwTerminate();
+}
+
 void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -68,9 +75,13 @@ void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int
 	glViewport(0, 0, width, height);
 }
 
+Ray GraphicsEnvironment::GetMouseRay(const glm::mat4& projection, const glm::mat4& view) {
+	return Ray(mouse.windowX, mouse.windowY, projection, view);
+}
+
 void GraphicsEnvironment::StaticAllocate(void) const {
 	for(auto& [name, renderer] : rendererMap)
-		renderer->StaticAllocateVertexBuffer();
+		renderer->StaticAllocateBuffers();
 }
 
 void GraphicsEnvironment::Render() const {
@@ -80,12 +91,6 @@ void GraphicsEnvironment::Render() const {
 
 static bool freeCamMode = true;
 static bool correctGamma = true;
-
-static bool spaceCurrent = false;
-static bool spaceOld = false;
-
-static bool on = false;
-static bool onOld = false;
 
 void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 
@@ -136,7 +141,6 @@ void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double mouseY) {
 
 	auto& mouse = GraphicsEnvironment::mouse;
-
 	mouse.x = mouseX;
 	mouse.y = mouseY;
 
@@ -203,10 +207,18 @@ void GraphicsEnvironment::Run3D() {
 		}
 
 		auto& sprite = objManager.GetObject("lightbulb");
-		auto& litScene = GetRenderer("lit renderer")->GetScene();
+		auto& litScene = GetRenderer("lit")->GetScene();
 		sprite->RotateToFace(cam->GetPosition());
 		sprite->SetPosition(litScene->GetLocalLight()->position);
 
+		auto& cylinder = objManager.GetObject("cylinder");
+		auto mouseRay = GetMouseRay(projection, view);
+		auto intersection = mouseRay.GetIntersection(BoundingPlane());
+		auto position = mouseRay.GetPositionAlong(intersection.offset);
+		if (intersection.isIntersecting) {
+			//cylinder->SetPosition(mouseRay.GetPositionAlong(intersection.offset));
+		}
+			
 		objManager.Update(deltaTime);
 
 		//and finally call render
@@ -220,8 +232,10 @@ void GraphicsEnvironment::Run3D() {
 		ImGui::NewFrame();
 		ImGui::Begin("Interactive Graphics");		
 		
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+				ImGui::Text("cylpos: (%.3f, %.3f, %.3f)", position.x, position.y, position.z);
 
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		
 		auto& camPos = cam->GetPosition();
 		ImGui::Text("CamPos: (%.3f, %.3f, %.3f)", camPos.x, camPos.y, camPos.z);
 		auto& camLook = cam->GetLookFrame();

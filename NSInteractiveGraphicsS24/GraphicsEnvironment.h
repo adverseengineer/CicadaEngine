@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "GraphicsStructures.h"
 #include "ObjectManager.h"
+#include "Ray.h"
 #include "Renderer.h"
 #include "Scene.h"
 #include "Util.h"
@@ -24,12 +25,7 @@ protected:
 
 public:
 	inline GraphicsEnvironment() : window(nullptr) {}
-	inline ~GraphicsEnvironment() {
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();
-		glfwTerminate();
-	}
+	~GraphicsEnvironment();
 
 	inline GLFWwindow* GetWindow() { return window; }
 
@@ -49,6 +45,8 @@ public:
 
 	inline const std::shared_ptr<Camera>& GetCamera() const { return cam; }
 	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
+
+	Ray GetMouseRay(const glm::mat4& projection, const glm::mat4& view);
 
 	void StaticAllocate() const;
 	void Render() const;

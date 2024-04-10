@@ -144,6 +144,10 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GeometricLine.cpp" />
+    <ClCompile Include="GeometricPlane.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="IndexBuffer.h" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="RotateAnimation.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
@@ -165,13 +169,13 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BoundingBox.h" />
-    <ClInclude Include="BoundingPlane.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Generate.h" />
+    <ClInclude Include="GeometricLine.h" />
+    <ClInclude Include="GeometricPlane.h" />
     <ClInclude Include="GraphicsEnvironment.h" />
     <ClInclude Include="GraphicsObject.h" />
     <ClInclude Include="GraphicsStructures.h" />
-    <ClInclude Include="Intersection.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Renderer.h" />

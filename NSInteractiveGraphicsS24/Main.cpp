@@ -28,20 +28,31 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	litShader->AddUniform("viewPosition");
 	litShader->AddUniform("tex");
 	auto litScene = std::make_shared<Scene>();
-	ge.AddRenderer("lit renderer", litShader, litScene);
+	ge.AddRenderer("lit", litShader, litScene);
 	#pragma endregion
 	
-	//#pragma region SetUpFlatShader
-	//vertText.ReadAllLines("texture.vert.glsl");
-	//fragText.ReadAllLines("texture.frag.glsl");
-	//auto flatShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
-	//flatShader->AddUniform("world");
-	//flatShader->AddUniform("view");
-	//flatShader->AddUniform("projection");
-	//flatShader->AddUniform("texUnit");
-	//auto flatScene = std::make_shared<Scene>();
-	////ge.AddRenderer("flat renderer", flatShader, flatScene);
-	//#pragma endregion
+	#pragma region SetUpFlatShader
+	vertText.ReadAllLines("texture.vert.glsl");
+	fragText.ReadAllLines("texture.frag.glsl");
+	auto flatShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
+	flatShader->AddUniform("world");
+	flatShader->AddUniform("view");
+	flatShader->AddUniform("projection");
+	flatShader->AddUniform("texUnit");
+	auto flatScene = std::make_shared<Scene>();
+	ge.AddRenderer("flat", flatShader, flatScene);
+	#pragma endregion
+
+	#pragma region SetUpBasicShader
+	vertText.ReadAllLines("basic.vert.glsl");
+	fragText.ReadAllLines("basic.frag.glsl");
+	auto basicShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
+	basicShader->AddUniform("world");
+	basicShader->AddUniform("view");
+	basicShader->AddUniform("projection");
+	auto basicScene = std::make_shared<Scene>();
+	ge.AddRenderer("basic", basicShader, basicScene);
+	#pragma endregion
 
 	#pragma region SetUpDummyCube
 	auto dummyCubeVBuf = Generate::CuboidWithNormals(6, 2, 5);
@@ -74,9 +85,9 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma endregion
 
 	#pragma region SetUpFloor
-	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 4, 128 });
+	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 8, 8 });
 	auto floorTex = std::make_shared<Texture>();
-	floorTex->LoadTextureDataFromFile("cipher.png");
+	floorTex->LoadTextureDataFromFile("floor.png");
 	floorVBuf->SetTexture(floorTex);
 	auto floor = std::make_shared<GraphicsObject>();
 	floor->SetVertexBuffer(floorVBuf);
@@ -111,6 +122,26 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	litScene->AddObject(lightbulb);
 	ge.AddObject("lightbulb", lightbulb);
 	#pragma endregion
+
+	auto circleVBuf = Generate::LineCircleVertices(5, 12, glm::vec3(1.0f,1.0f,0.0f));
+	circleVBuf->SetPrimitiveType(GL_LINES);
+	auto circleIBuf = Generate::LineCircleIndices(12, true);
+	auto circle = std::make_shared<GraphicsObject>();
+	circle->SetVertexBuffer(circleVBuf);
+	circle->SetIndexBuffer(circleIBuf);
+	circle->SetPosition({ 0.0f, 1.0f, 7.0f });
+	basicScene->AddObject(circle);
+	ge.AddObject("circle", circle);
+
+	auto cylinderVBuf = Generate::LineCylinderVertices(5, 4, 24);
+	cylinderVBuf->SetPrimitiveType(GL_LINES);
+	auto cylinderIBuf = Generate::LineCylinderIndices(4, true);
+	auto cylinder = std::make_shared<GraphicsObject>();
+	cylinder->SetVertexBuffer(cylinderVBuf);
+	cylinder->SetIndexBuffer(cylinderIBuf);
+	cylinder->SetPosition({ -10.0f, 10.0f, 10.0f });
+	basicScene->AddObject(cylinder);
+	ge.AddObject("cylinder", cylinder);
 #pragma endregion
 }
 

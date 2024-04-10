@@ -15,7 +15,7 @@ private:
 	glm::mat4 view;
 	glm::mat4 proj;
 
-	void RenderObject(GraphicsObject& object);
+	void RenderObject(const std::shared_ptr<GraphicsObject>& object) const;
 
 public:
 	Renderer(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Scene>& scene);
@@ -33,7 +33,7 @@ public:
 	inline const glm::mat4& GetProjection() { return proj; }
 	inline void SetProjection(const glm::mat4& proj) { this->proj = proj; }
 	
-	void StaticAllocateVertexBuffer() const;
+	void StaticAllocateBuffers() const;
 
-	void RenderScene(const std::shared_ptr<Camera>& cam);
+	void RenderScene(const std::shared_ptr<Camera>& cam) const;
 };
