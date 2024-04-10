@@ -76,7 +76,9 @@ void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int
 }
 
 Ray GraphicsEnvironment::GetMouseRay(const glm::mat4& projection, const glm::mat4& view) {
-	return Ray(mouse.windowX, mouse.windowY, projection, view);
+	Ray ray;
+	ray.Create(mouse.ndcX, mouse.ndcY, projection, view);
+	return ray;
 }
 
 void GraphicsEnvironment::StaticAllocate(void) const {
@@ -92,7 +94,7 @@ void GraphicsEnvironment::Render() const {
 static bool freeCamMode = true;
 static bool correctGamma = true;
 
-void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
+void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 
 	//if the user hits escape, close the window
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -101,19 +103,19 @@ void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 	if(freeCamMode) {
 
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			cam->MoveZ(elapsedSeconds);
+			cam->MoveZ((float)elapsedSeconds);
 		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			cam->MoveZ(elapsedSeconds, -1);
+			cam->MoveZ((float)elapsedSeconds, -1);
 
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			cam->MoveX(elapsedSeconds);
+			cam->MoveX((float)elapsedSeconds);
 		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			cam->MoveX(elapsedSeconds, -1);
+			cam->MoveX((float)elapsedSeconds, -1);
 
 		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-			cam->MoveY(elapsedSeconds);
+			cam->MoveY((float)elapsedSeconds);
 		else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-			cam->MoveY(elapsedSeconds, -1);
+			cam->MoveY((float)elapsedSeconds, -1);
 	}
 
 	else {
@@ -149,6 +151,10 @@ void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double 
 
 	mouse.spherical.theta = 90.0f - (xPercent * 180); //left/right
 	mouse.spherical.phi = 180.0f - (yPercent * 180); //up/down
+
+	//calculate the normalized device X and Y of the mouse
+	mouse.ndcX = xPercent * 2.0f - 1.0f;
+	mouse.ndcY = -(yPercent * 2.0f - 1.0f);
 }
 
 void GraphicsEnvironment::Run3D() {
@@ -160,7 +166,7 @@ void GraphicsEnvironment::Run3D() {
 	float nearClip = 0.01f;
 	float farClip = 200.0f;
 
-	glm::vec3 clearColor = { 0.5f, 0.9f, 1.0f };
+	glm::vec3 clearColor = { 0.04f, 0.19f, 0.19f };
 
 	cam->SetPosition({0.0f, 15.0f, 30.0f });
 	glm::mat4 model(1), view(1), projection(1);
@@ -211,13 +217,30 @@ void GraphicsEnvironment::Run3D() {
 		sprite->RotateToFace(cam->GetPosition());
 		sprite->SetPosition(litScene->GetLocalLight()->position);
 
+		auto& localLight = litScene->GetLocalLight();
+		auto& globalLight = litScene->GetGlobalLight();
+
 		auto& cylinder = objManager.GetObject("cylinder");
 		auto mouseRay = GetMouseRay(projection, view);
-		auto intersection = mouseRay.GetIntersection(BoundingPlane());
-		auto position = mouseRay.GetPositionAlong(intersection.offset);
-		if (intersection.isIntersecting) {
-			//cylinder->SetPosition(mouseRay.GetPositionAlong(intersection.offset));
+		
+		auto& floor = objManager.GetObject("floor");
+		GeometricPlane floorPlane;
+		floorPlane.SetDistanceFromOrigin(floor->GetPosition().y);
+
+		auto floorIntersection = mouseRay.GetIntersectionWithPlane(floorPlane);
+		if (floorIntersection.isIntersecting) {
+			auto floorIntersectionPoint = mouseRay.GetPosition(floorIntersection.offset);
+			floorIntersectionPoint.y = cylinder->GetPosition().y;
+			cylinder->SetPosition(floorIntersectionPoint);
 		}
+		else
+			cylinder->SetPosition({ 0.0f, 3.0f, 5.0f });
+
+		//auto intersection = mouseRay.GetIntersection(BoundingPlane());
+		//auto position = mouseRay.GetPositionAlong(intersection.offset);
+		//if (intersection.isIntersecting) {
+			//cylinder->SetPosition(mouseRay.GetPositionAlong(intersection.offset));
+		//}
 			
 		objManager.Update(deltaTime);
 
@@ -232,8 +255,6 @@ void GraphicsEnvironment::Run3D() {
 		ImGui::NewFrame();
 		ImGui::Begin("Interactive Graphics");		
 		
-				ImGui::Text("cylpos: (%.3f, %.3f, %.3f)", position.x, position.y, position.z);
-
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		
 		auto& camPos = cam->GetPosition();

@@ -1,8 +1,7 @@
 #include "BoundingBox.h"
 #include "Ray.h"
 
-BoundingBox::BoundingBox() : referenceFrame()
-{
+BoundingBox::BoundingBox() : referenceFrame() {
 	Create(1.0f, 1.0f, 1.0f);
 }
 
@@ -14,9 +13,9 @@ void BoundingBox::Create(float width, float height, float depth)
 	float hw = this->width / 2;
 	float hh = this->height / 2;
 	float hd = this->depth / 2;
-	glm::vec3 xAxis = referenceFrame.GetXAxis();
-	glm::vec3 yAxis = referenceFrame.GetYAxis();
-	glm::vec3 zAxis = referenceFrame.GetZAxis();
+	glm::vec3 xAxis = referenceFrame[0];
+	glm::vec3 yAxis = referenceFrame[1];
+	glm::vec3 zAxis = referenceFrame[2];
 	planes[FRONT].Set(-zAxis, hd);
 	planes[BACK].Set(zAxis, hd);
 	planes[RIGHT].Set(-xAxis, hw);

@@ -51,7 +51,7 @@ public:
 	void StaticAllocate() const;
 	void Render() const;
 
-	void ProcessInput(float elapsedSeconds) const;
+	void ProcessInput(double elapsedSeconds) const;
 
 	inline void AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj) { objManager.SetObject(key, obj); }
 	inline std::shared_ptr<GraphicsObject> GetObject(const std::string& key) const { return objManager.GetObject(key); }
