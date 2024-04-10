@@ -1,6 +1,8 @@
 #pragma once
 #include "Animation.h"
+#include "BoundingBox.h"
 #include "GraphicsStructures.h"
+#include "IndexBuffer.h"
 #include "VertexBuffer.h"
 #include <glm/glm.hpp>
 #include <memory>
@@ -13,13 +15,19 @@ class GraphicsObject {
 protected:
 	glm::mat4 referenceFrame;
 	std::shared_ptr<VertexBuffer> vertBuf;
+	std::shared_ptr<IndexBuffer> idxBuf;
 	std::unordered_set<std::shared_ptr<GraphicsObject>> children;
 	GraphicsObject* parent;
 	std::shared_ptr<Animation> animation;
 	std::shared_ptr<Material> material;
+	std::shared_ptr<BoundingBox> boundingBox;
 
 public:
-	inline GraphicsObject() : referenceFrame(1.0f), parent(nullptr), material(nullptr) {}
+	inline GraphicsObject() :
+		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
+		parent(nullptr), animation(nullptr), material(nullptr),
+		boundingBox(nullptr) {
+	}
 	inline virtual ~GraphicsObject() = default;
 
 	//gets the reference frame of this object in global world space
@@ -39,6 +47,13 @@ public:
 	inline const std::shared_ptr<VertexBuffer>& GetVertexBuffer() const { return vertBuf; }
 	inline void SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vertBuf) { this->vertBuf = vertBuf; }
 
+	inline const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const { return idxBuf; }
+	inline void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& idxBuf) { this->idxBuf = idxBuf; }
+	inline bool IsIndexed() const { return idxBuf != nullptr; }
+	inline void CreateIndexBuffer() const {
+		throw "not impl";
+	}
+
 	//returns a const reference to the child container
 	inline const std::unordered_set<std::shared_ptr<GraphicsObject>>& GetChildren() const { return children; }
 
@@ -51,6 +66,10 @@ public:
 	inline const std::shared_ptr<Material>& GetMaterial() const { return material; }
 	inline void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }
 
+	inline bool HasBoundingBox() const { return boundingBox != nullptr; }
+	inline const std::shared_ptr<BoundingBox>& GetBoundingBox() const { return boundingBox; }
+	inline void SetBoundingBox(const std::shared_ptr<BoundingBox>& boundingBox) { this->boundingBox = boundingBox; }
+
 	const glm::vec3& GetPosition() const;
 	void SetPosition(const glm::vec3& position);
 
@@ -61,6 +80,6 @@ public:
 	void RotateLocal(float xDeg, float yDeg, float zDeg);
 	void RotateToFace(const glm::vec3& target);
 
-	void StaticAllocateVertexBuffer() const;
+	void StaticAllocateBuffers() const;
 	void Update(double elapsedSeconds);
 };

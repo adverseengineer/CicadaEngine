@@ -79,6 +79,24 @@
     <ClCompile Include="FallbackTexture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.h">
+      <Filter>Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometricLine.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometricPlane.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexBuffer.h">
@@ -132,6 +150,18 @@
     <ClInclude Include="ShaderManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="GeometricLine.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometricPlane.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">
@@ -144,6 +174,9 @@
       <Filter>Resources\Images</Filter>
     </Image>
     <Image Include="lightbulb.png">
+      <Filter>Resources\Images</Filter>
+    </Image>
+    <Image Include="cipher.png">
       <Filter>Resources\Images</Filter>
     </Image>
   </ItemGroup>
@@ -185,6 +218,9 @@
     </Filter>
     <Filter Include="Resources\Images">
       <UniqueIdentifier>{61cc2e49-a1ef-4dae-ae71-eaf0df993ebe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Raycasting">
+      <UniqueIdentifier>{4afec35a-8bf1-4c42-984c-c2993f68dd4a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

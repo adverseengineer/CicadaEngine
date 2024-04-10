@@ -8,6 +8,13 @@
 
 MouseParams GraphicsEnvironment::mouse;
 
+GraphicsEnvironment::~GraphicsEnvironment() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	glfwTerminate();
+}
+
 void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -41,7 +48,7 @@ void GraphicsEnvironment::SetupGraphics() {
 	//set up a callback for whenever the window is resized
 	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
 	glfwSetCursorPosCallback(window, OnMouseMove);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	//set up ImGui
 	IMGUI_CHECKVERSION();
@@ -68,9 +75,15 @@ void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int
 	glViewport(0, 0, width, height);
 }
 
+Ray GraphicsEnvironment::GetMouseRay(const glm::mat4& projection, const glm::mat4& view) {
+	Ray ray;
+	ray.Create(mouse.ndcX, mouse.ndcY, projection, view);
+	return ray;
+}
+
 void GraphicsEnvironment::StaticAllocate(void) const {
 	for(auto& [name, renderer] : rendererMap)
-		renderer->StaticAllocateVertexBuffer();
+		renderer->StaticAllocateBuffers();
 }
 
 void GraphicsEnvironment::Render() const {
@@ -81,7 +94,7 @@ void GraphicsEnvironment::Render() const {
 static bool freeCamMode = true;
 static bool correctGamma = true;
 
-void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
+void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 
 	//if the user hits escape, close the window
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -90,19 +103,19 @@ void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 	if(freeCamMode) {
 
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			cam->MoveZ(elapsedSeconds);
+			cam->MoveZ((float)elapsedSeconds);
 		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			cam->MoveZ(elapsedSeconds, -1);
+			cam->MoveZ((float)elapsedSeconds, -1);
 
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			cam->MoveX(elapsedSeconds);
+			cam->MoveX((float)elapsedSeconds);
 		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			cam->MoveX(elapsedSeconds, -1);
+			cam->MoveX((float)elapsedSeconds, -1);
 
 		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-			cam->MoveY(elapsedSeconds);
+			cam->MoveY((float)elapsedSeconds);
 		else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-			cam->MoveY(elapsedSeconds, -1);
+			cam->MoveY((float)elapsedSeconds, -1);
 	}
 
 	else {
@@ -130,7 +143,6 @@ void GraphicsEnvironment::ProcessInput(float elapsedSeconds) const {
 void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double mouseY) {
 
 	auto& mouse = GraphicsEnvironment::mouse;
-
 	mouse.x = mouseX;
 	mouse.y = mouseY;
 
@@ -139,6 +151,10 @@ void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double 
 
 	mouse.spherical.theta = 90.0f - (xPercent * 180); //left/right
 	mouse.spherical.phi = 180.0f - (yPercent * 180); //up/down
+
+	//calculate the normalized device X and Y of the mouse
+	mouse.ndcX = xPercent * 2.0f - 1.0f;
+	mouse.ndcY = -(yPercent * 2.0f - 1.0f);
 }
 
 void GraphicsEnvironment::Run3D() {
@@ -150,7 +166,7 @@ void GraphicsEnvironment::Run3D() {
 	float nearClip = 0.01f;
 	float farClip = 200.0f;
 
-	glm::vec3 clearColor = { 0.5f, 0.9f, 1.0f };
+	glm::vec3 clearColor = { 0.04f, 0.19f, 0.19f };
 
 	cam->SetPosition({0.0f, 15.0f, 30.0f });
 	glm::mat4 model(1), view(1), projection(1);
@@ -196,10 +212,36 @@ void GraphicsEnvironment::Run3D() {
 			renderer->GetShader()->SendMat4Uniform("projection", projection);
 		}
 
-		auto& sprite = objManager.GetObject("sprite");
+		auto& sprite = objManager.GetObject("lightbulb");
+		auto& litScene = GetRenderer("lit")->GetScene();
 		sprite->RotateToFace(cam->GetPosition());
-		sprite->SetPosition(rendererMap["3D renderer"]->GetScene()->GetLocalLight()->position);
+		sprite->SetPosition(litScene->GetLocalLight()->position);
 
+		auto& localLight = litScene->GetLocalLight();
+		auto& globalLight = litScene->GetGlobalLight();
+
+		auto& cylinder = objManager.GetObject("cylinder");
+		auto mouseRay = GetMouseRay(projection, view);
+		
+		auto& floor = objManager.GetObject("floor");
+		GeometricPlane floorPlane;
+		floorPlane.SetDistanceFromOrigin(floor->GetPosition().y);
+
+		auto floorIntersection = mouseRay.GetIntersectionWithPlane(floorPlane);
+		if (floorIntersection.isIntersecting) {
+			auto floorIntersectionPoint = mouseRay.GetPosition(floorIntersection.offset);
+			floorIntersectionPoint.y = cylinder->GetPosition().y;
+			cylinder->SetPosition(floorIntersectionPoint);
+		}
+		else
+			cylinder->SetPosition({ 0.0f, 3.0f, 5.0f });
+
+		//auto intersection = mouseRay.GetIntersection(BoundingPlane());
+		//auto position = mouseRay.GetPositionAlong(intersection.offset);
+		//if (intersection.isIntersecting) {
+			//cylinder->SetPosition(mouseRay.GetPositionAlong(intersection.offset));
+		//}
+			
 		objManager.Update(deltaTime);
 
 		//and finally call render
@@ -214,30 +256,7 @@ void GraphicsEnvironment::Run3D() {
 		ImGui::Begin("Interactive Graphics");		
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-
-		ImGui::Checkbox("Free Cam", &freeCamMode);
-		ImGui::Checkbox("Correct Gamma", &correctGamma);
-
-		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));
-
-		auto& scene = rendererMap["3D renderer"]->GetScene();
-		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(scene->GetLocalLight()->color));
-		ImGui::DragFloat3("Local Light Position", glm::value_ptr(scene->GetLocalLight()->position));
-		ImGui::SliderFloat("Local Intensity", &scene->GetLocalLight()->intensity, 0, 1);
-		ImGui::SliderFloat("Local Attenuation", &scene->GetLocalLight()->attenuationCoef, 0, 1);
 		
-		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(scene->GetGlobalLight()->color));
-		ImGui::DragFloat3("Global Light Position", glm::value_ptr(scene->GetGlobalLight()->position));
-		ImGui::SliderFloat("Global Intensity", &scene->GetGlobalLight()->intensity, 0, 1);
-		ImGui::SliderFloat("Global Attenuation", &scene->GetGlobalLight()->attenuationCoef, 0, 1);
-		
-		auto& mat = objManager.GetObject("cube 1")->GetMaterial();
-		ImGui::SliderFloat("Material Ambient Intensity", (float*)&mat->ambientIntensity, 0, 1);
-		ImGui::SliderFloat("Material Specular Intensity", (float*)&mat->specularIntensity, 0, 1);
-		ImGui::SliderFloat("Material Shininess", (float*)&mat->shininess, 0, 100);
-
-		ImGui::Text(Util::GetLog().c_str());
-
 		auto& camPos = cam->GetPosition();
 		ImGui::Text("CamPos: (%.3f, %.3f, %.3f)", camPos.x, camPos.y, camPos.z);
 		auto& camLook = cam->GetLookFrame();
@@ -247,15 +266,28 @@ void GraphicsEnvironment::Run3D() {
 			camLook[0][1], camLook[1][1], camLook[2][1],
 			camLook[0][2], camLook[1][2], camLook[2][2]
 		);
+
+		ImGui::Checkbox("Free Cam", &freeCamMode);
+		ImGui::Checkbox("Correct Gamma", &correctGamma);
+
+		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));
+
+		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(litScene->GetLocalLight()->color));
+		ImGui::DragFloat3("Local Light Position", glm::value_ptr(litScene->GetLocalLight()->position));
+		ImGui::SliderFloat("Local Intensity", &litScene->GetLocalLight()->intensity, 0, 1);
+		ImGui::SliderFloat("Local Attenuation", &litScene->GetLocalLight()->attenuationCoef, 0, 1);
 		
-		auto& frm = objManager.GetObject("cube 2")->GetLocalReferenceFrame();
-		ImGui::Text(
-			"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
-			frm[0][0], frm[1][0], frm[2][0], frm[3][0],
-			frm[0][1], frm[1][1], frm[2][1], frm[3][1],
-			frm[0][2], frm[1][2], frm[2][2], frm[3][2],
-			frm[0][3], frm[1][3], frm[2][3], frm[3][3]
-		);
+		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(litScene->GetGlobalLight()->color));
+		ImGui::DragFloat3("Global Light Position", glm::value_ptr(litScene->GetGlobalLight()->position));
+		ImGui::SliderFloat("Global Intensity", &litScene->GetGlobalLight()->intensity, 0, 1);
+		ImGui::SliderFloat("Global Attenuation", &litScene->GetGlobalLight()->attenuationCoef, 0, 1);
+		
+		auto& mat = objManager.GetObject("crate")->GetMaterial();
+		ImGui::SliderFloat("Material Ambient Intensity", (float*)&mat->ambientIntensity, 0, 1);
+		ImGui::SliderFloat("Material Specular Intensity", (float*)&mat->specularIntensity, 0, 1);
+		ImGui::SliderFloat("Material Shininess", (float*)&mat->shininess, 0, 100);
+
+		ImGui::Text(Util::GetLog().c_str());
 
 		ImGui::End();
 		ImGui::Render();

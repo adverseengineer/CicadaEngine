@@ -4,7 +4,6 @@
 //creates a new VertexBuffer with the specified number of elements per vertex
 VertexBuffer::VertexBuffer(unsigned int numElementsPerVertex) {
 	numberOfElementsPerVertex = numElementsPerVertex;
-	numberOfVertices = 0;
 	primitiveType = GL_TRIANGLES;
 	textureUnit = 0;
 	texture = nullptr;
@@ -35,12 +34,10 @@ void VertexBuffer::AddVertexData(unsigned int count, ...) {
 	va_list args;
 	va_start(args, count);
 	while(count > 0) {
-		// The default is double, so accept as double and then cast to
-		// float.
+		//the default is double, so accept as double and then cast to float
 		vertexData.push_back(static_cast<float>(va_arg(args, double)));
 		count--;
 	}
-	numberOfVertices++;
 	va_end(args);
 }
 
