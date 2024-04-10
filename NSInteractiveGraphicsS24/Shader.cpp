@@ -10,27 +10,36 @@ Shader::Shader(const std::string& vertexSource, const std::string& fragmentSourc
 }
 
 void Shader::AddUniform(const std::string& uniformName) {
-	if (uniformMap.contains(uniformName)) return;
+	if (uniformMap.contains(uniformName))
+		return;
 	int uniformLocation = glGetUniformLocation(shaderProgram, uniformName.c_str());
 	uniformMap.emplace(uniformName, uniformLocation);
 }
 
 void Shader::SendMat4Uniform(const std::string& uniformName, const glm::mat4& mat) {
+	if (!uniformMap.contains(uniformName))
+		return;
 	glUseProgram(shaderProgram);
 	glUniformMatrix4fv(uniformMap[uniformName], 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void Shader::SendVec3Uniform(const std::string& uniformName, const glm::vec3& vec) {
+	if(!uniformMap.contains(uniformName))
+		return;
 	glUseProgram(shaderProgram);
 	glUniform3fv(uniformMap[uniformName], 1, glm::value_ptr(vec));
 }
 
 void Shader::SendIntUniform(const std::string& uniformName, int value) {
+	if (!uniformMap.contains(uniformName))
+		return;
 	glUseProgram(shaderProgram);
 	glUniform1i(uniformMap[uniformName], value);
 }
 
 void Shader::SendFloatUniform(const std::string& uniformName, float value) {
+	if (!uniformMap.contains(uniformName))
+		return;
 	glUseProgram(shaderProgram);
 	glUniform1f(uniformMap[uniformName], value);
 }
