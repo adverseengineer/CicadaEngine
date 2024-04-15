@@ -3,6 +3,7 @@
 #include "BoundingBox.h"
 #include "GraphicsStructures.h"
 #include "IndexBuffer.h"
+#include "Ray.h"
 #include "VertexBuffer.h"
 #include <glm/glm.hpp>
 #include <memory>
@@ -25,8 +26,9 @@ protected:
 public:
 	inline GraphicsObject() :
 		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
-		parent(nullptr), animation(nullptr), material(nullptr),
-		boundingBox(nullptr) {
+		parent(nullptr), animation(nullptr), material(nullptr) {
+		boundingBox = std::make_shared<BoundingBox>();
+		boundingBox->Create();
 	}
 	inline virtual ~GraphicsObject() = default;
 
@@ -69,6 +71,7 @@ public:
 	inline bool HasBoundingBox() const { return boundingBox != nullptr; }
 	inline const std::shared_ptr<BoundingBox>& GetBoundingBox() const { return boundingBox; }
 	inline void SetBoundingBox(const std::shared_ptr<BoundingBox>& boundingBox) { this->boundingBox = boundingBox; }
+	bool IsIntersectingRay(const Ray& ray) const;
 
 	const glm::vec3& GetPosition() const;
 	void SetPosition(const glm::vec3& position);

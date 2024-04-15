@@ -148,6 +148,7 @@
     <ClCompile Include="GeometricPlane.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="IndexBuffer.h" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="RotateAnimation.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="GraphicsEnvironment.h" />
     <ClInclude Include="GraphicsObject.h" />
     <ClInclude Include="GraphicsStructures.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Renderer.h" />

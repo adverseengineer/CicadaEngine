@@ -24,18 +24,15 @@ void BoundingBox::Create(float width, float height, float depth)
 	planes[BOTTOM].Set(yAxis, hh);
 }
 
-bool BoundingBox::IsIntersectingWithRay(const Ray& ray)
-{
+bool BoundingBox::IsIntersectingWithRay(const Ray& ray) {
 	intersections.clear();
 	Intersection intersection;
 	Ray localRay;
-	glm::vec3 localStart = glm::vec3(
-		inverseMat * glm::vec4(ray.GetStart(), 1.0f));
-	localRay.SetStart(localStart);
-	glm::vec3 localDir = glm::vec3(
-		inverseMat * glm::vec4(ray.GetDirection(), 0.0f));
-	localRay.SetDirection(localDir);
-	for (int i = FRONT; i <= BOTTOM; i++) {
+	glm::vec3 localStart = glm::vec3(inverseMat * glm::vec4(ray.origin, 1.0f));
+	localRay.origin = localStart;
+	glm::vec3 localDir = glm::vec3(inverseMat * glm::vec4(ray.direction, 0.0f));
+	localRay.direction = localDir;
+	for (std::size_t i = FRONT; i <= BOTTOM; i++) {
 		intersection = localRay.GetIntersectionWithPlane(planes[i]);
 		intersections.push_back(intersection);
 	}

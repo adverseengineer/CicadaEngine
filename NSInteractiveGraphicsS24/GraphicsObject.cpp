@@ -8,6 +8,10 @@ bool GraphicsObject::AddChild(const std::shared_ptr<GraphicsObject>& child) {
 	return result.second;
 }
 
+bool GraphicsObject::IsIntersectingRay(const Ray& ray) const {
+	return ray.IsIntersectingObject(*this);
+}
+
 const glm::vec3& GraphicsObject::GetPosition() const {
 	return glm::vec3(referenceFrame[3]);
 }

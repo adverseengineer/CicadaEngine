@@ -1,15 +1,24 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "Ray.h"
 
 class Camera {
+friend class GraphicsEnvironment;
 private:
+	float fov = 60.0f;
+	float nearClip = 0.01f;
+	float farClip = 200.0f;
+
 	glm::mat4 referenceFrame; //tracks the position
 	glm::mat4 lookFrame; //tracks the orientation
+	
+	//glm::mat4 view; //= ref * look
+	glm::mat4 projection;
+
 	float moveSpeed = 10.0f;
 
 public:
-
-	inline Camera() : referenceFrame(1), lookFrame(1) {}
+	Camera(float fov, float nearClip, float farClip, float aspectRatio);
 
 	const glm::vec3 GetPosition() const;
 	void SetPosition(const glm::vec3& position);
@@ -28,4 +37,5 @@ public:
 	void MoveZ(float delta, int direction = 1);
 
 	glm::mat4 GetView() const;
+	Ray GetMouseRay(float screenPosX, float screenPosY) const;
 };

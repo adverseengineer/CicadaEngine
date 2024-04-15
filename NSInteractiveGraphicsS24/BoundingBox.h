@@ -3,10 +3,9 @@
 #include "GeometricPlane.h"
 #include <vector>
 
-class Ray;
+struct Ray;
 
-class BoundingBox
-{
+class BoundingBox {
 public:
 	static const int FRONT = 0;
 	static const int BACK = 1;

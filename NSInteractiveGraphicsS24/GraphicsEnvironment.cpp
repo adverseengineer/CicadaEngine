@@ -75,12 +75,6 @@ void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int
 	glViewport(0, 0, width, height);
 }
 
-Ray GraphicsEnvironment::GetMouseRay(const glm::mat4& projection, const glm::mat4& view) {
-	Ray ray;
-	ray.Create(mouse.ndcX, mouse.ndcY, projection, view);
-	return ray;
-}
-
 void GraphicsEnvironment::StaticAllocate(void) const {
 	for(auto& [name, renderer] : rendererMap)
 		renderer->StaticAllocateBuffers();
@@ -151,25 +145,11 @@ void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double 
 
 	mouse.spherical.theta = 90.0f - (xPercent * 180); //left/right
 	mouse.spherical.phi = 180.0f - (yPercent * 180); //up/down
-
-	//calculate the normalized device X and Y of the mouse
-	mouse.ndcX = xPercent * 2.0f - 1.0f;
-	mouse.ndcY = -(yPercent * 2.0f - 1.0f);
 }
 
 void GraphicsEnvironment::Run3D() {
 
-	int windowWidth = 0, windowHeight = 0;
-	float aspectRatio;
-
-	float fov = 60.0f;
-	float nearClip = 0.01f;
-	float farClip = 200.0f;
-
 	glm::vec3 clearColor = { 0.04f, 0.19f, 0.19f };
-
-	cam->SetPosition({0.0f, 15.0f, 30.0f });
-	glm::mat4 model(1), view(1), projection(1);
 
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
@@ -190,43 +170,53 @@ void GraphicsEnvironment::Run3D() {
 			auto spher = mouse.spherical.ToMat4();
 			cam->SetLookFrame(spher);
 		}
-			
-		view = cam->GetView();
 
-		if (correctGamma)
-			glEnable(GL_FRAMEBUFFER_SRGB);
-		else
-			glDisable(GL_FRAMEBUFFER_SRGB);
+		//if (correctGamma)
+		//	glEnable(GL_FRAMEBUFFER_SRGB);
+		//else
+		//	glDisable(GL_FRAMEBUFFER_SRGB);
 
-		if (windowWidth >= windowHeight)
-			aspectRatio = windowWidth / (windowHeight * 1.0f);
-		else
-			aspectRatio = windowHeight / (windowWidth * 1.0f);
-
-		projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
+		//if (windowWidth >= windowHeight)
+		//	aspectRatio = windowWidth / (windowHeight * 1.0f);
+		//else
+		//	aspectRatio = windowHeight / (windowWidth * 1.0f);
 
 		//update the view matrix for each renderer, and send the view and projection to the shader
 		for (const auto& [name, renderer] : rendererMap) {
+			auto view = cam->GetView();
 			renderer->SetView(view);
-			renderer->GetShader()->SendMat4Uniform("view", view);
-			renderer->GetShader()->SendMat4Uniform("projection", projection);
+			auto& shader = renderer->GetShader();
+			shader->SendMat4Uniform("view", view);
+			shader->SendMat4Uniform("projection", cam->projection);
 		}
 
-		auto& sprite = objManager.GetObject("lightbulb");
+		auto& basicScene = GetRenderer("basic")->GetScene();
+		auto& flatScene = GetRenderer("flat")->GetScene();
 		auto& litScene = GetRenderer("lit")->GetScene();
-		sprite->RotateToFace(cam->GetPosition());
-		sprite->SetPosition(litScene->GetLocalLight()->position);
-
 		auto& localLight = litScene->GetLocalLight();
 		auto& globalLight = litScene->GetGlobalLight();
 
-		auto& cylinder = objManager.GetObject("cylinder");
-		auto mouseRay = GetMouseRay(projection, view);
+		//always make the lightbulb face towards the camera
+		auto& sprite = objManager.GetObject("lightbulb");
+		sprite->RotateToFace(cam->GetPosition());
+		sprite->SetPosition(litScene->GetLocalLight()->position);
 		
+		auto& dummy = objManager.GetObject("dummy");
+		auto& dummyMat = dummy->GetMaterial();
+		auto& crate = objManager.GetObject("crate");
+		auto& crateMat = crate->GetMaterial();
+
+		auto& cylinder = objManager.GetObject("cylinder");
+		auto mouseRay = cam->GetMouseRay(mouse.windowX, mouse.windowY);
+		
+		if (dummy->IsIntersectingRay(mouseRay))
+			dummyMat->ambientIntensity;// = 1.0f;
+		else
+			dummyMat->ambientIntensity = 0.0f;
+
 		auto& floor = objManager.GetObject("floor");
 		GeometricPlane floorPlane;
 		floorPlane.SetDistanceFromOrigin(floor->GetPosition().y);
-
 		auto floorIntersection = mouseRay.GetIntersectionWithPlane(floorPlane);
 		if (floorIntersection.isIntersecting) {
 			auto floorIntersectionPoint = mouseRay.GetPosition(floorIntersection.offset);
@@ -234,14 +224,8 @@ void GraphicsEnvironment::Run3D() {
 			cylinder->SetPosition(floorIntersectionPoint);
 		}
 		else
-			cylinder->SetPosition({ 0.0f, 3.0f, 5.0f });
+			cylinder->SetPosition({ 0.0f, 3.0f, 0.0f }); //hidden way above the map
 
-		//auto intersection = mouseRay.GetIntersection(BoundingPlane());
-		//auto position = mouseRay.GetPositionAlong(intersection.offset);
-		//if (intersection.isIntersecting) {
-			//cylinder->SetPosition(mouseRay.GetPositionAlong(intersection.offset));
-		//}
-			
 		objManager.Update(deltaTime);
 
 		//and finally call render
@@ -267,25 +251,26 @@ void GraphicsEnvironment::Run3D() {
 			camLook[0][2], camLook[1][2], camLook[2][2]
 		);
 
+		ImGui::Text(
+			"Mouse Ray: {(%.3f, %.3f, %.3f), (%.3f, %.3f, %.3f)}",
+			mouseRay.origin.x, mouseRay.origin.y, mouseRay.origin.z,
+			mouseRay.direction.x, mouseRay.direction.y, mouseRay.direction.z
+		);
+
 		ImGui::Checkbox("Free Cam", &freeCamMode);
 		ImGui::Checkbox("Correct Gamma", &correctGamma);
 
 		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));
 
-		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(litScene->GetLocalLight()->color));
-		ImGui::DragFloat3("Local Light Position", glm::value_ptr(litScene->GetLocalLight()->position));
-		ImGui::SliderFloat("Local Intensity", &litScene->GetLocalLight()->intensity, 0, 1);
-		ImGui::SliderFloat("Local Attenuation", &litScene->GetLocalLight()->attenuationCoef, 0, 1);
+		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight->color));
+		ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight->position));
+		ImGui::SliderFloat("Local Intensity", &localLight->intensity, 0, 1);
+		ImGui::SliderFloat("Local Attenuation", &localLight->attenuationCoef, 0, 1);
 		
-		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(litScene->GetGlobalLight()->color));
-		ImGui::DragFloat3("Global Light Position", glm::value_ptr(litScene->GetGlobalLight()->position));
-		ImGui::SliderFloat("Global Intensity", &litScene->GetGlobalLight()->intensity, 0, 1);
-		ImGui::SliderFloat("Global Attenuation", &litScene->GetGlobalLight()->attenuationCoef, 0, 1);
-		
-		auto& mat = objManager.GetObject("crate")->GetMaterial();
-		ImGui::SliderFloat("Material Ambient Intensity", (float*)&mat->ambientIntensity, 0, 1);
-		ImGui::SliderFloat("Material Specular Intensity", (float*)&mat->specularIntensity, 0, 1);
-		ImGui::SliderFloat("Material Shininess", (float*)&mat->shininess, 0, 100);
+		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight->color));
+		ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight->position));
+		ImGui::SliderFloat("Global Intensity", &globalLight->intensity, 0, 1);
+		ImGui::SliderFloat("Global Attenuation", &globalLight->attenuationCoef, 0, 1);
 
 		ImGui::Text(Util::GetLog().c_str());
 

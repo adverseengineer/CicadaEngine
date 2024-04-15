@@ -97,6 +97,7 @@
     <ClCompile Include="BoundingBox.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexBuffer.h">
@@ -162,6 +163,7 @@
     <ClInclude Include="Ray.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">

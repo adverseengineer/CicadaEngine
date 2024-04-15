@@ -10,8 +10,7 @@ struct Intersection{
 	float offset = -1.0f;
 };
 
-class GeometricPlane
-{
+class GeometricPlane {
 protected:
 	glm::vec3 normal;
 	float distanceFromOrigin;
