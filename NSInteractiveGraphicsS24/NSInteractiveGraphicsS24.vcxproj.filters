@@ -138,7 +138,7 @@
     <ClInclude Include="ObjectManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
+    <ClInclude Include="AnimationBehavior.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="RotateAnimation.h">

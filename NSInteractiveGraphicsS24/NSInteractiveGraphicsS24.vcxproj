@@ -170,7 +170,7 @@
     <ClCompile Include="VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationBehavior.h" />
     <ClInclude Include="Behavior.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Camera.h" />

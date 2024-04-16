@@ -1,5 +1,5 @@
 #pragma once
-#include "Animation.h"
+#include "AnimationBehavior.h"
 #include "BoundingBox.h"
 #include "GraphicsStructures.h"
 #include "IndexBuffer.h"

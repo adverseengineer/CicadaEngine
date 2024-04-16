@@ -157,6 +157,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
 	auto crateHLBehavior = std::make_shared<HighlightBehavior>();
+
 	dummyHLBehavior->SetObject(dummy);
 	crateHLBehavior->SetObject(crate);
 	dummy->AddBehavior("highlight", dummyHLBehavior);
