@@ -26,7 +26,7 @@ protected:
 	static MouseParams mouse;
 
 public:
-	inline GraphicsEnvironment() {}
+	inline GraphicsEnvironment() : window(nullptr), windowWidth(0), windowHeight(0) {}
 	~GraphicsEnvironment();
 
 	inline GLFWwindow* GetWindow() { return window; }

@@ -1,7 +1,7 @@
 #include "BoundingBox.h"
 #include "Ray.h"
 
-BoundingBox::BoundingBox() : referenceFrame() {
+BoundingBox::BoundingBox() : referenceFrame(1.0f) {
 	Create(1.0f, 1.0f, 1.0f);
 }
 

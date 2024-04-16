@@ -72,8 +72,8 @@ void GraphicsObject::StaticAllocateBuffers() const {
 }
 
 void GraphicsObject::Update(double elapsedSeconds) {
-	if (animation != nullptr) {
-		animation->Update(elapsedSeconds);
+	for (auto& [name, behavior] : behaviorMap) {
+		behavior->Update(elapsedSeconds);
 	}
 	//TODO: any other per-frame updates that an object may need
 }

@@ -24,6 +24,6 @@ struct Ray {
 	Intersection GetIntersectionWithPlane(const GeometricPlane& plane) const;
 	Intersection GetIntersectionWithBoundingBox(const BoundingBox& boundingBox) const;
 	bool IsIntersectingObject(const GraphicsObject& object) const;
+	//bool IsIntersectingObject(const std::shared_ptr<GraphicsObject>& object) const;
 	//bool IsPointAlongRay(glm::vec3 point) const;
 };
-

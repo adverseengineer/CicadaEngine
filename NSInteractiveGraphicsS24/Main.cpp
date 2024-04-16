@@ -3,6 +3,7 @@
 #include "RotateAnimation.h"
 #include "TextFile.h"
 #include <Windows.h>
+#include "HighlightBehavior.h"
 
 static void SetUp3DScene(GraphicsEnvironment& ge) {
 
@@ -64,9 +65,6 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
 	auto dummyMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	dummy->SetMaterial(dummyMat);
-	auto rotateAnimation = std::make_shared<RotateAnimation>(glm::vec3{ 0.0f,1.0f,0.0f }, 90.0f);
-	rotateAnimation->SetObject(dummy);
-	dummy->SetAnimation(rotateAnimation);
 	litScene->AddObject(dummy);
 	ge.AddObject("dummy", dummy);
 	
@@ -156,6 +154,13 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	basicScene->AddObject(cylinder);
 	ge.AddObject("cylinder", cylinder);
 	#pragma endregion
+
+	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
+	auto crateHLBehavior = std::make_shared<HighlightBehavior>();
+	dummyHLBehavior->SetObject(dummy);
+	crateHLBehavior->SetObject(crate);
+	dummy->AddBehavior("highlight", dummyHLBehavior);
+	crate->AddBehavior("highlight", crateHLBehavior);
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
