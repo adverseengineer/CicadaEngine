@@ -15,6 +15,12 @@ public:
 	bool AddObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj);
 	bool SetObject(const std::string& key, const std::shared_ptr<GraphicsObject>& obj);
 	
+	inline void SetBehaviorDefaults() {
+		for (auto& [name, object] : objectMap) {
+			object->SetBehaviorDefaults();
+		}
+	}
+
 	void Update(double elapsedSeconds);
 };
 

@@ -18,3 +18,8 @@ bool Ray::IsIntersectingObject(const GraphicsObject& object) const {
 	if (!object.HasBoundingBox()) return false;
 	return object.GetBoundingBox()->IsIntersectingWithRay(*this);
 }
+
+//bool Ray::IsIntersectingObject(const std::shared_ptr<GraphicsObject>& object) const {
+	//if(object == nullptr) return false;
+	//return IsIntersectingObject(*object);
+//}

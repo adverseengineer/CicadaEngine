@@ -7,6 +7,7 @@
 #include "VertexBuffer.h"
 #include <glm/glm.hpp>
 #include <memory>
+#include <unordered_map>
 #include <unordered_set>
 
 //forward decl so that we can resolve a cyclical dependency
@@ -19,16 +20,14 @@ protected:
 	std::shared_ptr<IndexBuffer> idxBuf;
 	std::unordered_set<std::shared_ptr<GraphicsObject>> children;
 	GraphicsObject* parent;
-	std::shared_ptr<Animation> animation;
+	std::unordered_map<std::string, std::shared_ptr<Behavior>> behaviorMap;
 	std::shared_ptr<Material> material;
 	std::shared_ptr<BoundingBox> boundingBox;
 
 public:
 	inline GraphicsObject() :
 		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
-		parent(nullptr), animation(nullptr), material(nullptr) {
-		boundingBox = std::make_shared<BoundingBox>();
-		boundingBox->Create();
+		parent(nullptr), material(nullptr) {
 	}
 	inline virtual ~GraphicsObject() = default;
 
@@ -62,8 +61,18 @@ public:
 	//inserts a new child under this object, returns true if success, false if already present
 	bool AddChild(const std::shared_ptr<GraphicsObject>& child);
 
-	inline const std::shared_ptr<Animation>& GetAnimation() const { return animation; }
-	inline void SetAnimation(const std::shared_ptr<Animation>& animation) { this->animation = animation; }
+	inline bool AddBehavior(const std::string& behaviorName, const std::shared_ptr<Behavior>& behavior) { 
+		return behaviorMap.insert_or_assign(behaviorName, behavior).second;
+	}
+	inline void SetBehaviorDefaults() {
+		for (auto& [name, behavior] : behaviorMap) {
+			behavior->StoreDefaults();
+		}
+	}
+	inline void SetBehaviorParameters(const std::string& name, BehaviorParams& params) {
+		auto& behavior = behaviorMap.at(name);
+		behavior->SetParameter(params);
+	}
 
 	inline const std::shared_ptr<Material>& GetMaterial() const { return material; }
 	inline void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }

@@ -98,6 +98,8 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Behavior.cpp" />
+    <ClCompile Include="HighlightBehavior.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexBuffer.h">
@@ -164,6 +166,8 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Behavior.h" />
+    <ClInclude Include="HighlightBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">

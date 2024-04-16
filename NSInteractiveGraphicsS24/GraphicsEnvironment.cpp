@@ -147,12 +147,24 @@ void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double 
 	mouse.spherical.phi = 180.0f - (yPercent * 180); //up/down
 }
 
+Ray mouseRay;
+
 void GraphicsEnvironment::Run3D() {
 
 	glm::vec3 clearColor = { 0.04f, 0.19f, 0.19f };
 
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
+
+	HighlightParams hlp = { {}, &mouseRay };
+
+	auto& dummy = objManager.GetObject("dummy");
+	auto& dummyMat = dummy->GetMaterial();
+	auto& crate = objManager.GetObject("crate");
+	auto& crateMat = crate->GetMaterial();
+
+	dummy->SetBehaviorParameters("highlight", hlp);
+	crate->SetBehaviorParameters("highlight", hlp);
 
 	while (!glfwWindowShouldClose(window)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
@@ -171,15 +183,15 @@ void GraphicsEnvironment::Run3D() {
 			cam->SetLookFrame(spher);
 		}
 
-		//if (correctGamma)
-		//	glEnable(GL_FRAMEBUFFER_SRGB);
-		//else
-		//	glDisable(GL_FRAMEBUFFER_SRGB);
+		if (correctGamma)
+			glEnable(GL_FRAMEBUFFER_SRGB);
+		else
+			glDisable(GL_FRAMEBUFFER_SRGB);
 
-		//if (windowWidth >= windowHeight)
-		//	aspectRatio = windowWidth / (windowHeight * 1.0f);
-		//else
-		//	aspectRatio = windowHeight / (windowWidth * 1.0f);
+		if (windowWidth >= windowHeight)
+			cam->aspectRatio = windowWidth / (windowHeight * 1.0f);
+		else
+			cam->aspectRatio = windowHeight / (windowWidth * 1.0f);
 
 		//update the view matrix for each renderer, and send the view and projection to the shader
 		for (const auto& [name, renderer] : rendererMap) {
@@ -200,19 +212,9 @@ void GraphicsEnvironment::Run3D() {
 		auto& sprite = objManager.GetObject("lightbulb");
 		sprite->RotateToFace(cam->GetPosition());
 		sprite->SetPosition(litScene->GetLocalLight()->position);
-		
-		auto& dummy = objManager.GetObject("dummy");
-		auto& dummyMat = dummy->GetMaterial();
-		auto& crate = objManager.GetObject("crate");
-		auto& crateMat = crate->GetMaterial();
 
 		auto& cylinder = objManager.GetObject("cylinder");
-		auto mouseRay = cam->GetMouseRay(mouse.windowX, mouse.windowY);
-		
-		if (dummy->IsIntersectingRay(mouseRay))
-			dummyMat->ambientIntensity;// = 1.0f;
-		else
-			dummyMat->ambientIntensity = 0.0f;
+		mouseRay = cam->GetMouseRay(mouse.windowX, mouse.windowY);
 
 		auto& floor = objManager.GetObject("floor");
 		GeometricPlane floorPlane;
@@ -224,7 +226,7 @@ void GraphicsEnvironment::Run3D() {
 			cylinder->SetPosition(floorIntersectionPoint);
 		}
 		else
-			cylinder->SetPosition({ 0.0f, 3.0f, 0.0f }); //hidden way above the map
+			cylinder->SetPosition({ 0.0f, 3.0f, 0.0f });
 
 		objManager.Update(deltaTime);
 

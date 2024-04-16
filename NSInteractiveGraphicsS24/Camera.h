@@ -9,6 +9,8 @@ private:
 	float nearClip = 0.01f;
 	float farClip = 200.0f;
 
+	float aspectRatio;
+
 	glm::mat4 referenceFrame; //tracks the position
 	glm::mat4 lookFrame; //tracks the orientation
 	
