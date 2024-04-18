@@ -1,5 +1,5 @@
+//#include "Behavior.h"
 #include "GraphicsEnvironment.h"
-#include "RotateAnimation.h"
 #include "Shader.h"
 #include "Timer.h"
 #include <ext/matrix_clip_space.hpp>
@@ -44,11 +44,19 @@ bool GraphicsEnvironment::InitGlad() {
 	return true;
 }
 
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+		Behavior::SetClickState(true);
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+		Behavior::SetClickState(false);
+}
 void GraphicsEnvironment::SetupGraphics() {
 	//set up a callback for whenever the window is resized
 	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
 	glfwSetCursorPosCallback(window, OnMouseMove);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
+
 
 	//set up ImGui
 	IMGUI_CHECKVERSION();
@@ -156,15 +164,35 @@ void GraphicsEnvironment::Run3D() {
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
 
-	HighlightParams hlp = { {}, &mouseRay };
+	HighlightParams hlp = {
+		&mouseRay
+	};
+	RotationParams rap = {
+		&mouseRay,
+		glm::vec3{0,1,0},
+		360.0f
+	};
+	TranslationParams tap = {
+		&mouseRay,
+		glm::vec3{ 40,10,40 },
+		glm::vec3{ 40,10,20 },
+		0.0f,
+		1,
+		0.3f
+	};
 
 	auto& dummy = objManager.GetObject("dummy");
 	auto& dummyMat = dummy->GetMaterial();
 	auto& crate = objManager.GetObject("crate");
 	auto& crateMat = crate->GetMaterial();
+	auto& mover = objManager.GetObject("mover");
+	auto& moverMat = mover->GetMaterial();
 
 	dummy->SetBehaviorParameters("highlight", hlp);
 	crate->SetBehaviorParameters("highlight", hlp);
+	mover->SetBehaviorParameters("highlight", hlp);
+	mover->SetBehaviorParameters("translate", tap);
+	mover->SetBehaviorParameters("rotate", rap);
 
 	while (!glfwWindowShouldClose(window)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
@@ -214,7 +242,7 @@ void GraphicsEnvironment::Run3D() {
 		sprite->SetPosition(litScene->GetLocalLight()->position);
 
 		auto& cylinder = objManager.GetObject("cylinder");
-		mouseRay = cam->GetMouseRay(mouse.windowX, mouse.windowY);
+		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
 
 		auto& floor = objManager.GetObject("floor");
 		GeometricPlane floorPlane;

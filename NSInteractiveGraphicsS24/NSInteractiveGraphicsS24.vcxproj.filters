@@ -64,12 +64,6 @@
     <ClCompile Include="ObjectManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="RotateAnimation.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -99,7 +93,6 @@
     </ClCompile>
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Behavior.cpp" />
-    <ClCompile Include="HighlightBehavior.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexBuffer.h">
@@ -138,12 +131,6 @@
     <ClInclude Include="ObjectManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationBehavior.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateAnimation.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -167,7 +154,6 @@
     </ClInclude>
     <ClInclude Include="Input.h" />
     <ClInclude Include="Behavior.h" />
-    <ClInclude Include="HighlightBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">

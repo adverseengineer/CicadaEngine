@@ -1,23 +1,70 @@
 #pragma once
-#include "GraphicsStructures.h"
+#include "GraphicsObject.h"
+#include "Ray.h"
 #include "Util.h"
 
 //forward decl so that we can resolve a cyclical dependency
-class GraphicsObject;
+//class GraphicsObject;
 
-//abstract class from which to derive all other animations
+struct BehaviorParams {
+	Ray* ray;
+};
+struct HighlightParams : BehaviorParams {
+	//Ray* ray;
+};
+struct TranslationParams : BehaviorParams {
+	glm::vec3 pointA;
+	glm::vec3 pointB;
+	float progress;
+	int direction = 1;
+	float speed;
+};
+struct RotationParams : BehaviorParams {
+	glm::vec3 rotationAxis;
+	float angularVelocity;
+};
+
+//abstract class from which to derive all other behaviors
 class Behavior {
 protected:
 	std::shared_ptr<GraphicsObject> object;
-
+	static bool clicked;
 public:
-	inline Behavior() : object(nullptr) {};
-	inline virtual ~Behavior() = default;
-
 	inline const std::shared_ptr<GraphicsObject>& GetObject() const { return object; }
 	inline void SetObject(const std::shared_ptr<GraphicsObject>& object) { this->object = object; }
 
-	virtual void StoreDefaults() = 0; //any class with at least one virtual method set to 0 is abstract
-	virtual void SetParameter(BehaviorParams& params) = 0;
-	virtual void Update(double elapsedSeconds) = 0;
+	inline virtual void StoreDefaults() = 0; //any class with at least one virtual method set to 0 is abstract
+	inline virtual void SetParameter(BehaviorParams& params) = 0;
+	inline virtual void Update(double elapsedSeconds) = 0;
+
+	static void SetClickState(bool clicked);
+};
+
+class TranslateAnimation : public Behavior {
+private:
+	TranslationParams params;
+	bool go = false;
+public:
+	void StoreDefaults();
+	void SetParameter(BehaviorParams& params);
+	void Update(double elapsedSeconds);
+};
+
+class RotateAnimation : public Behavior {
+private:
+	RotationParams params;
+public:
+	void StoreDefaults();
+	void SetParameter(BehaviorParams& params);
+	void Update(double elapsedSeconds);
+};
+
+class HighlightBehavior : public Behavior {
+protected:
+	HighlightParams params;
+	float ambientIntensity = 0.0f;
+public:
+	void StoreDefaults();
+	void SetParameter(BehaviorParams& params);
+	void Update(double elapsedSeconds);
 };

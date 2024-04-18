@@ -1,9 +1,8 @@
+//#include "Behavior.h"
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
-#include "RotateAnimation.h"
 #include "TextFile.h"
 #include <Windows.h>
-#include "HighlightBehavior.h"
 
 static void SetUp3DScene(GraphicsEnvironment& ge) {
 
@@ -93,6 +92,25 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	crate->SetBoundingBox(crateBB);
 	#pragma endregion
 
+	#pragma region SetUpMover
+	auto moverTex = std::make_shared<Texture>();
+	moverTex->LoadTextureDataFromFile("gw.png");
+	auto moverVBuf = Generate::CuboidWithNormals(1.0f, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 10.0f });
+	moverVBuf->SetTexture(moverTex);
+	auto mover = std::make_shared<GraphicsObject>();
+	mover->SetVertexBuffer(moverVBuf);
+	mover->SetPosition(glm::vec3(40.0f, 10.0f, 40.0f));
+	auto moverMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
+	mover->SetMaterial(moverMat);
+	litScene->AddObject(mover);
+	ge.AddObject("mover", mover);
+
+	auto moverBB = std::make_shared<BoundingBox>();
+	moverBB->Create(1, 10, 1);
+	moverBB->SetReferenceFrame(mover->GetLocalReferenceFrame());
+	mover->SetBoundingBox(moverBB);
+	#pragma endregion
+
 	#pragma region SetUpFloor
 	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 12, 12 });
 	auto floorTex = std::make_shared<Texture>();
@@ -157,11 +175,20 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
 	auto crateHLBehavior = std::make_shared<HighlightBehavior>();
+	auto moverHLBehavior = std::make_shared<HighlightBehavior>();
+	auto moverTranslateBehavior = std::make_shared<TranslateAnimation>();
+	auto moverRotateBehavior = std::make_shared<RotateAnimation>();
 
 	dummyHLBehavior->SetObject(dummy);
 	crateHLBehavior->SetObject(crate);
+	moverHLBehavior->SetObject(mover);
+	moverTranslateBehavior->SetObject(mover);
+	moverRotateBehavior->SetObject(mover);
 	dummy->AddBehavior("highlight", dummyHLBehavior);
 	crate->AddBehavior("highlight", crateHLBehavior);
+	mover->AddBehavior("highlight", moverHLBehavior);
+	mover->AddBehavior("translate", moverTranslateBehavior);
+	mover->AddBehavior("rotate", moverRotateBehavior);
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
