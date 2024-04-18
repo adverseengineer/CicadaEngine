@@ -13,6 +13,9 @@
 //forward decl so that we can resolve a cyclical dependency
 class Behavior;
 struct BehaviorParams;
+struct HighlightParams;
+struct TranslationParams;
+struct RotationParams;
 
 class GraphicsObject {
 protected:

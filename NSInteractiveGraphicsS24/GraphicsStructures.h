@@ -2,12 +2,6 @@
 #include "Ray.h"
 #include <glm.hpp>
 
-struct BehaviorParams {};
-
-struct HighlightParams : BehaviorParams {
-    Ray* ray;
-};
-
 struct SphericalCoordinate {
     float phi = 90.0f, theta = 0.0f, rho = 1.0f;
 

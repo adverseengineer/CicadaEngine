@@ -4,7 +4,7 @@
 #include "Util.h"
 
 //forward decl so that we can resolve a cyclical dependency
-//class GraphicsObject;
+class GraphicsObject;
 
 struct BehaviorParams {
 	Ray* ray;
@@ -40,6 +40,18 @@ public:
 	static void SetClickState(bool clicked);
 };
 
+
+class HighlightBehavior : public Behavior {
+protected:
+	HighlightParams params;
+	float ambientIntensity = 0.0f;
+public:
+	void StoreDefaults();
+	void SetParameter(BehaviorParams& params);
+	void Update(double elapsedSeconds);
+};
+
+
 class TranslateAnimation : public Behavior {
 private:
 	TranslationParams params;
@@ -53,16 +65,6 @@ public:
 class RotateAnimation : public Behavior {
 private:
 	RotationParams params;
-public:
-	void StoreDefaults();
-	void SetParameter(BehaviorParams& params);
-	void Update(double elapsedSeconds);
-};
-
-class HighlightBehavior : public Behavior {
-protected:
-	HighlightParams params;
-	float ambientIntensity = 0.0f;
 public:
 	void StoreDefaults();
 	void SetParameter(BehaviorParams& params);
