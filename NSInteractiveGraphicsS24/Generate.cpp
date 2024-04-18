@@ -232,9 +232,9 @@ std::shared_ptr<VertexBuffer> Generate::LineCircleVertices(float radius, unsigne
 
 	auto vertBuf = std::make_shared<VertexBuffer>(6);
 	
-	float tau = 2 * M_PI;
-	float radiansPerStep = tau / numSegments;
-	for (float theta = 0.0f; theta < tau; theta += radiansPerStep)
+	double tau = 2 * M_PI;
+	double radiansPerStep = tau / numSegments;
+	for (double theta = 0.0f; theta < tau; theta += radiansPerStep)
 		vertBuf->AddVertexData(6, radius * cos(theta), 0, radius * sin(theta), color.r, color.g, color.b);
 
 	vertBuf->AddVertexAttribute("position", 0, 3, 0);
@@ -261,11 +261,11 @@ std::shared_ptr<VertexBuffer> Generate::LineCylinderVertices(float radius, float
 	auto vertBuf = std::make_shared<VertexBuffer>(6);
 
 	float hh = height / 2;
-	float tau = 2 * M_PI;
-	float radiansPerStep = tau / numSegments;
-	for (float theta = 0.0f; theta < tau; theta += radiansPerStep) {
-		float c = cos(theta);
-		float s = sin(theta);
+	double tau = 2 * M_PI;
+	double radiansPerStep = tau / numSegments;
+	for (double theta = 0.0f; theta < tau; theta += radiansPerStep) {
+		double c = cos(theta);
+		double s = sin(theta);
 		vertBuf->AddVertexData(6, radius * c, hh, radius * s, color.r, color.g, color.b);
 		vertBuf->AddVertexData(6, radius * c, -hh, radius * s, color.r, color.g, color.b);
 	}

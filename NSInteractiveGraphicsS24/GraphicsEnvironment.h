@@ -2,7 +2,6 @@
 #include "Camera.h"
 #include "GraphicsStructures.h"
 #include "ObjectManager.h"
-#include "Ray.h"
 #include "Renderer.h"
 #include "Scene.h"
 #include "Util.h"
@@ -17,6 +16,9 @@ class GraphicsEnvironment {
 
 protected:
 	GLFWwindow* window;
+
+	int windowWidth, windowHeight;
+
 	ObjectManager objManager;
 	std::unordered_map<std::string, std::shared_ptr<Renderer>> rendererMap;
 	std::shared_ptr<Camera> cam;
@@ -24,7 +26,7 @@ protected:
 	static MouseParams mouse;
 
 public:
-	inline GraphicsEnvironment() : window(nullptr) {}
+	inline GraphicsEnvironment() : window(nullptr), windowWidth(0), windowHeight(0) {}
 	~GraphicsEnvironment();
 
 	inline GLFWwindow* GetWindow() { return window; }
@@ -46,8 +48,6 @@ public:
 	inline const std::shared_ptr<Camera>& GetCamera() const { return cam; }
 	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
 
-	Ray GetMouseRay(const glm::mat4& projection, const glm::mat4& view);
-
 	void StaticAllocate() const;
 	void Render() const;
 
@@ -58,6 +58,5 @@ public:
 
 	static void OnMouseMove(GLFWwindow* window, double mouseX, double mouseY);
 
-	//void Run2D();
 	void Run3D();
 };

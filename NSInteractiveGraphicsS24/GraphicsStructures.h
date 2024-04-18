@@ -1,8 +1,9 @@
 #pragma once
+#include "Ray.h"
 #include <glm.hpp>
 
 struct SphericalCoordinate {
-    float phi = 0.0f, theta = 0.0f, rho = 1.0f;
+    float phi = 90.0f, theta = 0.0f, rho = 1.0f;
 
     glm::mat4 ToMat4() {
         float thetaRadians = glm::radians(theta);
@@ -30,7 +31,7 @@ struct MouseParams {
     double windowX = 0, windowY = 0;
     int windowWidth = 0, windowHeight = 0;
     float fieldOfView = 60.0f;
-    float ndcX = 0, ndcY = 0;
+    //float ndcX = 0, ndcY = 0;
 };
 
 struct Material {

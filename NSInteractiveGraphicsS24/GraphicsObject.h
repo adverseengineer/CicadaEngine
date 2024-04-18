@@ -1,15 +1,21 @@
 #pragma once
-#include "Animation.h"
+#include "Behavior.h"
 #include "BoundingBox.h"
 #include "GraphicsStructures.h"
 #include "IndexBuffer.h"
+#include "Ray.h"
 #include "VertexBuffer.h"
 #include <glm/glm.hpp>
 #include <memory>
+#include <unordered_map>
 #include <unordered_set>
 
 //forward decl so that we can resolve a cyclical dependency
-class Animation;
+class Behavior;
+struct BehaviorParams;
+struct HighlightParams;
+struct TranslationParams;
+struct RotationParams;
 
 class GraphicsObject {
 protected:
@@ -18,20 +24,19 @@ protected:
 	std::shared_ptr<IndexBuffer> idxBuf;
 	std::unordered_set<std::shared_ptr<GraphicsObject>> children;
 	GraphicsObject* parent;
-	std::shared_ptr<Animation> animation;
+	std::unordered_map<std::string, std::shared_ptr<Behavior>> behaviorMap;
 	std::shared_ptr<Material> material;
 	std::shared_ptr<BoundingBox> boundingBox;
 
 public:
 	inline GraphicsObject() :
 		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
-		parent(nullptr), animation(nullptr), material(nullptr),
-		boundingBox(nullptr) {
+		parent(nullptr), material(nullptr) {
 	}
 	inline virtual ~GraphicsObject() = default;
 
 	//gets the reference frame of this object in global world space
-	inline const glm::mat4& GetGlobalReferenceFrame() const {
+	inline const glm::mat4 GetGlobalReferenceFrame() const {
 		//do this by working our way up the object hierarchy until we hit the root object with no parent
 		if (parent != nullptr)
 			return referenceFrame * parent->GetGlobalReferenceFrame();
@@ -60,8 +65,9 @@ public:
 	//inserts a new child under this object, returns true if success, false if already present
 	bool AddChild(const std::shared_ptr<GraphicsObject>& child);
 
-	inline const std::shared_ptr<Animation>& GetAnimation() const { return animation; }
-	inline void SetAnimation(const std::shared_ptr<Animation>& animation) { this->animation = animation; }
+	bool AddBehavior(const std::string& behaviorName, const std::shared_ptr<Behavior>& behavior);
+	void SetBehaviorDefaults();
+	void SetBehaviorParameters(const std::string& name, BehaviorParams& params);
 
 	inline const std::shared_ptr<Material>& GetMaterial() const { return material; }
 	inline void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }
@@ -69,8 +75,9 @@ public:
 	inline bool HasBoundingBox() const { return boundingBox != nullptr; }
 	inline const std::shared_ptr<BoundingBox>& GetBoundingBox() const { return boundingBox; }
 	inline void SetBoundingBox(const std::shared_ptr<BoundingBox>& boundingBox) { this->boundingBox = boundingBox; }
+	bool IsIntersectingRay(const Ray& ray) const;
 
-	const glm::vec3& GetPosition() const;
+	const glm::vec3 GetPosition() const;
 	void SetPosition(const glm::vec3& position);
 
 	void ResetOrientation();

@@ -3,7 +3,7 @@ import io
 import numpy as np
 from struct import unpack, pack
 
-image = Image.open("fallback.png")
+image = Image.open("NSInteractiveGraphicsS24/gw.png")
 array = np.frombuffer(image.tobytes(), dtype=np.float32)
 
 row = []

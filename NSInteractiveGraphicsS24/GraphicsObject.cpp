@@ -8,7 +8,26 @@ bool GraphicsObject::AddChild(const std::shared_ptr<GraphicsObject>& child) {
 	return result.second;
 }
 
-const glm::vec3& GraphicsObject::GetPosition() const {
+bool GraphicsObject::AddBehavior(const std::string& behaviorName, const std::shared_ptr<Behavior>& behavior) {
+	return behaviorMap.insert_or_assign(behaviorName, behavior).second;
+}
+
+void GraphicsObject::SetBehaviorDefaults() {
+	for (auto& [name, behavior] : behaviorMap) {
+		behavior->StoreDefaults();
+	}
+}
+
+void GraphicsObject::SetBehaviorParameters(const std::string& name, BehaviorParams& params) {
+	auto& behavior = behaviorMap.at(name);
+	behavior->SetParameter(params);
+}
+
+bool GraphicsObject::IsIntersectingRay(const Ray& ray) const {
+	return ray.IsIntersectingObject(*this);
+}
+
+const glm::vec3 GraphicsObject::GetPosition() const {
 	return glm::vec3(referenceFrame[3]);
 }
 
@@ -68,8 +87,8 @@ void GraphicsObject::StaticAllocateBuffers() const {
 }
 
 void GraphicsObject::Update(double elapsedSeconds) {
-	if (animation != nullptr) {
-		animation->Update(elapsedSeconds);
+	for (auto& [name, behavior] : behaviorMap) {
+		behavior->Update(elapsedSeconds);
 	}
 	//TODO: any other per-frame updates that an object may need
 }

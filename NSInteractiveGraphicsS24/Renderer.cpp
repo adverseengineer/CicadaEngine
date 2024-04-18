@@ -46,11 +46,11 @@ void Renderer::RenderObject(const std::shared_ptr<GraphicsObject>& object) const
 	if (object->IsIndexed()) {
 		auto& idxBuf = object->GetIndexBuffer();
 		idxBuf->Select();
-		glDrawElements(vertBuf->GetPrimitiveType(), (GLsizei)idxBuf->GetCount(), GL_UNSIGNED_SHORT, (void*)0);
+		glDrawElements(vertBuf->GetPrimitiveType(), (GLsizei) idxBuf->GetCount(), GL_UNSIGNED_SHORT, (void*)0);
 		idxBuf->Deselect();
 	}
 	else {
-		glDrawArrays(vertBuf->GetPrimitiveType(), 0, vertBuf->GetNumberOfVertices());
+		glDrawArrays(vertBuf->GetPrimitiveType(), 0, (GLsizei) vertBuf->GetNumberOfVertices());
 	}
 
 	// Recursively render the children
