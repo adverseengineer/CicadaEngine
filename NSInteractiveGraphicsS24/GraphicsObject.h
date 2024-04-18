@@ -33,7 +33,6 @@ public:
 		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
 		parent(nullptr), material(nullptr) {
 	}
-	inline virtual ~GraphicsObject() = default;
 
 	//gets the reference frame of this object in global world space
 	inline const glm::mat4 GetGlobalReferenceFrame() const {
