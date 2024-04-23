@@ -92,29 +92,11 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	crate->SetBoundingBox(crateBB);
 	#pragma endregion
 
-	#pragma region SetUpMover
-	auto moverTex = std::make_shared<Texture>();
-	moverTex->LoadTextureDataFromFile("gw.png");
-	auto moverVBuf = Generate::CuboidWithNormals(1.0f, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 10.0f });
-	moverVBuf->SetTexture(moverTex);
-	auto mover = std::make_shared<GraphicsObject>();
-	mover->SetVertexBuffer(moverVBuf);
-	mover->SetPosition(glm::vec3(40.0f, 10.0f, 40.0f));
-	auto moverMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
-	mover->SetMaterial(moverMat);
-	litScene->AddObject(mover);
-	ge.AddObject("mover", mover);
-
-	auto moverBB = std::make_shared<BoundingBox>();
-	moverBB->Create(1, 10, 1);
-	moverBB->SetReferenceFrame(mover->GetLocalReferenceFrame());
-	mover->SetBoundingBox(moverBB);
-	#pragma endregion
-
 	#pragma region SetUpFloor
 	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 12, 12 });
 	auto floorTex = std::make_shared<Texture>();
-	floorTex->LoadTextureDataFromFile("floor.png");
+	//floorTex->LoadTextureDataFromFile("floor.png");
+	floorTex->LoadTextureDataFromFile("space.png");
 	floorVBuf->SetTexture(floorTex);
 	auto floor = std::make_shared<GraphicsObject>();
 	floor->SetVertexBuffer(floorVBuf);
@@ -135,43 +117,13 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 0.5f);
 	litScene->SetGlobalLight(globalLight);
 
-	#pragma region Lightbulb
-	//auto lightbulbVBuf = Generate::PlaneXY(1, 1, { 1, 1, 1 }, { 1, 1 });
-	auto lightbulbVBuf = Generate::PlaneXYWithNormals(1, 1, { 1, 1, 1, 1 }, { 1, 1 });
-	auto lightbulbTex = std::make_shared<Texture>();
-	lightbulbTex->LoadTextureDataFromFile("lightbulb.png");
-	//lightbulbTex->LoadTextureDataFromFile("gw.png");
-	lightbulbVBuf->SetTexture(lightbulbTex);
-	auto lightbulb = std::make_shared<GraphicsObject>();
-	lightbulb->SetVertexBuffer(lightbulbVBuf);
-	lightbulb->SetPosition(localLightPos);
-	auto lightbulbMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
-	lightbulb->SetMaterial(lightbulbMat);
-	//flatScene->AddObject(lightbulb);
-	litScene->AddObject(lightbulb);
-	ge.AddObject("lightbulb", lightbulb);
-	#pragma endregion
-
-	auto circleVBuf = Generate::LineCircleVertices(5, 12, glm::vec3(1.0f,1.0f,0.0f));
-	circleVBuf->SetPrimitiveType(GL_LINES);
-	auto circleIBuf = Generate::LineCircleIndices(12, true);
-	auto circle = std::make_shared<GraphicsObject>();
-	circle->SetVertexBuffer(circleVBuf);
-	circle->SetIndexBuffer(circleIBuf);
-	circle->SetPosition({ 0.0f, 1.0f, 7.0f });
-	basicScene->AddObject(circle);
-	ge.AddObject("circle", circle);
-
-	auto cylinderVBuf = Generate::LineCylinderVertices(5, 4, 24);
-	cylinderVBuf->SetPrimitiveType(GL_LINES);
-	auto cylinderIBuf = Generate::LineCylinderIndices(24, true);
-	auto cylinder = std::make_shared<GraphicsObject>();
-	cylinder->SetVertexBuffer(cylinderVBuf);
-	cylinder->SetIndexBuffer(cylinderIBuf);
-	cylinder->SetPosition({ -10.0f, 10.0f, 10.0f });
-	basicScene->AddObject(cylinder);
-	ge.AddObject("cylinder", cylinder);
-	#pragma endregion
+	auto sphereVBuf = Generate::QuadSphere(5, 5, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	sphereVBuf->SetPrimitiveType(GL_TRIANGLES);
+	auto sphere = std::make_shared<GraphicsObject>();
+	sphere->SetVertexBuffer(sphereVBuf);
+	sphere->SetPosition({ 0.0f, 1.0f, 0.0f });
+	basicScene->AddObject(sphere);
+	ge.AddObject("sphere", sphere);
 
 	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
 	auto crateHLBehavior = std::make_shared<HighlightBehavior>();
@@ -181,14 +133,8 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	dummyHLBehavior->SetObject(dummy);
 	crateHLBehavior->SetObject(crate);
-	moverHLBehavior->SetObject(mover);
-	moverTranslateBehavior->SetObject(mover);
-	moverRotateBehavior->SetObject(mover);
 	dummy->AddBehavior("highlight", dummyHLBehavior);
 	crate->AddBehavior("highlight", crateHLBehavior);
-	mover->AddBehavior("highlight", moverHLBehavior);
-	mover->AddBehavior("translate", moverTranslateBehavior);
-	mover->AddBehavior("rotate", moverRotateBehavior);
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {

@@ -185,14 +185,9 @@ void GraphicsEnvironment::Run3D() {
 	auto& dummyMat = dummy->GetMaterial();
 	auto& crate = objManager.GetObject("crate");
 	auto& crateMat = crate->GetMaterial();
-	auto& mover = objManager.GetObject("mover");
-	auto& moverMat = mover->GetMaterial();
 
 	dummy->SetBehaviorParameters("highlight", hlp);
 	crate->SetBehaviorParameters("highlight", hlp);
-	mover->SetBehaviorParameters("highlight", hlp);
-	mover->SetBehaviorParameters("translate", tap);
-	mover->SetBehaviorParameters("rotate", rap);
 
 	while (!glfwWindowShouldClose(window)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
@@ -236,25 +231,7 @@ void GraphicsEnvironment::Run3D() {
 		auto& localLight = litScene->GetLocalLight();
 		auto& globalLight = litScene->GetGlobalLight();
 
-		//always make the lightbulb face towards the camera
-		auto& sprite = objManager.GetObject("lightbulb");
-		sprite->RotateToFace(cam->GetPosition());
-		sprite->SetPosition(litScene->GetLocalLight()->position);
-
-		auto& cylinder = objManager.GetObject("cylinder");
 		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
-
-		auto& floor = objManager.GetObject("floor");
-		GeometricPlane floorPlane;
-		floorPlane.SetDistanceFromOrigin(floor->GetPosition().y);
-		auto floorIntersection = mouseRay.GetIntersectionWithPlane(floorPlane);
-		if (floorIntersection.isIntersecting) {
-			auto floorIntersectionPoint = mouseRay.GetPosition(floorIntersection.offset);
-			floorIntersectionPoint.y = cylinder->GetPosition().y;
-			cylinder->SetPosition(floorIntersectionPoint);
-		}
-		else
-			cylinder->SetPosition({ 0.0f, 3.0f, 0.0f });
 
 		objManager.Update(deltaTime);
 
