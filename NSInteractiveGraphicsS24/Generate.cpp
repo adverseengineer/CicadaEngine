@@ -13,6 +13,9 @@
 std::shared_ptr<VertexBuffer> Generate::Cuboid(float width, float height, float depth, glm::vec3 color, glm::vec2 tex) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(8);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
+	vertBuf->AddVertexAttribute("texCoord", 2, 2, 6);
 
 	float hw = width / 2;
 	float hh = height / 2;
@@ -62,21 +65,16 @@ std::shared_ptr<VertexBuffer> Generate::Cuboid(float width, float height, float 
 	vertBuf->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
 	#pragma endregion
 
-	//add vertex attributes to the vertex buffer
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
-	vertBuf->AddVertexAttribute("texCoord", 2, 2, 6);
-
     return vertBuf;
 }
 
 std::shared_ptr<VertexBuffer> Generate::CuboidWithNormals(float width, float height, float depth, glm::vec4 color, glm::vec2 tex) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(12);
-	//vertPos (3), color (4), norm (3), uv (2)
-
-	//3 vertex per triangle, 2 triangles per face, 6 faces
-	//3*2*6 = 36 vertices
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
+	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
+	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
 
 	float hw = width / 2;
 	float hh = height / 2;
@@ -126,18 +124,15 @@ std::shared_ptr<VertexBuffer> Generate::CuboidWithNormals(float width, float hei
 	vertBuf->AddVertexData(12, -hw, -hh, -hd, color.r, color.g, color.b, color.a, NORM_DOWN, tex.s, tex.t);
 	#pragma endregion
 
-	//add vertex attributes to the vertex buffer
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
-	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
-
 	return vertBuf;
 }
 
 std::shared_ptr<VertexBuffer> Generate::PlaneXZ(float width, float depth, glm::vec3 color, glm::vec2 tex) {
 	
 	auto vertBuf = std::make_shared<VertexBuffer>(8);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
+	vertBuf->AddVertexAttribute("texCoord", 2, 2, 6);
 
 	float hw = width / 2;
 	float hd = depth / 2;
@@ -149,17 +144,15 @@ std::shared_ptr<VertexBuffer> Generate::PlaneXZ(float width, float depth, glm::v
 	vertBuf->AddVertexData(8, hw, 0, hd, color.r, color.g, color.b, tex.s, 0.0f);
 	vertBuf->AddVertexData(8, hw, 0, -hd, color.r, color.g, color.b, tex.s, tex.t);
 
-	//add vertex attributes to the vertex buffer
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
-	vertBuf->AddVertexAttribute("texCoord", 2, 2, 6);
-
 	return vertBuf;
 }
 
 std::shared_ptr<VertexBuffer> Generate::PlaneXY(float width, float height, glm::vec3 color, glm::vec2 tex) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(8);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
+	vertBuf->AddVertexAttribute("texCoord", 2, 2, 6);
 
 	float hw = width / 2;
 	float hh = height / 2;
@@ -171,17 +164,16 @@ std::shared_ptr<VertexBuffer> Generate::PlaneXY(float width, float height, glm::
 	vertBuf->AddVertexData(8, hw, hh, 0, color.r, color.g, color.b, tex.s, 0.0f);
 	vertBuf->AddVertexData(8, hw, -hh, 0, color.r, color.g, color.b, tex.s, tex.t);
 
-	//add vertex attributes to the vertex buffer
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
-	vertBuf->AddVertexAttribute("texCoord", 2, 2, 6);
-
 	return vertBuf;
 }
 
 std::shared_ptr<VertexBuffer> Generate::PlaneXZWithNormals(float width, float depth, glm::vec4 color, glm::vec2 tex) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(12);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
+	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
+	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
 
 	float hw = width / 2;
 	float hd = depth / 2;
@@ -193,18 +185,16 @@ std::shared_ptr<VertexBuffer> Generate::PlaneXZWithNormals(float width, float de
 	vertBuf->AddVertexData(12, hw, 0, hd, color.r, color.g, color.b, color.a, NORM_UP, tex.s, 0.0f);
 	vertBuf->AddVertexData(12, hw, 0, -hd, color.r, color.g, color.b, color.a, NORM_UP, tex.s, tex.t);
 
-	//add vertex attributes to the vertex buffer
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
-	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
-
 	return vertBuf;
 }
 
 std::shared_ptr<VertexBuffer> Generate::PlaneXYWithNormals(float width, float height, glm::vec4 color, glm::vec2 tex) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(12);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
+	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
+	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
 
 	float hw = width / 2;
 	float hh = height / 2;
@@ -219,26 +209,19 @@ std::shared_ptr<VertexBuffer> Generate::PlaneXYWithNormals(float width, float he
 	vertBuf->AddVertexData(12, hw, -hh, 0, color.r, color.g, color.b, color.a, NORM_FORWARD_NEW, tex.s, 0.0f);
 	vertBuf->AddVertexData(12, hw, hh, 0, color.r, color.g, color.b, color.a, NORM_FORWARD_NEW, tex.s, tex.t);
 
-	//add vertex attributes to the vertex buffer
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
-	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
-
 	return vertBuf;
 }
 
 std::shared_ptr<VertexBuffer> Generate::LineCircleVertices(float radius, unsigned int numSegments, const glm::vec3& color) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(6);
-	
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
+
 	double tau = 2 * M_PI;
 	double radiansPerStep = tau / numSegments;
 	for (double theta = 0.0f; theta < tau; theta += radiansPerStep)
 		vertBuf->AddVertexData(6, radius * cos(theta), 0, radius * sin(theta), color.r, color.g, color.b);
-
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
 
 	return vertBuf;
 }
@@ -259,6 +242,8 @@ std::shared_ptr<IndexBuffer> Generate::LineCircleIndices(unsigned int numSegment
 std::shared_ptr<VertexBuffer> Generate::LineCylinderVertices(float radius, float height, unsigned int numSegments, const glm::vec3& color) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(6);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
 
 	float hh = height / 2;
 	double tau = 2 * M_PI;
@@ -269,9 +254,6 @@ std::shared_ptr<VertexBuffer> Generate::LineCylinderVertices(float radius, float
 		vertBuf->AddVertexData(6, radius * c, hh, radius * s, color.r, color.g, color.b);
 		vertBuf->AddVertexData(6, radius * c, -hh, radius * s, color.r, color.g, color.b);
 	}
-
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
 
 	return vertBuf;
 }
@@ -303,28 +285,43 @@ std::shared_ptr<IndexBuffer> Generate::LineSphereIndices(unsigned int numSegment
 	throw "not impl";
 }
 
-static glm::vec3 transformVert(float radius, float x, float y, float z) {
-	
+//transforms a vertex in the range -1,1 to its corresponding position on a quad sphere
+static glm::vec3 transformVert(float x, float y, float z) {	
 	float xx = x * x;
 	float yy = y * y;
 	float zz = z * z;
-	float dx = radius * x * sqrtf(1.0 - (yy / 2.0) - (zz / 2.0) + (yy * zz / 3.0));
-	float dy = radius * y * sqrtf(1.0 - (zz / 2.0) - (xx / 2.0) + (zz * xx / 3.0));
-	float dz = radius * z * sqrtf(1.0 - (xx / 2.0) - (yy / 2.0) + (xx * yy / 3.0));
+	float dx = x * sqrtf(1.0 - (yy / 2.0) - (zz / 2.0) + (yy * zz / 3.0));
+	float dy = y * sqrtf(1.0 - (zz / 2.0) - (xx / 2.0) + (zz * xx / 3.0));
+	float dz = z * sqrtf(1.0 - (xx / 2.0) - (yy / 2.0) + (xx * yy / 3.0));
 	return glm::vec3(dx, dy, dz);
 }
 
 #include <vector>
 
-static void resetVecs(std::vector<std::vector<glm::vec3>> vecs, std::size_t sz) {
-	for(std::size_t i = 0; i < sz; i++)
-		for (std::size_t j = 0; j < sz; j++)
-			vecs[i][j] = glm::vec3{ 0.0f };
+//zeroes out every element of the map
+static void resetMap(std::vector<std::vector<glm::vec3>>& map, std::size_t sz) {
+	for(std::size_t i = 0; i <= sz; i++)
+		for (std::size_t j = 0; j <= sz; j++)
+			map[i][j] = glm::vec3{ 0.0f };
 }
-static void initVecs(std::vector<std::vector<glm::vec3>> vecs, std::size_t sz) {
+//sets the dimensions of the map so that we can [y][x] into any cell
+static void initMap(std::vector<std::vector<glm::vec3>>& map, std::size_t sz) {
 	for (std::size_t i = 0; i <= sz; i++) {
-		std::vector<glm::vec3> row;
-		vecs.push_back(row);
+		std::vector<glm::vec3> row(sz+1);
+		map.push_back(row);
+	}
+}
+//same as before, but 2D for texture coords
+static void resetMap(std::vector<std::vector<glm::vec2>>& map, std::size_t sz) {
+	for (std::size_t i = 0; i <= sz; i++)
+		for (std::size_t j = 0; j <= sz; j++)
+			map[i][j] = glm::vec2{ 0.0f };
+}
+//same as before, but 2D for texture coords
+static void initMap(std::vector<std::vector<glm::vec2>>& map, std::size_t sz) {
+	for (std::size_t i = 0; i <= sz; i++) {
+		std::vector<glm::vec2> row(sz + 1);
+		map.push_back(row);
 	}
 }
 
@@ -337,36 +334,227 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
 
 	std::vector<std::vector<glm::vec3>> vmap;
-	for (std::size_t i = 0; i <= resolution; i++) {
-		std::vector<glm::vec3> row;
-		vmap.push_back(row);
-	}
+	std::vector<std::vector<glm::vec3>> nmap;
+	std::vector<std::vector<glm::vec2>> uv;
+	initMap(vmap, resolution);
+	initMap(nmap, resolution);
+	initMap(uv, resolution);
 
 	//top
 	for (size_t i = 0; i <= resolution; i++) {
 		float z = 2.0f * i / resolution - 1;
 		for (size_t j = 0; j <= resolution; j++) {
 			float x = 2.0f * j / resolution - 1;
-			vmap[i].push_back(transformVert(radius, x, 1, z));
+			nmap[i][j] = transformVert(x, 1.0f, z);
+			vmap[i][j] = nmap[i][j] * radius;
+			uv[i][j] = glm::vec2((x + 1) / 2, (z + 1) / 2);
 		}
 	}
 	for (size_t i = 0; i < resolution; i++) {
 		for (size_t j = 0; j < resolution; j++) {
-			
 			auto& current = vmap[i][j];
 			auto& up = vmap[i+1][j];
 			auto& right = vmap[i][j+1];
 			auto& corner = vmap[i+1][j+1];
-			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, current.x, current.y, current.z, 0.0f, 0.0f);
-			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, corner.x, corner.y, corner.z, 0.0f, 0.0f);
-			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, right.x, right.y, right.z, 0.0f, 0.0f);
-			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, current.x, current.y, current.z, 0.0f, 0.0f);
-			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, up.x, up.y, up.z, 0.0f, 0.0f);
-			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, corner.x, corner.y, corner.z, 0.0f, 0.0f);
+			auto& currentN = nmap[i][j];
+			auto& upN = nmap[i + 1][j];
+			auto& rightN = nmap[i][j + 1];
+			auto& cornerN = nmap[i + 1][j + 1];
+			auto& currentUV = uv[i][j];
+			auto& upUV = uv[i+1][j];
+			auto& rightUV = uv[i][j+1];
+			auto& cornerUV = uv[i+1][j+1];
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, rightN.x, rightN.y, rightN.z, rightUV.s, rightUV.t);
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, upN.x, upN.y, upN.z, upUV.s, upUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
 		}
 	}
+	resetMap(vmap, resolution);
+	resetMap(nmap, resolution);
+	resetMap(uv, resolution);
 
-	resetVecs(vmap, resolution);
+	//bottom
+	for (size_t i = 0; i <= resolution; i++) {
+		float z = 2.0f * i / resolution - 1;
+		for (size_t j = 0; j <= resolution; j++) {
+			float x = 2.0f * j / resolution - 1;
+			nmap[i][j] = transformVert(x, -1.0f, z);
+			vmap[i][j] = nmap[i][j] * radius;
+			uv[i][j] = glm::vec2((x + 1) / 2, (z + 1) / 2);
+		}
+	}
+	for (size_t i = 0; i < resolution; i++) {
+		for (size_t j = 0; j < resolution; j++) {
+			auto& current = vmap[i][j];
+			auto& up = vmap[i + 1][j];
+			auto& right = vmap[i][j + 1];
+			auto& corner = vmap[i + 1][j + 1];
+			auto& currentN = nmap[i][j];
+			auto& upN = nmap[i + 1][j];
+			auto& rightN = nmap[i][j + 1];
+			auto& cornerN = nmap[i + 1][j + 1];
+			auto& currentUV = uv[i][j];
+			auto& upUV = uv[i + 1][j];
+			auto& rightUV = uv[i][j + 1];
+			auto& cornerUV = uv[i + 1][j + 1];
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, rightN.x, rightN.y, rightN.z, rightUV.s, rightUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, upN.x, upN.y, upN.z, upUV.s, upUV.t);
+		}
+	}
+	resetMap(vmap, resolution);
+	resetMap(nmap, resolution);
+	resetMap(uv, resolution);
+
+	//right
+	for (size_t i = 0; i <= resolution; i++) {
+		float z = 2.0f * i / resolution - 1;
+		for (size_t j = 0; j <= resolution; j++) {
+			float y = 2.0f * j / resolution - 1;
+			nmap[i][j] = transformVert(1.0f, y, z);
+			vmap[i][j] = nmap[i][j] * radius;
+			uv[i][j] = glm::vec2((z + 1) / 2, (y + 1) / 2);
+		}
+	}
+	for (size_t i = 0; i < resolution; i++) {
+		for (size_t j = 0; j < resolution; j++) {
+			auto& current = vmap[i][j];
+			auto& up = vmap[i + 1][j];
+			auto& right = vmap[i][j + 1];
+			auto& corner = vmap[i + 1][j + 1];
+			auto& currentN = nmap[i][j];
+			auto& upN = nmap[i + 1][j];
+			auto& rightN = nmap[i][j + 1];
+			auto& cornerN = nmap[i + 1][j + 1];
+			auto& currentUV = uv[i][j];
+			auto& upUV = uv[i + 1][j];
+			auto& rightUV = uv[i][j + 1];
+			auto& cornerUV = uv[i + 1][j + 1];
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, rightN.x, rightN.y, rightN.z, rightUV.s, rightUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, upN.x, upN.y, upN.z, upUV.s, upUV.t);
+		}
+	}
+	resetMap(vmap, resolution);
+	resetMap(nmap, resolution);
+	resetMap(uv, resolution);
+
+	//left
+	for (size_t i = 0; i <= resolution; i++) {
+		float z = 2.0f * i / resolution - 1;
+		for (size_t j = 0; j <= resolution; j++) {
+			float y = 2.0f * j / resolution - 1;
+			nmap[i][j] = transformVert(-1.0f, y, z);
+			vmap[i][j] = nmap[i][j] * radius;
+			uv[i][j] = glm::vec2((z + 1) / 2, (y + 1) / 2);
+		}
+	}
+	for (size_t i = 0; i < resolution; i++) {
+		for (size_t j = 0; j < resolution; j++) {
+			auto& current = vmap[i][j];
+			auto& up = vmap[i + 1][j];
+			auto& right = vmap[i][j + 1];
+			auto& corner = vmap[i + 1][j + 1];
+			auto& currentN = nmap[i][j];
+			auto& upN = nmap[i + 1][j];
+			auto& rightN = nmap[i][j + 1];
+			auto& cornerN = nmap[i + 1][j + 1];
+			auto& currentUV = uv[i][j];
+			auto& upUV = uv[i + 1][j];
+			auto& rightUV = uv[i][j + 1];
+			auto& cornerUV = uv[i + 1][j + 1];
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, rightN.x, rightN.y, rightN.z, rightUV.s, rightUV.t);
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, upN.x, upN.y, upN.z, upUV.s, upUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+		}
+	}
+	resetMap(vmap, resolution);
+	resetMap(nmap, resolution);
+	resetMap(uv, resolution);
+
+	//front
+	for (size_t i = 0; i <= resolution; i++) {
+		float y = 2.0f * i / resolution - 1;
+		for (size_t j = 0; j <= resolution; j++) {
+			float x = 2.0f * j / resolution - 1;
+			nmap[i][j] = transformVert(x, y, 1.0f);
+			vmap[i][j] = nmap[i][j] * radius;
+			uv[i][j] = glm::vec2((x + 1) / 2, (y + 1) / 2);
+		}
+	}
+	for (size_t i = 0; i < resolution; i++) {
+		for (size_t j = 0; j < resolution; j++) {
+			auto& current = vmap[i][j];
+			auto& up = vmap[i + 1][j];
+			auto& right = vmap[i][j + 1];
+			auto& corner = vmap[i + 1][j + 1];
+			auto& currentN = nmap[i][j];
+			auto& upN = nmap[i + 1][j];
+			auto& rightN = nmap[i][j + 1];
+			auto& cornerN = nmap[i + 1][j + 1];
+			auto& currentUV = uv[i][j];
+			auto& upUV = uv[i + 1][j];
+			auto& rightUV = uv[i][j + 1];
+			auto& cornerUV = uv[i + 1][j + 1];
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, rightN.x, rightN.y, rightN.z, rightUV.s, rightUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, upN.x, upN.y, upN.z, upUV.s, upUV.t);
+		}
+	}
+	resetMap(vmap, resolution);
+	resetMap(nmap, resolution);
+	resetMap(uv, resolution);
+
+	//back
+	for (size_t i = 0; i <= resolution; i++) {
+		float y = 2.0f * i / resolution - 1;
+		for (size_t j = 0; j <= resolution; j++) {
+			float x = 2.0f * j / resolution - 1;
+			nmap[i][j] = transformVert(x, y, -1.0f);
+			vmap[i][j] = nmap[i][j] * radius;
+			uv[i][j] = glm::vec2((x + 1) / 2, (y + 1) / 2);
+		}
+	}
+	for (size_t i = 0; i < resolution; i++) {
+		for (size_t j = 0; j < resolution; j++) {
+			auto& current = vmap[i][j];
+			auto& up = vmap[i + 1][j];
+			auto& right = vmap[i][j + 1];
+			auto& corner = vmap[i + 1][j + 1];
+			auto& currentN = nmap[i][j];
+			auto& upN = nmap[i + 1][j];
+			auto& rightN = nmap[i][j + 1];
+			auto& cornerN = nmap[i + 1][j + 1];
+			auto& currentUV = uv[i][j];
+			auto& upUV = uv[i + 1][j];
+			auto& rightUV = uv[i][j + 1];
+			auto& cornerUV = uv[i + 1][j + 1];
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, rightN.x, rightN.y, rightN.z, rightUV.s, rightUV.t);
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, currentN.x, currentN.y, currentN.z, currentUV.s, currentUV.t);
+			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, upN.x, upN.y, upN.z, upUV.s, upUV.t);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, cornerN.x, cornerN.y, cornerN.z, cornerUV.s, cornerUV.t);
+		}
+	}
+	resetMap(vmap, resolution);
+	resetMap(nmap, resolution);
+	resetMap(uv, resolution);
 
 	return vertBuf;
 }

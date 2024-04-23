@@ -117,12 +117,17 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 0.5f);
 	litScene->SetGlobalLight(globalLight);
 
-	auto sphereVBuf = Generate::QuadSphere(5, 5, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-	sphereVBuf->SetPrimitiveType(GL_TRIANGLES);
+	auto sphereVBuf = Generate::QuadSphere(4, 40, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//sphereVBuf->SetPrimitiveType(GL_POINTS);
+	auto sphereTex = std::make_shared<Texture>();
+	sphereTex->LoadTextureDataFromFile("cat.png");
+	sphereVBuf->SetTexture(sphereTex);
 	auto sphere = std::make_shared<GraphicsObject>();
 	sphere->SetVertexBuffer(sphereVBuf);
-	sphere->SetPosition({ 0.0f, 1.0f, 0.0f });
-	basicScene->AddObject(sphere);
+	sphere->SetPosition({ 0.0f, 5.0f, 0.0f });
+	auto sphereMat = std::make_shared<Material>(0.1f, 1.0f, 1.0f);
+	sphere->SetMaterial(sphereMat);
+	litScene->AddObject(sphere);
 	ge.AddObject("sphere", sphere);
 
 	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
