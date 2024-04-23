@@ -13,14 +13,14 @@ struct HighlightParams : BehaviorParams {
 	//Ray* ray;
 };
 struct TranslationParams : BehaviorParams {
-	glm::vec3 pointA;
-	glm::vec3 pointB;
+	glm::vec3 pointA{};
+	glm::vec3 pointB{};
 	float progress;
 	int direction = 1;
 	float speed;
 };
 struct RotationParams : BehaviorParams {
-	glm::vec3 rotationAxis;
+	glm::vec3 rotationAxis{};
 	float angularVelocity;
 };
 
