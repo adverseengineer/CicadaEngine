@@ -139,19 +139,8 @@ void GraphicsEnvironment::Run3D() {
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
 
-	HighlightParams hlp = {
-		&mouseRay
-	};
-
-	auto& dummy = objManager.GetObject("dummy");
-	auto& dummyMat = dummy->GetMaterial();
-	auto& crate = objManager.GetObject("crate");
-	auto& crateMat = crate->GetMaterial();
 	auto& sphere = objManager.GetObject("sphere");
 	auto& sphereMat = sphere->GetMaterial();
-
-	dummy->SetBehaviorParameters("highlight", hlp);
-	crate->SetBehaviorParameters("highlight", hlp);
 
 	while (!glfwWindowShouldClose(window)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();

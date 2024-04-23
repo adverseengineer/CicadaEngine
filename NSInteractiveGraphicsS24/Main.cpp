@@ -54,59 +54,6 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	ge.AddRenderer("basic", basicShader, basicScene);
 	#pragma endregion
 
-	#pragma region SetUpDummyCube
-	auto dummyVBuf = Generate::CuboidWithNormals(6, 2, 5);
-	auto dummyTex = std::make_shared<Texture>();
-	dummyTex->LoadTextureDataFromFile("not-a-real-file.png");
-	dummyVBuf->SetTexture(dummyTex);
-	auto dummy = std::make_shared<GraphicsObject>();
-	dummy->SetVertexBuffer(dummyVBuf);
-	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
-	auto dummyMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
-	dummy->SetMaterial(dummyMat);
-	litScene->AddObject(dummy);
-	ge.AddObject("dummy", dummy);
-	
-	auto dummyBB = std::make_shared<BoundingBox>();
-	dummyBB->Create(6, 2, 5);
-	dummyBB->SetReferenceFrame(dummy->GetLocalReferenceFrame());
-	dummy->SetBoundingBox(dummyBB);
-	#pragma endregion
-
-	#pragma region SetUpCrate
-	auto crateTex = std::make_shared<Texture>();
-	crateTex->LoadTextureDataFromFile("crate.png");
-	auto crateVBuf = Generate::CuboidWithNormals(10, 10, 10, { 1, 1, 1, 1 }, { 1, 1 });
-	crateVBuf->SetTexture(crateTex);
-	auto crate = std::make_shared<GraphicsObject>();
-	crate->SetVertexBuffer(crateVBuf);
-	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-	auto crateMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
-	crate->SetMaterial(crateMat);
-	litScene->AddObject(crate);
-	ge.AddObject("crate", crate);
-
-	auto crateBB = std::make_shared<BoundingBox>();
-	crateBB->Create(10,10,10);
-	crateBB->SetReferenceFrame(crate->GetLocalReferenceFrame());
-	crate->SetBoundingBox(crateBB);
-	#pragma endregion
-
-	#pragma region SetUpFloor
-	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 12, 12 });
-	auto floorTex = std::make_shared<Texture>();
-	//floorTex->LoadTextureDataFromFile("floor.png");
-	floorTex->LoadTextureDataFromFile("space.png");
-	floorVBuf->SetTexture(floorTex);
-	auto floor = std::make_shared<GraphicsObject>();
-	floor->SetVertexBuffer(floorVBuf);
-	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-	auto floorMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
-	floor->SetMaterial(floorMat);
-	litScene->AddObject(floor);
-	ge.AddObject("floor", floor);
-	#pragma endregion
-
 	#pragma region SetUpLighting
 	auto localLightPos = glm::vec3{ 0, 50.0f, 50.0f };
 	auto localLightColor = glm::vec3{ 1.0f, 1.0f, 0.0f };
@@ -123,16 +70,11 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	sphereVBuf->SetTexture(sphereTex);
 	auto sphere = std::make_shared<GraphicsObject>();
 	sphere->SetVertexBuffer(sphereVBuf);
-	sphere->SetPosition({ 0.0f, 5.0f, 0.0f });
-	auto sphereMat = std::make_shared<Material>(0.1f, 1.0f, 1.0f);
+	sphere->SetPosition({ 0.0f, 0.0f, 0.0f });
+	auto sphereMat = std::make_shared<Material>(0.0f, 1.0f, 1.0f);
 	sphere->SetMaterial(sphereMat);
 	litScene->AddObject(sphere);
 	ge.AddObject("sphere", sphere);
-
-	auto sphereBB = std::make_shared<BoundingBox>();
-	sphereBB->Create(4, 4, 4);
-	sphereBB->SetReferenceFrame(sphere->GetLocalReferenceFrame());
-	sphere->SetBoundingBox(sphereBB);
 
 	auto skyDomeVBuf = Generate::QuadSphere(-100, 40, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	auto skyDomeTex = std::make_shared<Texture>();
@@ -141,18 +83,10 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto skyDome = std::make_shared<GraphicsObject>();
 	skyDome->SetVertexBuffer(skyDomeVBuf);
 	skyDome->SetPosition({ 0.0f, 5.0f, 0.0f });
-	auto skyDomeMat = std::make_shared<Material>(0.1f, 1.0f, 1.0f);
+	auto skyDomeMat = std::make_shared<Material>(0.0f, 1.0f, 1.0f);
 	skyDome->SetMaterial(skyDomeMat);
 	litScene->AddObject(skyDome);
 	ge.AddObject("skyDome", skyDome);
-
-	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
-	auto crateHLBehavior = std::make_shared<HighlightBehavior>();
-	
-	dummyHLBehavior->SetObject(dummy);
-	crateHLBehavior->SetObject(crate);
-	dummy->AddBehavior("highlight", dummyHLBehavior);
-	crate->AddBehavior("highlight", crateHLBehavior);
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
