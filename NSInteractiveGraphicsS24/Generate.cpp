@@ -303,10 +303,70 @@ std::shared_ptr<IndexBuffer> Generate::LineSphereIndices(unsigned int numSegment
 	throw "not impl";
 }
 
-std::shared_ptr<VertexBuffer> Generate::LineQuadSphereVertices(float radius, unsigned int resolution, const glm::vec3& color) {
-	throw "not impl";
+static glm::vec3 transformVert(float radius, float x, float y, float z) {
+	
+	float xx = x * x;
+	float yy = y * y;
+	float zz = z * z;
+	float dx = radius * x * sqrtf(1.0 - (yy / 2.0) - (zz / 2.0) + (yy * zz / 3.0));
+	float dy = radius * y * sqrtf(1.0 - (zz / 2.0) - (xx / 2.0) + (zz * xx / 3.0));
+	float dz = radius * z * sqrtf(1.0 - (xx / 2.0) - (yy / 2.0) + (xx * yy / 3.0));
+	return glm::vec3(dx, dy, dz);
 }
 
-std::shared_ptr<IndexBuffer> Generate::LineQuadSphereIndices(unsigned int resolution) {
-	throw "not impl";
+#include <vector>
+
+static void resetVecs(std::vector<std::vector<glm::vec3>> vecs, std::size_t sz) {
+	for(std::size_t i = 0; i < sz; i++)
+		for (std::size_t j = 0; j < sz; j++)
+			vecs[i][j] = glm::vec3{ 0.0f };
+}
+static void initVecs(std::vector<std::vector<glm::vec3>> vecs, std::size_t sz) {
+	for (std::size_t i = 0; i <= sz; i++) {
+		std::vector<glm::vec3> row;
+		vecs.push_back(row);
+	}
+}
+
+std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int resolution, const glm::vec4& color) {
+
+	auto vertBuf = std::make_shared<VertexBuffer>(12);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
+	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
+	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
+
+	std::vector<std::vector<glm::vec3>> vmap;
+	for (std::size_t i = 0; i <= resolution; i++) {
+		std::vector<glm::vec3> row;
+		vmap.push_back(row);
+	}
+
+	//top
+	for (size_t i = 0; i <= resolution; i++) {
+		float z = 2.0f * i / resolution - 1;
+		for (size_t j = 0; j <= resolution; j++) {
+			float x = 2.0f * j / resolution - 1;
+			vmap[i].push_back(transformVert(radius, x, 1, z));
+		}
+	}
+	for (size_t i = 0; i < resolution; i++) {
+		for (size_t j = 0; j < resolution; j++) {
+			
+			auto& current = vmap[i][j];
+			auto& up = vmap[i+1][j];
+			auto& right = vmap[i][j+1];
+			auto& corner = vmap[i+1][j+1];
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, current.x, current.y, current.z, 0.0f, 0.0f);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, corner.x, corner.y, corner.z, 0.0f, 0.0f);
+			vertBuf->AddVertexData(12, right.x, right.y, right.z, color.r, color.g, color.b, color.a, right.x, right.y, right.z, 0.0f, 0.0f);
+			vertBuf->AddVertexData(12, current.x, current.y, current.z, color.r, color.g, color.b, color.a, current.x, current.y, current.z, 0.0f, 0.0f);
+			vertBuf->AddVertexData(12, up.x, up.y, up.z, color.r, color.g, color.b, color.a, up.x, up.y, up.z, 0.0f, 0.0f);
+			vertBuf->AddVertexData(12, corner.x, corner.y, corner.z, color.r, color.g, color.b, color.a, corner.x, corner.y, corner.z, 0.0f, 0.0f);
+		}
+	}
+
+	resetVecs(vmap, resolution);
+
+	return vertBuf;
 }
