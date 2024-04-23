@@ -108,7 +108,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma endregion
 
 	#pragma region SetUpLighting
-	auto localLightPos = glm::vec3{ 0, 10.0f, 0 };
+	auto localLightPos = glm::vec3{ 0, 50.0f, 50.0f };
 	auto localLightColor = glm::vec3{ 1.0f, 1.0f, 0.0f };
 	auto localLight = std::make_shared<Light>(localLightPos, localLightColor, 1.0f, 0.0f);
 	litScene->SetLocalLight(localLight);
@@ -118,7 +118,6 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	litScene->SetGlobalLight(globalLight);
 
 	auto sphereVBuf = Generate::QuadSphere(4, 40, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	//sphereVBuf->SetPrimitiveType(GL_POINTS);
 	auto sphereTex = std::make_shared<Texture>();
 	sphereTex->LoadTextureDataFromFile("cat.png");
 	sphereVBuf->SetTexture(sphereTex);
@@ -130,12 +129,26 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	litScene->AddObject(sphere);
 	ge.AddObject("sphere", sphere);
 
+	auto sphereBB = std::make_shared<BoundingBox>();
+	sphereBB->Create(4, 4, 4);
+	sphereBB->SetReferenceFrame(sphere->GetLocalReferenceFrame());
+	sphere->SetBoundingBox(sphereBB);
+
+	auto skyDomeVBuf = Generate::QuadSphere(-100, 40, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	auto skyDomeTex = std::make_shared<Texture>();
+	skyDomeTex->LoadTextureDataFromFile("space.png");
+	skyDomeVBuf->SetTexture(skyDomeTex);
+	auto skyDome = std::make_shared<GraphicsObject>();
+	skyDome->SetVertexBuffer(skyDomeVBuf);
+	skyDome->SetPosition({ 0.0f, 5.0f, 0.0f });
+	auto skyDomeMat = std::make_shared<Material>(0.1f, 1.0f, 1.0f);
+	skyDome->SetMaterial(skyDomeMat);
+	litScene->AddObject(skyDome);
+	ge.AddObject("skyDome", skyDome);
+
 	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
 	auto crateHLBehavior = std::make_shared<HighlightBehavior>();
-	auto moverHLBehavior = std::make_shared<HighlightBehavior>();
-	auto moverTranslateBehavior = std::make_shared<TranslateAnimation>();
-	auto moverRotateBehavior = std::make_shared<RotateAnimation>();
-
+	
 	dummyHLBehavior->SetObject(dummy);
 	crateHLBehavior->SetObject(crate);
 	dummy->AddBehavior("highlight", dummyHLBehavior);

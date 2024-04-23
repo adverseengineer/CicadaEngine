@@ -93,7 +93,6 @@ void GraphicsEnvironment::Render() const {
 		renderer->RenderScene(cam);
 }
 
-static bool freeCamMode = true;
 static bool correctGamma = true;
 
 void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
@@ -102,44 +101,20 @@ void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if(freeCamMode) {
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cam->MoveZ((float)elapsedSeconds);
+	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cam->MoveZ((float)elapsedSeconds, -1);
 
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			cam->MoveZ((float)elapsedSeconds);
-		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			cam->MoveZ((float)elapsedSeconds, -1);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cam->MoveX((float)elapsedSeconds);
+	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cam->MoveX((float)elapsedSeconds, -1);
 
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			cam->MoveX((float)elapsedSeconds);
-		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			cam->MoveX((float)elapsedSeconds, -1);
-
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-			cam->MoveY((float)elapsedSeconds);
-		else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-			cam->MoveY((float)elapsedSeconds, -1);
-	}
-
-	else {
-		auto id = glm::mat4(1.0f);
-		auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-			cam->SetPosition({ 0.0f, 5.0f, 60.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(0.0f), up));
-		}
-		else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-			cam->SetPosition({ 60.0f, 5.0f, 0.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(90.0f), up));
-		}
-		else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-			cam->SetPosition({ 0.0f, 5.0f, -60.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(180.0f), up));
-		}
-		else if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-			cam->SetPosition({ -60.0f, 5.0f, 0.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(270.0f), up));
-		}
-	}
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		cam->MoveY((float)elapsedSeconds);
+	else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		cam->MoveY((float)elapsedSeconds, -1);
 }
 
 void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double mouseY) {
@@ -167,24 +142,13 @@ void GraphicsEnvironment::Run3D() {
 	HighlightParams hlp = {
 		&mouseRay
 	};
-	RotationParams rap = {
-		&mouseRay,
-		glm::vec3{0,1,0},
-		360.0f
-	};
-	TranslationParams tap = {
-		&mouseRay,
-		glm::vec3{ 40,10,40 },
-		glm::vec3{ 40,10,20 },
-		0.0f,
-		1,
-		0.3f
-	};
 
 	auto& dummy = objManager.GetObject("dummy");
 	auto& dummyMat = dummy->GetMaterial();
 	auto& crate = objManager.GetObject("crate");
 	auto& crateMat = crate->GetMaterial();
+	auto& sphere = objManager.GetObject("sphere");
+	auto& sphereMat = sphere->GetMaterial();
 
 	dummy->SetBehaviorParameters("highlight", hlp);
 	crate->SetBehaviorParameters("highlight", hlp);
@@ -201,10 +165,8 @@ void GraphicsEnvironment::Run3D() {
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		if (freeCamMode) {
-			auto spher = mouse.spherical.ToMat4();
-			cam->SetLookFrame(spher);
-		}
+		auto spher = mouse.spherical.ToMat4();
+		cam->SetLookFrame(spher);
 
 		if (correctGamma)
 			glEnable(GL_FRAMEBUFFER_SRGB);
@@ -231,6 +193,12 @@ void GraphicsEnvironment::Run3D() {
 		auto& localLight = litScene->GetLocalLight();
 		auto& globalLight = litScene->GetGlobalLight();
 
+		auto axis = glm::vec3(0.0f, 1.0f, 0.0f);
+
+		glm::mat4 temp = sphere->GetLocalReferenceFrame();
+		temp = glm::rotate(temp, (float)glm::radians(10.0f * deltaTime), axis);
+		sphere->SetLocalReferenceFrame(temp);
+		
 		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
 
 		objManager.Update(deltaTime);
@@ -264,7 +232,6 @@ void GraphicsEnvironment::Run3D() {
 			mouseRay.direction.x, mouseRay.direction.y, mouseRay.direction.z
 		);
 
-		ImGui::Checkbox("Free Cam", &freeCamMode);
 		ImGui::Checkbox("Correct Gamma", &correctGamma);
 
 		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));
