@@ -134,8 +134,6 @@ Ray mouseRay;
 
 void GraphicsEnvironment::Run3D() {
 
-	glm::vec3 clearColor = { 0.04f, 0.19f, 0.19f };
-
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
 

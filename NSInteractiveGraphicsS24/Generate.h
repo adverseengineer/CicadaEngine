@@ -23,5 +23,6 @@ public:
 	static std::shared_ptr<VertexBuffer> LineSphereVertices(float radius, unsigned int numSegments = 12, const glm::vec3& color = { 1.0f, 1.0f, 1.0f });
 	static std::shared_ptr<IndexBuffer> LineSphereIndices(unsigned int numSegments = 12);
 	
+	static std::shared_ptr<VertexBuffer> PolarSphere(float radius, unsigned int slices, unsigned int stacks, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 	static std::shared_ptr<VertexBuffer> QuadSphere(float radius, unsigned int resolution = 8, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 };

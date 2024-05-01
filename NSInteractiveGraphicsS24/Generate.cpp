@@ -325,6 +325,13 @@ static void initMap(std::vector<std::vector<glm::vec2>>& map, std::size_t sz) {
 	}
 }
 
+static float mapRange(float t, float inMin, float inMax, float outMin, float outMax) {
+	float inRange = inMax - inMin;
+	float outRange = outMax - outMin;
+	float result = outMin + outRange / inRange * (t - inMin);
+	return result;
+}
+
 std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int resolution, const glm::vec4& color) {
 
 	auto vertBuf = std::make_shared<VertexBuffer>(12);
@@ -347,7 +354,9 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 			float x = 2.0f * j / resolution - 1;
 			nmap[i][j] = transformVert(x, 1.0f, z);
 			vmap[i][j] = nmap[i][j] * radius;
-			uv[i][j] = glm::vec2((x + 1) / 2, (z + 1) / 2);
+			float uvX = mapRange(x, -1, 1, 0.0f, 0.25f);
+			float uvY = mapRange(z, -1, 1, 1.0f, 0.75f);
+			uv[i][j] = glm::vec2(uvX, uvY);
 		}
 	}
 	for (size_t i = 0; i < resolution; i++) {
@@ -383,7 +392,9 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 			float x = 2.0f * j / resolution - 1;
 			nmap[i][j] = transformVert(x, -1.0f, z);
 			vmap[i][j] = nmap[i][j] * radius;
-			uv[i][j] = glm::vec2((x + 1) / 2, (z + 1) / 2);
+			float uvX = mapRange(x, -1, 1, 0.25f, 0.5f);
+			float uvY = mapRange(z, -1, 1, 0.75f, 1.0f);
+			uv[i][j] = glm::vec2(uvX, uvY);
 		}
 	}
 	for (size_t i = 0; i < resolution; i++) {
@@ -414,12 +425,14 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 
 	//right
 	for (size_t i = 0; i <= resolution; i++) {
-		float z = 2.0f * i / resolution - 1;
+		float z = 2.0f * i / resolution - 1; //normalized to (-1,1)
 		for (size_t j = 0; j <= resolution; j++) {
-			float y = 2.0f * j / resolution - 1;
-			nmap[i][j] = transformVert(1.0f, y, z);
-			vmap[i][j] = nmap[i][j] * radius;
-			uv[i][j] = glm::vec2((z + 1) / 2, (y + 1) / 2);
+			float y = 2.0f * j / resolution - 1; //normalized to (-1,1)
+			nmap[i][j] = transformVert(1.0f, y, z); //warp the vertex position to produce the normal
+			vmap[i][j] = nmap[i][j] * radius; //the vector position is the same as the normal, but scaled by radius
+			float uvX = mapRange(z, -1, 1, 0.75f, 0.5f);
+			float uvY = mapRange(y, -1, 1, 0.5f, 0.75f);
+			uv[i][j] = glm::vec2(uvX, uvY);
 		}
 	}
 	for (size_t i = 0; i < resolution; i++) {
@@ -455,7 +468,9 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 			float y = 2.0f * j / resolution - 1;
 			nmap[i][j] = transformVert(-1.0f, y, z);
 			vmap[i][j] = nmap[i][j] * radius;
-			uv[i][j] = glm::vec2((z + 1) / 2, (y + 1) / 2);
+			float uvX = mapRange(z, -1, 1, 0.25f, 0.5f);
+			float uvY = mapRange(y, -1, 1, 0.5f, 0.75f);
+			uv[i][j] = glm::vec2(uvX, uvY);
 		}
 	}
 	for (size_t i = 0; i < resolution; i++) {
@@ -491,7 +506,9 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 			float x = 2.0f * j / resolution - 1;
 			nmap[i][j] = transformVert(x, y, 1.0f);
 			vmap[i][j] = nmap[i][j] * radius;
-			uv[i][j] = glm::vec2((x + 1) / 2, (y + 1) / 2);
+			float uvX = mapRange(x, -1, 1, 0.5f, 0.75f);
+			float uvY = mapRange(y, -1, 1, 0.75f, 1.0f);
+			uv[i][j] = glm::vec2(uvX, uvY);
 		}
 	}
 	for (size_t i = 0; i < resolution; i++) {
@@ -527,7 +544,9 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 			float x = 2.0f * j / resolution - 1;
 			nmap[i][j] = transformVert(x, y, -1.0f);
 			vmap[i][j] = nmap[i][j] * radius;
-			uv[i][j] = glm::vec2((x + 1) / 2, (y + 1) / 2);
+			float uvX = mapRange(x, -1, 1, 0.25f, 0.0f);
+			float uvY = mapRange(y, -1, 1, 0.5f, 0.75f);
+			uv[i][j] = glm::vec2(uvX, uvY);
 		}
 	}
 	for (size_t i = 0; i < resolution; i++) {
@@ -555,6 +574,52 @@ std::shared_ptr<VertexBuffer> Generate::QuadSphere(float radius, unsigned int re
 	resetMap(vmap, resolution);
 	resetMap(nmap, resolution);
 	resetMap(uv, resolution);
+
+	return vertBuf;
+}
+
+std::shared_ptr<VertexBuffer> Generate::PolarSphere(float radius, unsigned int slices, unsigned int stacks, const glm::vec4& color) {
+
+	auto vertBuf = std::make_shared<VertexBuffer>(12);
+	vertBuf->AddVertexAttribute("position", 0, 3, 0);
+	vertBuf->AddVertexAttribute("vertexColor", 1, 4, 3);
+	vertBuf->AddVertexAttribute("vertexNormal", 2, 3, 7);
+	vertBuf->AddVertexAttribute("texCoord", 3, 2, 10);
+
+	glm::vec3 nPole = { 0.0, radius, 0.0f };
+	glm::vec3 sPole = { 0.0, radius, 0.0f };
+
+	vertBuf->AddVertexData(12, nPole.x, nPole.y, nPole.z, color.r, color.g, color.b, color.a, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+	vertBuf->AddVertexData(12, sPole.x, sPole.y, sPole.z, color.r, color.g, color.b, color.a, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f);
+
+	float thetaStep = 360.0f / slices;
+	float phiStep = 180.0f / stacks;
+
+	for (float theta = 0.0f; theta <= 360.0f; theta += thetaStep) {
+
+		float thetaRads = glm::radians(theta);
+
+		float cosTheta = cos(thetaRads);
+		float sinTheta = sin(thetaRads);
+
+		for (float phi = phiStep; phi <= 180.0f - phiStep; phi += phiStep) {
+
+			float phiRads = glm::radians(phi);
+
+			float cosPhi = cos(phiRads);
+			float sinPhi = sin(phiRads);
+
+			float nx = sinPhi * cosTheta * radius;
+			float ny = sinPhi * sinTheta * radius;
+			float nz = cosPhi * radius;
+
+			float x = nx * radius;
+			float y = ny * radius;
+			float z = nz * radius;
+
+			vertBuf->AddVertexData(12, x, y, z, color.r, color.g, color.b, color.a, nx, ny, nz, 0.0f, 0.0f);
+		}
+	}
 
 	return vertBuf;
 }

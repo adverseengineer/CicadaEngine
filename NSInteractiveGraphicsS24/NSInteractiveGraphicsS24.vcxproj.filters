@@ -179,6 +179,12 @@
     <Image Include="cipher.png">
       <Filter>Resources\Images</Filter>
     </Image>
+    <Image Include="globe.png">
+      <Filter>Resources\Images</Filter>
+    </Image>
+    <Image Include="space.png">
+      <Filter>Resources\Images</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.frag.glsl">

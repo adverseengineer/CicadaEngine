@@ -201,8 +201,10 @@
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png" />
     <Image Include="cipher.png" />
     <Image Include="floor.png" />
+    <Image Include="globe.png" />
     <Image Include="gw.png" />
     <Image Include="lightbulb.png" />
+    <Image Include="space.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

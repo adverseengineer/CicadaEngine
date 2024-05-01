@@ -22,11 +22,12 @@ protected:
 	ObjectManager objManager;
 	std::unordered_map<std::string, std::shared_ptr<Renderer>> rendererMap;
 	std::shared_ptr<Camera> cam;
+	glm::vec3 clearColor;
 
 	static MouseParams mouse;
 
 public:
-	inline GraphicsEnvironment() : window(nullptr), windowWidth(0), windowHeight(0) {}
+	inline GraphicsEnvironment() : window(nullptr), windowWidth(0), windowHeight(0), clearColor(0.0f) {}
 	~GraphicsEnvironment();
 
 	inline GLFWwindow* GetWindow() { return window; }
@@ -47,6 +48,9 @@ public:
 
 	inline const std::shared_ptr<Camera>& GetCamera() const { return cam; }
 	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
+
+	inline const glm::vec3 GetClearColor() const { return clearColor; }
+	inline void SetClearColor(const glm::vec3 color) { this->clearColor = color; }
 
 	void StaticAllocate() const;
 	void Render() const;

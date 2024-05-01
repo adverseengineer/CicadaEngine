@@ -72,10 +72,12 @@ void GraphicsObject::RotateToFace(const glm::vec3& target) {
 }
 
 void GraphicsObject::StaticAllocateBuffers() const {
-	vertBuf->Select();
-	vertBuf->StaticAllocate();
-	vertBuf->Deselect();
-
+	
+	if(vertBuf != nullptr) {
+		vertBuf->Select();
+		vertBuf->StaticAllocate();
+		vertBuf->Deselect();
+	}
 	if (idxBuf != nullptr) {
 		idxBuf->Select();
 		idxBuf->StaticAllocate();
