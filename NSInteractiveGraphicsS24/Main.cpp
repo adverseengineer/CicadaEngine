@@ -56,8 +56,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	#pragma region SetUpDummyCube
 	auto dummyVBuf = Generate::CuboidWithNormals(6, 2, 5);
-	auto dummyTex = std::make_shared<Texture>();
-	dummyTex->LoadTextureDataFromFile("not-a-real-file.png");
+	auto dummyTex = std::make_shared<Texture>("not-a-real-file.png");
 	dummyVBuf->SetTexture(dummyTex);
 	auto dummy = std::make_shared<GraphicsObject>();
 	dummy->SetVertexBuffer(dummyVBuf);
@@ -74,8 +73,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma endregion
 
 	#pragma region SetUpCrate
-	auto crateTex = std::make_shared<Texture>();
-	crateTex->LoadTextureDataFromFile("crate.png");
+	auto crateTex = std::make_shared<Texture>("crate.png");
 	auto crateVBuf = Generate::CuboidWithNormals(10, 10, 10, { 1, 1, 1, 1 }, { 1, 1 });
 	crateVBuf->SetTexture(crateTex);
 	auto crate = std::make_shared<GraphicsObject>();
@@ -93,8 +91,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma endregion
 
 	#pragma region SetUpMover
-	auto moverTex = std::make_shared<Texture>();
-	moverTex->LoadTextureDataFromFile("gw.png");
+	auto moverTex = std::make_shared<Texture>("gw.png");
 	auto moverVBuf = Generate::CuboidWithNormals(1.0f, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 10.0f });
 	moverVBuf->SetTexture(moverTex);
 	auto mover = std::make_shared<GraphicsObject>();
@@ -113,8 +110,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	#pragma region SetUpFloor
 	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 12, 12 });
-	auto floorTex = std::make_shared<Texture>();
-	floorTex->LoadTextureDataFromFile("floor.png");
+	auto floorTex = std::make_shared<Texture>("floor.png");
 	floorVBuf->SetTexture(floorTex);
 	auto floor = std::make_shared<GraphicsObject>();
 	floor->SetVertexBuffer(floorVBuf);
@@ -138,9 +134,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma region Lightbulb
 	//auto lightbulbVBuf = Generate::PlaneXY(1, 1, { 1, 1, 1 }, { 1, 1 });
 	auto lightbulbVBuf = Generate::PlaneXYWithNormals(1, 1, { 1, 1, 1, 1 }, { 1, 1 });
-	auto lightbulbTex = std::make_shared<Texture>();
-	lightbulbTex->LoadTextureDataFromFile("lightbulb.png");
-	//lightbulbTex->LoadTextureDataFromFile("gw.png");
+	auto lightbulbTex = std::make_shared<Texture>("lightbulb.png");
 	lightbulbVBuf->SetTexture(lightbulbTex);
 	auto lightbulb = std::make_shared<GraphicsObject>();
 	lightbulb->SetVertexBuffer(lightbulbVBuf);

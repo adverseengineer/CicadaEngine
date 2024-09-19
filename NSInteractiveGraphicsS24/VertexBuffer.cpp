@@ -24,7 +24,7 @@ void VertexBuffer::Deselect() const {
 
 void VertexBuffer::SelectTexture(void) const {
 	if (texture != nullptr)
-		texture->SelectToRender(textureUnit);
+		texture->Bind(textureUnit);
 }
 
 void VertexBuffer::AddVertexData(unsigned int count, ...) {
