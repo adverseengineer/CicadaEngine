@@ -12,7 +12,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	TextFile fragText;
 	fragText.ReadAllLines("lighting.frag.glsl");
 	auto litShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
-	litShader->AddUniform("world");
+	/*litShader->AddUniform("world");
 	litShader->AddUniform("view");
 	litShader->AddUniform("projection");
 	litShader->AddUniform("materialAmbientIntensity");
@@ -26,7 +26,8 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	litShader->AddUniform("localLightIntensity");
 	litShader->AddUniform("localLightAttenuationCoef");
 	litShader->AddUniform("viewPosition");
-	litShader->AddUniform("tex");
+	litShader->AddUniform("tex");*/
+
 	auto litScene = std::make_shared<Scene>();
 	ge.AddRenderer("lit", litShader, litScene);
 	#pragma endregion
@@ -35,10 +36,10 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	vertText.ReadAllLines("texture.vert.glsl");
 	fragText.ReadAllLines("texture.frag.glsl");
 	auto flatShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
-	flatShader->AddUniform("world");
+	/*flatShader->AddUniform("world");
 	flatShader->AddUniform("view");
 	flatShader->AddUniform("projection");
-	flatShader->AddUniform("texUnit");
+	flatShader->AddUniform("texUnit");*/
 	auto flatScene = std::make_shared<Scene>();
 	ge.AddRenderer("flat", flatShader, flatScene);
 	#pragma endregion
@@ -47,9 +48,9 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	vertText.ReadAllLines("basic.vert.glsl");
 	fragText.ReadAllLines("basic.frag.glsl");
 	auto basicShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
-	basicShader->AddUniform("world");
+	/*basicShader->AddUniform("world");
 	basicShader->AddUniform("view");
-	basicShader->AddUniform("projection");
+	basicShader->AddUniform("projection");*/
 	auto basicScene = std::make_shared<Scene>();
 	ge.AddRenderer("basic", basicShader, basicScene);
 	#pragma endregion

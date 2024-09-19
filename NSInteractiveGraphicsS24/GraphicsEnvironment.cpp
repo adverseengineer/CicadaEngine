@@ -170,8 +170,8 @@ void GraphicsEnvironment::Run3D() {
 			auto view = cam->GetView();
 			renderer->SetView(view);
 			auto& shader = renderer->GetShader();
-			shader->SendMat4Uniform("view", view);
-			shader->SendMat4Uniform("projection", cam->projection);
+			shader->SetUniform("view", view);
+			shader->SetUniform("projection", cam->projection);
 		}
 
 		auto& basicScene = GetRenderer("basic")->GetScene();

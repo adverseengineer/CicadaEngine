@@ -19,7 +19,7 @@ void Renderer::StaticAllocateBuffers(void) const {
 void Renderer::RenderObject(const std::shared_ptr<GraphicsObject>& object) const {
 
 	//send the model matrix to the shader
-	shader->SendMat4Uniform("world", object->GetGlobalReferenceFrame());
+	shader->SetUniform("world", object->GetGlobalReferenceFrame());
 
 	auto& vertBuf = object->GetVertexBuffer();
 	if(vertBuf == nullptr) {
@@ -30,15 +30,15 @@ void Renderer::RenderObject(const std::shared_ptr<GraphicsObject>& object) const
 	vertBuf->Select();
 	
 	if (vertBuf->HasTexture()) {
-		shader->SendIntUniform("tex", vertBuf->GetTextureUnit());
+		shader->SetUniform("tex", vertBuf->GetTextureUnit());
 		vertBuf->GetTexture()->SelectToRender();
 	}
 
 	auto& material = object->GetMaterial();
 	if (material != nullptr) {
-		shader->SendFloatUniform("materialAmbientIntensity", material->ambientIntensity);
-		shader->SendFloatUniform("materialSpecularIntensity", material->specularIntensity);
-		shader->SendFloatUniform("MaterialShininess", material->shininess);
+		shader->SetUniform("materialAmbientIntensity", material->ambientIntensity);
+		shader->SetUniform("materialSpecularIntensity", material->specularIntensity);
+		shader->SetUniform("MaterialShininess", material->shininess);
 	}
 
 	vertBuf->SetUpAttributeInterpretration();
@@ -61,32 +61,32 @@ void Renderer::RenderObject(const std::shared_ptr<GraphicsObject>& object) const
 
 void Renderer::RenderScene(const std::shared_ptr<Camera>& cam) const {
 
-	if(shader->IsCreated()) {
+	if(shader->GetShaderProg() != 0) {
 
-		glUseProgram(shader->GetShaderProgram());
+		glUseProgram(shader->GetShaderProg());
 		glBindVertexArray(vaoId);
 
 		//we must send the view matrix to the shader every frame
-		shader->SendMat4Uniform("view", view);
+		shader->SetUniform("view", view);
 		
 		//send the data for the global light source
 		auto& globalLight = scene->GetGlobalLight();
 		if (globalLight != nullptr) {
-			shader->SendVec3Uniform("globalLightPosition", globalLight->position);
-			shader->SendVec3Uniform("globalLightColor", globalLight->color);
-			shader->SendFloatUniform("globalLightIntensity", globalLight->intensity);
+			shader->SetUniform("globalLightPosition", globalLight->position);
+			shader->SetUniform("globalLightColor", globalLight->color);
+			shader->SetUniform("globalLightIntensity", globalLight->intensity);
 		}
 		//send the data for the local light source
 		auto& localLight = scene->GetLocalLight();
 		if (localLight != nullptr) {
-			shader->SendVec3Uniform("localLightPosition", localLight->position);
-			shader->SendVec3Uniform("localLightColor", localLight->color);
-			shader->SendFloatUniform("localLightIntensity", localLight->intensity);
-			shader->SendFloatUniform("localLightAttenuationCoef", localLight->attenuationCoef);
+			shader->SetUniform("localLightPosition", localLight->position);
+			shader->SetUniform("localLightColor", localLight->color);
+			shader->SetUniform("localLightIntensity", localLight->intensity);
+			shader->SetUniform("localLightAttenuationCoef", localLight->attenuationCoef);
 		}
 
 		//send the camera position
-		shader->SendVec3Uniform("viewPosition", cam->GetPosition());
+		shader->SetUniform("viewPosition", cam->GetPosition());
 
 		//for each object in the scene, render it separately
 		for(auto& object : scene->GetObjects())
