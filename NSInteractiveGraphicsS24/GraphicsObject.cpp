@@ -71,7 +71,7 @@ void GraphicsObject::RotateToFace(const glm::vec3& target) {
 	referenceFrame[2] = glm::vec4(zAxis, 0.0f);
 }
 
-void GraphicsObject::StaticAllocateBuffers() const {
+void GraphicsObject::StaticAllocate() const {
 	vertBuf->Select();
 	vertBuf->StaticAllocate();
 	vertBuf->Deselect();
@@ -81,9 +81,12 @@ void GraphicsObject::StaticAllocateBuffers() const {
 		idxBuf->StaticAllocate();
 		idxBuf->Deselect();
 	}
+
+	if (texture != nullptr)
+		texture->Allocate();
 	
 	for (auto& child : children)
-		child->StaticAllocateBuffers();
+		child->StaticAllocate();
 }
 
 void GraphicsObject::Update(double elapsedSeconds) {

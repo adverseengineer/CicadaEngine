@@ -21,7 +21,6 @@ protected:
 	int primitiveType;
 	std::vector<float> vertexData;
 	std::unordered_map<std::string, VertexAttribute> attributeMap;
-	std::shared_ptr<Texture> texture;
 
 public:
 	VertexBuffer(unsigned int numElementsPerVertex = 3);
@@ -32,10 +31,6 @@ public:
 	inline int GetPrimitiveType() const { return primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->primitiveType = primitiveType; }
 	
-	inline const std::shared_ptr<Texture>& GetTexture() const { return texture; }
-	inline void SetTexture(const std::shared_ptr<Texture>& texture) { this->texture = texture; }
-	inline bool HasTexture() const { return texture != nullptr; }
-
 	void Select() const;
 	void Deselect() const;
 	void SelectTexture() const;

@@ -38,7 +38,7 @@ public:
 			glUniform1i(temp.location, value);
 		}
 		else
-			Util::Log("Warning: no such uniform \"" + name + "\"");
+			Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 	}
 
 	//send a single unsigned integer
@@ -49,7 +49,7 @@ public:
 			glUniform1ui(temp.location, value);
 		}
 		else
-			Util::Log("Warning: no such uniform \"" + name + "\"");
+			Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 	}
 
 	//send a single float
@@ -60,7 +60,7 @@ public:
 			glUniform1f(temp.location, value);
 		}
 		else
-			Util::Log("Warning: no such uniform \"" + name + "\"");
+			Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 	}
 
 	//send a glm vector of dimension three
@@ -70,8 +70,12 @@ public:
 			glUseProgram(m_shaderProg);
 			glUniform3fv(temp.location, 1, glm::value_ptr(value));
 		}
-		else
-			Util::Log("Warning: no such uniform \"" + name + "\"");
+		else {
+			Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+			for (const auto& uniform : m_UniformInfoCache) {
+				Util::Log(uniform.first);
+			}
+		}
 	}
 
 	//send a 4x4 glm matrix
@@ -82,7 +86,7 @@ public:
 			glUniformMatrix4fv(temp.location, 1, GL_FALSE, glm::value_ptr(value));
 		}
 		else
-			Util::Log("Warning: no such uniform \"" + name + "\"");
+			Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 	}
 
 private:

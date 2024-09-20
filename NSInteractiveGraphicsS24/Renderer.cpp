@@ -11,7 +11,7 @@ void Renderer::StaticAllocateBuffers(void) const {
 	glBindVertexArray(vaoId); //bind it
 
 	for(const auto& obj : scene->GetObjects())
-		obj->StaticAllocateBuffers();
+		obj->StaticAllocate();
 
 	glBindVertexArray(0); //unbind it
 }
@@ -28,17 +28,17 @@ void Renderer::RenderObject(const std::shared_ptr<GraphicsObject>& object) const
 	}
 
 	vertBuf->Select();
-	
-	if (vertBuf->HasTexture()) {
-		shader->SetUniform("tex", vertBuf->GetTexture()->GetTextureUnit());
-		vertBuf->GetTexture()->Bind();
+
+	if (object->HasTexture()) {
+		shader->SetUniform("tex", object->GetTexture()->GetTextureUnit());
+		object->GetTexture()->Bind();
 	}
 
 	auto& material = object->GetMaterial();
 	if (material != nullptr) {
 		shader->SetUniform("materialAmbientIntensity", material->ambientIntensity);
 		shader->SetUniform("materialSpecularIntensity", material->specularIntensity);
-		shader->SetUniform("MaterialShininess", material->shininess);
+		shader->SetUniform("materialShininess", material->shininess);
 	}
 
 	vertBuf->SetUpAttributeInterpretration();

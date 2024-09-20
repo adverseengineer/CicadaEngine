@@ -28,10 +28,12 @@ protected:
 	std::shared_ptr<Material> material;
 	std::shared_ptr<BoundingBox> boundingBox;
 
+	std::shared_ptr<Texture> texture;
+
 public:
 	inline GraphicsObject() :
 		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
-		parent(nullptr), material(nullptr) {
+		parent(nullptr), material(nullptr), texture(nullptr) {
 	}
 	inline virtual ~GraphicsObject() = default;
 
@@ -68,6 +70,15 @@ public:
 	bool AddBehavior(const std::string& behaviorName, const std::shared_ptr<Behavior>& behavior);
 	void SetBehaviorDefaults();
 	void SetBehaviorParameters(const std::string& name, BehaviorParams& params);
+	
+	inline const std::shared_ptr<Texture>& GetTexture() const { return texture; }
+	inline void SetTexture(const std::shared_ptr<Texture>& texture) { this->texture = texture; }
+	inline bool HasTexture() const { return texture != nullptr; }
+
+	inline void SelectTexture(void) const {
+		if (texture != nullptr)
+			texture->Bind();
+	}
 
 	inline const std::shared_ptr<Material>& GetMaterial() const { return material; }
 	inline void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }
@@ -87,6 +98,6 @@ public:
 	void RotateLocal(float xDeg, float yDeg, float zDeg);
 	void RotateToFace(const glm::vec3& target);
 
-	void StaticAllocateBuffers() const;
+	void StaticAllocate() const;
 	void Update(double elapsedSeconds);
 };

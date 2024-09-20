@@ -230,8 +230,6 @@ void GraphicsEnvironment::Run3D() {
 			shader->SetUniform("projection", cam->projection);
 		}
 
-		auto& basicScene = GetRenderer("basic")->GetScene();
-		auto& flatScene = GetRenderer("flat")->GetScene();
 		auto& litScene = GetRenderer("lit")->GetScene();
 		auto& localLight = litScene->GetLocalLight();
 		auto& globalLight = litScene->GetGlobalLight();
@@ -241,20 +239,7 @@ void GraphicsEnvironment::Run3D() {
 		sprite->RotateToFace(cam->GetPosition());
 		sprite->SetPosition(litScene->GetLocalLight()->position);
 
-		auto& cylinder = objManager.GetObject("cylinder");
 		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
-
-		auto& floor = objManager.GetObject("floor");
-		GeometricPlane floorPlane;
-		floorPlane.SetDistanceFromOrigin(floor->GetPosition().y);
-		auto floorIntersection = mouseRay.GetIntersectionWithPlane(floorPlane);
-		if (floorIntersection.isIntersecting) {
-			auto floorIntersectionPoint = mouseRay.GetPosition(floorIntersection.offset);
-			floorIntersectionPoint.y = cylinder->GetPosition().y;
-			cylinder->SetPosition(floorIntersectionPoint);
-		}
-		else
-			cylinder->SetPosition({ 0.0f, 3.0f, 0.0f });
 
 		objManager.Update(deltaTime);
 

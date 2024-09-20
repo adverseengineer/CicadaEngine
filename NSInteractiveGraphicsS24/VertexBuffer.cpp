@@ -5,7 +5,6 @@
 VertexBuffer::VertexBuffer(unsigned int numElementsPerVertex) {
 	numberOfElementsPerVertex = numElementsPerVertex;
 	primitiveType = GL_TRIANGLES;
-	texture = nullptr;
 	glGenBuffers(1, &vboId);
 }
 
@@ -19,11 +18,6 @@ void VertexBuffer::Select() const {
 
 void VertexBuffer::Deselect() const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void VertexBuffer::SelectTexture(void) const {
-	if (texture != nullptr)
-		texture->Bind();
 }
 
 void VertexBuffer::AddVertexData(unsigned int count, ...) {
@@ -43,8 +37,6 @@ void VertexBuffer::AddVertexData(unsigned int count, ...) {
 void VertexBuffer::StaticAllocate() const {
 	unsigned long long bytesToAllocate = vertexData.size() * sizeof(float);
 	glBufferData(GL_ARRAY_BUFFER, bytesToAllocate, vertexData.data(), GL_STATIC_DRAW);
-	if(texture != nullptr)
-		texture->Allocate();
 }
 
 void VertexBuffer::AddVertexAttribute(const std::string& name, unsigned int index, unsigned int numberOfElements, unsigned int offsetCount) {
