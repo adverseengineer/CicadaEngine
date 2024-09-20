@@ -21,7 +21,6 @@ protected:
 	int primitiveType;
 	std::vector<float> vertexData;
 	std::unordered_map<std::string, VertexAttribute> attributeMap;
-	int textureUnit;
 	std::shared_ptr<Texture> texture;
 
 public:
@@ -32,9 +31,6 @@ public:
 
 	inline int GetPrimitiveType() const { return primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->primitiveType = primitiveType; }
-	
-	inline int GetTextureUnit() const { return textureUnit; }
-	inline void SetTextureUnit(int textureUnit) { this->textureUnit = textureUnit; }
 	
 	inline const std::shared_ptr<Texture>& GetTexture() const { return texture; }
 	inline void SetTexture(const std::shared_ptr<Texture>& texture) { this->texture = texture; }

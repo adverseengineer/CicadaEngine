@@ -51,8 +51,8 @@ void Texture::UseFallbackData() {
 	std::memcpy((void*)m_textureData, FallbackTexture::DATA, FallbackTexture::DATALEN);
 }
 
-void Texture::Bind(unsigned int textureUnit) const {
-	glActiveTexture(GL_TEXTURE0 + (GLenum)textureUnit);
+void Texture::Bind() const {
+	glActiveTexture(GL_TEXTURE0 + (GLenum)m_textureUnit);
 	glBindTexture(GL_TEXTURE_2D, (GLuint)m_textureId);
 }
 

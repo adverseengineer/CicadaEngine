@@ -30,7 +30,7 @@ void Renderer::RenderObject(const std::shared_ptr<GraphicsObject>& object) const
 	vertBuf->Select();
 	
 	if (vertBuf->HasTexture()) {
-		shader->SetUniform("tex", vertBuf->GetTextureUnit());
+		shader->SetUniform("tex", vertBuf->GetTexture()->GetTextureUnit());
 		vertBuf->GetTexture()->Bind();
 	}
 

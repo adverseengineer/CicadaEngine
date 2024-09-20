@@ -28,6 +28,8 @@ private:
 	unsigned int m_minFilter = GL_NEAREST;
 	unsigned int m_magFilter = GL_NEAREST;
 
+	unsigned int m_textureUnit = 0;
+
 	void UseFallbackData();
 
 public:
@@ -38,6 +40,9 @@ public:
 	Texture(const Texture&) = delete;
 	Texture& operator=(const Texture&) = delete;
 
-	void Bind(unsigned int textureUnit = 0) const;
+	inline unsigned int GetTextureUnit() const { return m_textureUnit; }
+	inline void SetTextureUnit(unsigned int textureUnit) { m_textureUnit = textureUnit; }
+
+	void Bind() const;
 	void Allocate();
 };

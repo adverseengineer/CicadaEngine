@@ -30,12 +30,23 @@ public:
 		return m_shaderProg;
 	}
 
-	//send a single integer
+	//send a single signed integer
 	void SetUniform(const std::string& name, int value) {
 		UniformInfo temp;
 		if (GetUniform(name, temp)) {
 			glUseProgram(m_shaderProg);
 			glUniform1i(temp.location, value);
+		}
+		else
+			Util::Log("Warning: no such uniform \"" + name + "\"");
+	}
+
+	//send a single unsigned integer
+	void SetUniform(const std::string& name, unsigned int value) {
+		UniformInfo temp;
+		if (GetUniform(name, temp)) {
+			glUseProgram(m_shaderProg);
+			glUniform1ui(temp.location, value);
 		}
 		else
 			Util::Log("Warning: no such uniform \"" + name + "\"");

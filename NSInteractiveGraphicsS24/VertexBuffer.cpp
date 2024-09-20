@@ -5,7 +5,6 @@
 VertexBuffer::VertexBuffer(unsigned int numElementsPerVertex) {
 	numberOfElementsPerVertex = numElementsPerVertex;
 	primitiveType = GL_TRIANGLES;
-	textureUnit = 0;
 	texture = nullptr;
 	glGenBuffers(1, &vboId);
 }
@@ -24,7 +23,7 @@ void VertexBuffer::Deselect() const {
 
 void VertexBuffer::SelectTexture(void) const {
 	if (texture != nullptr)
-		texture->Bind(textureUnit);
+		texture->Bind();
 }
 
 void VertexBuffer::AddVertexData(unsigned int count, ...) {
