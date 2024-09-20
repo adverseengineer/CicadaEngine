@@ -46,9 +46,8 @@ void Texture::UseFallbackData() {
 	m_magFilter = GL_NEAREST;
 
 	m_isLoadedFromFile = false;
-	m_textureData = new unsigned char[FallbackTexture::DATALEN];
-	//TODO: set m_textureData to the address of the root data, no need to copy?
-	std::memcpy((void*)m_textureData, FallbackTexture::DATA, FallbackTexture::DATALEN);
+	//simply set m_textureData to the address of the fallback data, no need to copy
+	m_textureData = FallbackTexture::DATA;
 }
 
 void Texture::Bind() const {
