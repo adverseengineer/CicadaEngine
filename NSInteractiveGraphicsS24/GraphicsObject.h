@@ -17,13 +17,13 @@ struct HighlightParams;
 struct TranslationParams;
 struct RotationParams;
 
-class GraphicsObject {
+class GameObject {
 protected:
 	glm::mat4 referenceFrame;
 	std::shared_ptr<VertexBuffer> vertBuf;
 	std::shared_ptr<IndexBuffer> idxBuf;
-	std::unordered_set<std::shared_ptr<GraphicsObject>> children;
-	GraphicsObject* parent;
+	std::unordered_set<std::shared_ptr<GameObject>> children;
+	GameObject* parent;
 	std::unordered_map<std::string, std::shared_ptr<Behavior>> behaviorMap;
 	std::shared_ptr<Material> material;
 	std::shared_ptr<BoundingBox> boundingBox;
@@ -31,11 +31,11 @@ protected:
 	std::shared_ptr<Texture> texture;
 
 public:
-	inline GraphicsObject() :
+	inline GameObject() :
 		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
 		parent(nullptr), material(nullptr), texture(nullptr) {
 	}
-	inline virtual ~GraphicsObject() = default;
+	inline virtual ~GameObject() = default;
 
 	//gets the reference frame of this object in global world space
 	inline const glm::mat4 GetGlobalReferenceFrame() const {
@@ -62,10 +62,10 @@ public:
 	}
 
 	//returns a const reference to the child container
-	inline const std::unordered_set<std::shared_ptr<GraphicsObject>>& GetChildren() const { return children; }
+	inline const std::unordered_set<std::shared_ptr<GameObject>>& GetChildren() const { return children; }
 
 	//inserts a new child under this object, returns true if success, false if already present
-	bool AddChild(const std::shared_ptr<GraphicsObject>& child);
+	bool AddChild(const std::shared_ptr<GameObject>& child);
 
 	bool AddBehavior(const std::string& behaviorName, const std::shared_ptr<Behavior>& behavior);
 	void SetBehaviorDefaults();

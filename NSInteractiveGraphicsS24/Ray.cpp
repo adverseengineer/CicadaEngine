@@ -14,7 +14,7 @@ Intersection Ray::GetIntersectionWithBoundingBox(const BoundingBox& boundingBox)
 	return Intersection();
 }
 
-bool Ray::IsIntersectingObject(const GraphicsObject& object) const {
+bool Ray::IsIntersectingObject(const GameObject& object) const {
 	if (!object.HasBoundingBox()) return false;
 	return object.GetBoundingBox()->IsIntersectingWithRay(*this);
 }

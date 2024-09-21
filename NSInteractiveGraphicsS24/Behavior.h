@@ -4,7 +4,7 @@
 #include "Util.h"
 
 //forward decl so that we can resolve a cyclical dependency
-class GraphicsObject;
+class GameObject;
 
 struct BehaviorParams {
 	Ray* ray;
@@ -27,11 +27,11 @@ struct RotationParams : BehaviorParams {
 //abstract class from which to derive all other behaviors
 class Behavior {
 protected:
-	std::shared_ptr<GraphicsObject> object;
+	std::shared_ptr<GameObject> object;
 	static bool clicked;
 public:
-	inline const std::shared_ptr<GraphicsObject>& GetObject() const { return object; }
-	inline void SetObject(const std::shared_ptr<GraphicsObject>& object) { this->object = object; }
+	inline const std::shared_ptr<GameObject>& GetObject() const { return object; }
+	inline void SetObject(const std::shared_ptr<GameObject>& object) { this->object = object; }
 
 	inline virtual void StoreDefaults() = 0; //any class with at least one virtual method set to 0 is abstract
 	inline virtual void SetParameter(BehaviorParams& params) = 0;

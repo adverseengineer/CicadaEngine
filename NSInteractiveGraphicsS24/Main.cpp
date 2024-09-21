@@ -18,7 +18,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma region SetUpDummyCube
 	auto dummyVBuf = Generate::CuboidWithNormals(6, 2, 5);
 	auto dummyTex = std::make_shared<Texture>("not-a-real-file.png");
-	auto dummy = std::make_shared<GraphicsObject>();
+	auto dummy = std::make_shared<GameObject>();
 	dummy->SetTexture(dummyTex);
 	dummy->SetVertexBuffer(dummyVBuf);
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
@@ -36,7 +36,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma region SetUpCrate
 	auto crateTex = std::make_shared<Texture>("crate.png");
 	auto crateVBuf = Generate::CuboidWithNormals(10, 10, 10, { 1, 1, 1, 1 }, { 1, 1 });
-	auto crate = std::make_shared<GraphicsObject>();
+	auto crate = std::make_shared<GameObject>();
 	crate->SetTexture(crateTex);
 	crate->SetVertexBuffer(crateVBuf);
 	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
@@ -54,7 +54,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma region SetUpMover
 	auto moverTex = std::make_shared<Texture>("gw.png");
 	auto moverVBuf = Generate::CuboidWithNormals(1.0f, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 10.0f });
-	auto mover = std::make_shared<GraphicsObject>();
+	auto mover = std::make_shared<GameObject>();
 	mover->SetTexture(moverTex);
 	mover->SetVertexBuffer(moverVBuf);
 	mover->SetPosition(glm::vec3(40.0f, 10.0f, 40.0f));
@@ -72,7 +72,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	#pragma region SetUpFloor
 	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 12, 12 });
 	auto floorTex = std::make_shared<Texture>("floor.png");
-	auto floor = std::make_shared<GraphicsObject>();
+	auto floor = std::make_shared<GameObject>();
 	floor->SetTexture(floorTex);
 	floor->SetVertexBuffer(floorVBuf);
 	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -96,7 +96,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	//auto lightbulbVBuf = Generate::PlaneXY(1, 1, { 1, 1, 1 }, { 1, 1 });
 	auto lightbulbVBuf = Generate::PlaneXYWithNormals(1, 1, { 1, 1, 1, 1 }, { 1, 1 });
 	auto lightbulbTex = std::make_shared<Texture>("lightbulb.png");
-	auto lightbulb = std::make_shared<GraphicsObject>();
+	auto lightbulb = std::make_shared<GameObject>();
 	lightbulb->SetTexture(lightbulbTex);
 	lightbulb->SetVertexBuffer(lightbulbVBuf);
 	lightbulb->SetPosition(localLightPos);

@@ -15,7 +15,7 @@ private:
 	glm::mat4 view;
 	glm::mat4 proj;
 
-	void RenderObject(const std::shared_ptr<GraphicsObject>& object) const;
+	void RenderObject(const std::shared_ptr<GameObject>& object) const;
 
 public:
 	Renderer(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Scene>& scene);

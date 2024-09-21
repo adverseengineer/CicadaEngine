@@ -16,7 +16,7 @@ void Renderer::StaticAllocateBuffers(void) const {
 	glBindVertexArray(0); //unbind it
 }
 
-void Renderer::RenderObject(const std::shared_ptr<GraphicsObject>& object) const {
+void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 
 	//send the model matrix to the shader
 	shader->SetUniform("world", object->GetGlobalReferenceFrame());
