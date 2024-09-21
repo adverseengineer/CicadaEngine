@@ -1,17 +1,16 @@
 //#include "Behavior.h"
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
-#include "TextFile.h"
 #include <Windows.h>
 
 static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	#pragma region SetUpLightShader
-	TextFile vertText;
-	vertText.ReadAllLines("lighting.vert.glsl");
-	TextFile fragText;
-	fragText.ReadAllLines("lighting.frag.glsl");
-	auto litShader = std::make_shared<Shader>(vertText.GetContents(), fragText.GetContents());
+	std::string vertexSource;
+	std::string fragmentSource;
+	Util::ReadFileToString("lighting.vert.glsl", vertexSource);
+	Util::ReadFileToString("lighting.frag.glsl", fragmentSource);
+	std::shared_ptr<Shader> litShader = std::make_shared<Shader>(vertexSource, fragmentSource);
 	auto litScene = std::make_shared<Scene>();
 	ge.AddRenderer("lit", litShader, litScene);
 	#pragma endregion

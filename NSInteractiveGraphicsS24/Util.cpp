@@ -1,2 +1,2 @@
 #include "Util.h"
-std::stringstream Util::_log;
+std::stringstream Util::s_log;
