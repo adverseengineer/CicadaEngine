@@ -1,5 +1,5 @@
 #pragma once
-#include "GraphicsObject.h"
+#include "GameObject.h"
 #include "Ray.h"
 #include "Util.h"
 

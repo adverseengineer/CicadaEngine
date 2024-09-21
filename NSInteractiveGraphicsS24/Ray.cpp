@@ -1,5 +1,5 @@
 #include "Ray.h"
-#include "GraphicsObject.h"
+#include "GameObject.h"
 #include "BoundingBox.h"
 
 Intersection Ray::GetIntersectionWithPlane(const GeometricPlane& plane) const

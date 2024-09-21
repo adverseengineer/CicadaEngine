@@ -1,4 +1,4 @@
-#include "GraphicsObject.h"
+#include "GameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 bool GameObject::AddChild(const std::shared_ptr<GameObject>& child) {

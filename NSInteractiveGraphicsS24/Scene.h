@@ -1,5 +1,5 @@
 #pragma once
-#include "GraphicsObject.h"
+#include "GameObject.h"
 #include "GraphicsStructures.h"
 #include <memory>
 #include <unordered_set>

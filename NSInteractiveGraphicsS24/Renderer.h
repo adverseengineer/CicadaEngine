@@ -1,6 +1,6 @@
 #pragma once
 #include "Camera.h"
-#include "GraphicsObject.h"
+#include "GameObject.h"
 #include "Scene.h"
 #include "Shader.h"
 #include "Util.h"

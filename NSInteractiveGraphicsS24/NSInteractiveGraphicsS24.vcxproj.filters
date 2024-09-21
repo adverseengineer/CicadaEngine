@@ -10,7 +10,7 @@
     <ClCompile Include="GraphicsEnvironment.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsObject.cpp">
+    <ClCompile Include="GameObject.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
@@ -113,7 +113,7 @@
     <ClInclude Include="Renderer.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsObject.h">
+    <ClInclude Include="GameObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsEnvironment.h">
