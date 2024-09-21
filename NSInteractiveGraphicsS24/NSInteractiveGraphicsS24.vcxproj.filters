@@ -25,9 +25,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="TextFile.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -105,9 +102,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="TextFile.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
