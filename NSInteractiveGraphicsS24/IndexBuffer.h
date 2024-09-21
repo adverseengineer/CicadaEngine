@@ -5,14 +5,14 @@
 
 class IndexBuffer {
 protected:
-	unsigned int iboId;
-	std::vector<unsigned short> indexData;
+	unsigned int m_iboId;
+	std::vector<unsigned short> m_indexData;
 
 public:
 	IndexBuffer();
 	~IndexBuffer();
 
-	inline std::size_t GetCount() const { return indexData.size(); }
+	inline std::size_t GetCount() const { return m_indexData.size(); }
 	void Select() const;
 	void Deselect() const;
 	void StaticAllocate() const;
