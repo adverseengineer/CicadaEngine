@@ -13,7 +13,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	ShaderManager::AddShader("diffuse", diffuseShader);
 
 	auto diffuseScene = std::make_shared<Scene>();
-	ge.AddRenderer("lit", diffuseShader, diffuseScene);
+	ge.AddRenderer("diffuse", diffuseShader, diffuseScene);
 	#pragma endregion
 
 	#pragma region SetUpDummyCube

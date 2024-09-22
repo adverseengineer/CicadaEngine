@@ -233,14 +233,14 @@ void GraphicsEnvironment::Run3D() {
 			shader->SetUniform("projection", cam->projection);
 		}
 
-		auto& litScene = GetRenderer("lit")->GetScene();
-		auto& localLight = litScene->GetLocalLight();
-		auto& globalLight = litScene->GetGlobalLight();
+		auto& diffuseScene = GetRenderer("diffuse")->GetScene();
+		auto& localLight = diffuseScene->GetLocalLight();
+		auto& globalLight = diffuseScene->GetGlobalLight();
 
 		//always make the lightbulb face towards the camera
 		auto sprite = ObjectManager::GetObject("lightbulb");
 		sprite->RotateToFace(cam->GetPosition());
-		sprite->SetPosition(litScene->GetLocalLight()->position);
+		sprite->SetPosition(diffuseScene->GetLocalLight()->position);
 
 		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
 
