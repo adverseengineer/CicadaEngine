@@ -10,9 +10,9 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	std::string fragmentSource;
 	Util::ReadFileToString("lighting.vert.glsl", vertexSource);
 	Util::ReadFileToString("lighting.frag.glsl", fragmentSource);
-	std::shared_ptr<Shader> litShader = std::make_shared<Shader>(vertexSource, fragmentSource);
+	std::shared_ptr<Shader> diffuseShader = std::make_shared<Shader>(vertexSource, fragmentSource);
 	auto litScene = std::make_shared<Scene>();
-	ge.AddRenderer("lit", litShader, litScene);
+	ge.AddRenderer("lit", diffuseShader, litScene);
 	#pragma endregion
 
 	#pragma region SetUpDummyCube

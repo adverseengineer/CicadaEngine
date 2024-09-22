@@ -19,7 +19,6 @@ protected:
 
 	int windowWidth, windowHeight;
 
-	ObjectManager objManager;
 	std::unordered_map<std::string, std::shared_ptr<Renderer>> rendererMap;
 	std::shared_ptr<Camera> cam;
 
@@ -53,8 +52,8 @@ public:
 
 	void ProcessInput(double elapsedSeconds) const;
 
-	inline void AddObject(const std::string& key, const std::shared_ptr<GameObject>& obj) { objManager.SetObject(key, obj); }
-	inline std::shared_ptr<GameObject> GetObject(const std::string& key) const { return objManager.GetObject(key); }
+	inline void AddObject(const std::string& key, const std::shared_ptr<GameObject>& obj) { ObjectManager::AddObject(key, obj); }
+	inline std::shared_ptr<GameObject> GetObject(const std::string& key) const { return ObjectManager::GetObject(key); }
 
 	static void OnMouseMove(GLFWwindow* window, double mouseX, double mouseY);
 

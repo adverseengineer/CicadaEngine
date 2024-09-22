@@ -181,11 +181,11 @@ void GraphicsEnvironment::Run3D() {
 		0.3f
 	};
 
-	auto& dummy = objManager.GetObject("dummy");
+	auto dummy = ObjectManager::GetObject("dummy");
 	auto& dummyMat = dummy->GetMaterial();
-	auto& crate = objManager.GetObject("crate");
+	auto crate = ObjectManager::GetObject("crate");
 	auto& crateMat = crate->GetMaterial();
-	auto& mover = objManager.GetObject("mover");
+	auto mover = ObjectManager::GetObject("mover");
 	auto& moverMat = mover->GetMaterial();
 
 	dummy->SetBehaviorParameters("highlight", hlp);
@@ -235,13 +235,13 @@ void GraphicsEnvironment::Run3D() {
 		auto& globalLight = litScene->GetGlobalLight();
 
 		//always make the lightbulb face towards the camera
-		auto& sprite = objManager.GetObject("lightbulb");
+		auto sprite = ObjectManager::GetObject("lightbulb");
 		sprite->RotateToFace(cam->GetPosition());
 		sprite->SetPosition(litScene->GetLocalLight()->position);
 
 		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
 
-		objManager.Update(deltaTime);
+		ObjectManager::Update(deltaTime);
 
 		//and finally call render
 		for (const auto& [name, renderer] : rendererMap) {
