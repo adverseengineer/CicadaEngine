@@ -4,6 +4,7 @@
 #include "ObjectManager.h"
 #include "Renderer.h"
 #include "Scene.h"
+#include "ShaderManager.h"
 #include "Util.h"
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>

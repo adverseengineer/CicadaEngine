@@ -225,7 +225,10 @@ void GraphicsEnvironment::Run3D() {
 		for (const auto& [name, renderer] : rendererMap) {
 			auto view = cam->GetView();
 			renderer->SetView(view);
-			auto& shader = renderer->GetShader();
+		}
+
+		for (const auto& [_, shader] : ShaderManager::GetAll()) {
+			auto view = cam->GetView();
 			shader->SetUniform("view", view);
 			shader->SetUniform("projection", cam->projection);
 		}

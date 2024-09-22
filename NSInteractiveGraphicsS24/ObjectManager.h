@@ -34,6 +34,10 @@ public:
 		return success;
 	}
 
+	inline static const std::unordered_map<std::string, std::shared_ptr<GameObject>>& GetAll() {
+		return s_objectMap;
+	}
+
 	inline static void SetBehaviorDefaults() {
 		for (auto& [_, object] : s_objectMap) {
 			object->SetBehaviorDefaults();

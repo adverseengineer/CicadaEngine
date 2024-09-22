@@ -1,4 +1,3 @@
-//#include "Behavior.h"
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
 #include <Windows.h>
@@ -11,8 +10,10 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	Util::ReadFileToString("lighting.vert.glsl", vertexSource);
 	Util::ReadFileToString("lighting.frag.glsl", fragmentSource);
 	std::shared_ptr<Shader> diffuseShader = std::make_shared<Shader>(vertexSource, fragmentSource);
-	auto litScene = std::make_shared<Scene>();
-	ge.AddRenderer("lit", diffuseShader, litScene);
+	ShaderManager::AddShader("diffuse", diffuseShader);
+
+	auto diffuseScene = std::make_shared<Scene>();
+	ge.AddRenderer("lit", diffuseShader, diffuseScene);
 	#pragma endregion
 
 	#pragma region SetUpDummyCube
@@ -24,7 +25,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
 	auto dummyMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	dummy->SetMaterial(dummyMat);
-	litScene->AddObject(dummy);
+	diffuseScene->AddObject(dummy);
 	ge.AddObject("dummy", dummy);
 	
 	auto dummyBB = std::make_shared<BoundingBox>();
@@ -42,7 +43,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
 	auto crateMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	crate->SetMaterial(crateMat);
-	litScene->AddObject(crate);
+	diffuseScene->AddObject(crate);
 	ge.AddObject("crate", crate);
 
 	auto crateBB = std::make_shared<BoundingBox>();
@@ -60,7 +61,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	mover->SetPosition(glm::vec3(40.0f, 10.0f, 40.0f));
 	auto moverMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
 	mover->SetMaterial(moverMat);
-	litScene->AddObject(mover);
+	diffuseScene->AddObject(mover);
 	ge.AddObject("mover", mover);
 
 	auto moverBB = std::make_shared<BoundingBox>();
@@ -78,7 +79,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	auto floorMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	floor->SetMaterial(floorMat);
-	litScene->AddObject(floor);
+	diffuseScene->AddObject(floor);
 	ge.AddObject("floor", floor);
 	#pragma endregion
 
@@ -86,11 +87,11 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto localLightPos = glm::vec3{ 0, 10.0f, 0 };
 	auto localLightColor = glm::vec3{ 1.0f, 1.0f, 0.0f };
 	auto localLight = std::make_shared<Light>(localLightPos, localLightColor, 1.0f, 0.0f);
-	litScene->SetLocalLight(localLight);
+	diffuseScene->SetLocalLight(localLight);
 	auto globalLightPos = glm::vec3{ 20.0f, 20.0f, 20.0f };
 	auto globalLightColor = glm::vec3{ 0.0f, 0.0f, 1.0f };
 	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 0.5f);
-	litScene->SetGlobalLight(globalLight);
+	diffuseScene->SetGlobalLight(globalLight);
 
 	#pragma region Lightbulb
 	//auto lightbulbVBuf = Generate::PlaneXY(1, 1, { 1, 1, 1 }, { 1, 1 });
@@ -103,7 +104,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto lightbulbMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 	lightbulb->SetMaterial(lightbulbMat);
 	//flatScene->AddObject(lightbulb);
-	litScene->AddObject(lightbulb);
+	diffuseScene->AddObject(lightbulb);
 	ge.AddObject("lightbulb", lightbulb);
 	#pragma endregion
 
