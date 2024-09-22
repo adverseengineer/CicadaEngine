@@ -21,6 +21,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto dummyTex = std::make_shared<Texture>("not-a-real-file.png");
 	auto dummy = std::make_shared<GameObject>();
 	dummy->SetTexture(dummyTex);
+	dummy->SetShader(diffuseShader);
 	dummy->SetVertexBuffer(dummyVBuf);
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
 	auto dummyMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
@@ -39,6 +40,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto crateVBuf = Generate::CuboidWithNormals(10, 10, 10, { 1, 1, 1, 1 }, { 1, 1 });
 	auto crate = std::make_shared<GameObject>();
 	crate->SetTexture(crateTex);
+	crate->SetShader(diffuseShader);
 	crate->SetVertexBuffer(crateVBuf);
 	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
 	auto crateMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
@@ -57,6 +59,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto moverVBuf = Generate::CuboidWithNormals(1.0f, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 10.0f });
 	auto mover = std::make_shared<GameObject>();
 	mover->SetTexture(moverTex);
+	mover->SetShader(diffuseShader);
 	mover->SetVertexBuffer(moverVBuf);
 	mover->SetPosition(glm::vec3(40.0f, 10.0f, 40.0f));
 	auto moverMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
@@ -75,6 +78,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto floorTex = std::make_shared<Texture>("floor.png");
 	auto floor = std::make_shared<GameObject>();
 	floor->SetTexture(floorTex);
+	floor->SetShader(diffuseShader);
 	floor->SetVertexBuffer(floorVBuf);
 	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	auto floorMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
@@ -99,6 +103,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto lightbulbTex = std::make_shared<Texture>("lightbulb.png");
 	auto lightbulb = std::make_shared<GameObject>();
 	lightbulb->SetTexture(lightbulbTex);
+	lightbulb->SetShader(diffuseShader);
 	lightbulb->SetVertexBuffer(lightbulbVBuf);
 	lightbulb->SetPosition(localLightPos);
 	auto lightbulbMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);

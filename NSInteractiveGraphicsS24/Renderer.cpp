@@ -19,7 +19,7 @@ void Renderer::StaticAllocateBuffers(void) const {
 void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 
 	//send the model matrix to the shader
-	shader->SetUniform("world", object->GetGlobalReferenceFrame());
+	object->GetShader()->SetUniform("world", object->GetGlobalReferenceFrame());
 
 	auto& vertBuf = object->GetVertexBuffer();
 	if(vertBuf == nullptr) {
@@ -30,15 +30,15 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 	vertBuf->Select();
 
 	if (object->HasTexture()) {
-		shader->SetUniform("tex", object->GetTexture()->GetTextureUnit());
+		object->GetShader()->SetUniform("tex", object->GetTexture()->GetTextureUnit());
 		object->GetTexture()->Bind();
 	}
 
 	auto& material = object->GetMaterial();
 	if (material != nullptr) {
-		shader->SetUniform("materialAmbientIntensity", material->ambientIntensity);
-		shader->SetUniform("materialSpecularIntensity", material->specularIntensity);
-		shader->SetUniform("materialShininess", material->shininess);
+		object->GetShader()->SetUniform("materialAmbientIntensity", material->ambientIntensity);
+		object->GetShader()->SetUniform("materialSpecularIntensity", material->specularIntensity);
+		object->GetShader()->SetUniform("materialShininess", material->shininess);
 	}
 
 	vertBuf->SetUpAttributeInterpretration();

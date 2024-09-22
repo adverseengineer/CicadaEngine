@@ -49,7 +49,6 @@ public:
 	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
 
 	void StaticAllocate() const;
-	void Render() const;
 
 	void ProcessInput(double elapsedSeconds) const;
 

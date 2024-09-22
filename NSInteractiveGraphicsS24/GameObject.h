@@ -4,6 +4,7 @@
 #include "GraphicsStructures.h"
 #include "IndexBuffer.h"
 #include "Ray.h"
+#include "Shader.h"
 #include "VertexBuffer.h"
 #include <glm/glm.hpp>
 #include <memory>
@@ -29,6 +30,7 @@ protected:
 	std::shared_ptr<BoundingBox> boundingBox;
 
 	std::shared_ptr<Texture> texture;
+	std::shared_ptr<Shader> shader;
 
 public:
 	inline GameObject() :
@@ -79,6 +81,9 @@ public:
 		if (texture != nullptr)
 			texture->Bind();
 	}
+
+	inline const std::shared_ptr<Shader>& GetShader() const { return shader; }
+	inline void SetShader(const std::shared_ptr<Shader>& shader) { this->shader = shader; }
 
 	inline const std::shared_ptr<Material>& GetMaterial() const { return material; }
 	inline void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }

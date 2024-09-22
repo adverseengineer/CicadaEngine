@@ -2,18 +2,18 @@
 #include <cstdarg>
 
 //creates a new VertexBuffer with the specified number of elements per vertex
-VertexBuffer::VertexBuffer(unsigned int numElementsPerVertex) {
-	numberOfElementsPerVertex = numElementsPerVertex;
-	primitiveType = GL_TRIANGLES;
-	glGenBuffers(1, &vboId);
+VertexBuffer::VertexBuffer(unsigned int numElemsPerVert) {
+	m_numElemsPerVert = numElemsPerVert;
+	m_primitiveType = GL_TRIANGLES;
+	glGenBuffers(1, &m_vboId);
 }
 
 VertexBuffer::~VertexBuffer() {
-	glDeleteBuffers(1, &vboId);
+	glDeleteBuffers(1, &m_vboId);
 }
 
 void VertexBuffer::Select() const {
-	glBindBuffer(GL_ARRAY_BUFFER, vboId);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
 }
 
 void VertexBuffer::Deselect() const {
@@ -21,26 +21,26 @@ void VertexBuffer::Deselect() const {
 }
 
 void VertexBuffer::AddVertexData(unsigned int count, ...) {
-	if (count != numberOfElementsPerVertex)
+	if (count != m_numElemsPerVert)
 		throw "Invalid vertex data count!";
 
 	va_list args;
 	va_start(args, count);
-	while(count > 0) {
+	while (count > 0) {
 		//the default is double, so accept as double and then cast to float
-		vertexData.push_back(static_cast<float>(va_arg(args, double)));
+		m_vertexData.push_back(static_cast<float>(va_arg(args, double)));
 		count--;
 	}
 	va_end(args);
 }
 
 void VertexBuffer::StaticAllocate() const {
-	unsigned long long bytesToAllocate = vertexData.size() * sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER, bytesToAllocate, vertexData.data(), GL_STATIC_DRAW);
+	GLsizeiptr bytesToAllocate = m_vertexData.size() * sizeof(float);
+	glBufferData(GL_ARRAY_BUFFER, bytesToAllocate, (void*)m_vertexData.data(), GL_STATIC_DRAW);
 }
 
 void VertexBuffer::AddVertexAttribute(const std::string& name, unsigned int index, unsigned int numberOfElements, unsigned int offsetCount) {
-	unsigned int vertexSizeInBytes = sizeof(float) * numberOfElementsPerVertex;
+	unsigned int vertexSizeInBytes = sizeof(float) * m_numElemsPerVert;
 	unsigned int bytesToNext = vertexSizeInBytes;
 	unsigned long long offsetBytes = sizeof(float) * offsetCount;
 	VertexAttribute attr = {
@@ -55,16 +55,16 @@ void VertexBuffer::AddVertexAttribute(const std::string& name, unsigned int inde
 }
 
 void VertexBuffer::SetUpAttributeInterpretration() const {
-	for (const std::pair<const std::string, VertexAttribute>& item : attributeMap) {
+	for (const auto& item : attributeMap) {
 		const auto& attr = item.second;
-		glEnableVertexAttribArray(attr.index);
+		glEnableVertexAttribArray(attr.m_index);
 		glVertexAttribPointer(
-			attr.index,
-			attr.numberOfComponents,
-			attr.type,
-			attr.isNormalized,
-			attr.bytesToNext,
-			attr.byteOffset
+			attr.m_index,
+			attr.m_numComponents,
+			attr.m_type,
+			attr.m_isNormalized,
+			attr.m_bytesToNext,
+			attr.m_byteOffset
 		);
 	}
 }

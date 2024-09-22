@@ -88,11 +88,6 @@ void GraphicsEnvironment::StaticAllocate(void) const {
 		renderer->StaticAllocateBuffers();
 }
 
-void GraphicsEnvironment::Render() const {
-	for(auto& [name, renderer] : rendererMap)
-		renderer->RenderScene(cam);
-}
-
 static bool freeCamMode = true;
 static bool correctGamma = true;
 
@@ -159,7 +154,7 @@ Ray mouseRay;
 
 void GraphicsEnvironment::Run3D() {
 
-	glm::vec3 clearColor = { 0.04f, 0.19f, 0.19f };
+	glm::vec3 clearColor = { 0.1f, 0.1f, 0.1f };
 
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
@@ -267,12 +262,6 @@ void GraphicsEnvironment::Run3D() {
 			camLook[0][0], camLook[1][0], camLook[2][0],
 			camLook[0][1], camLook[1][1], camLook[2][1],
 			camLook[0][2], camLook[1][2], camLook[2][2]
-		);
-
-		ImGui::Text(
-			"Mouse Ray: {(%.3f, %.3f, %.3f), (%.3f, %.3f, %.3f)}",
-			mouseRay.origin.x, mouseRay.origin.y, mouseRay.origin.z,
-			mouseRay.direction.x, mouseRay.direction.y, mouseRay.direction.z
 		);
 
 		ImGui::Checkbox("Free Cam", &freeCamMode);
