@@ -23,6 +23,7 @@ protected:
 	glm::mat4 referenceFrame;
 	std::shared_ptr<VertexBuffer> vertBuf;
 	std::shared_ptr<IndexBuffer> idxBuf;
+	
 	std::unordered_set<std::shared_ptr<GameObject>> children;
 	GameObject* parent;
 	std::unordered_map<std::string, std::shared_ptr<Behavior>> behaviorMap;

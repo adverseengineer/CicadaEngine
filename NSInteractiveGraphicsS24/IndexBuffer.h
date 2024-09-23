@@ -12,9 +12,9 @@ public:
 	IndexBuffer();
 	~IndexBuffer();
 
-	inline std::size_t GetCount() const { return m_indexData.size(); }
-	void Select() const;
-	void Deselect() const;
+	inline size_t GetCount() const { return m_indexData.size(); }
+	void Bind() const;
+	void Unbind() const;
 	void StaticAllocate() const;
 	void AddIndexData(unsigned int count, ...);
 };

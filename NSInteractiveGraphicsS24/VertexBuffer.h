@@ -31,8 +31,8 @@ public:
 	inline int GetPrimitiveType() const { return m_primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->m_primitiveType = primitiveType; }
 
-	void Select() const;
-	void Deselect() const;
+	void Bind() const;
+	void Unbind() const;
 	void AddVertexData(unsigned int count, ...);
 	void StaticAllocate() const;
 	void AddVertexAttribute(const std::string& name, unsigned int index, unsigned int numberOfElements, unsigned int offsetCount = 0);

@@ -72,14 +72,14 @@ void GameObject::RotateToFace(const glm::vec3& target) {
 }
 
 void GameObject::StaticAllocate() const {
-	vertBuf->Select();
+	vertBuf->Bind();
 	vertBuf->StaticAllocate();
-	vertBuf->Deselect();
+	vertBuf->Unbind();
 
 	if (idxBuf != nullptr) {
-		idxBuf->Select();
+		idxBuf->Bind();
 		idxBuf->StaticAllocate();
-		idxBuf->Deselect();
+		idxBuf->Unbind();
 	}
 
 	if (texture != nullptr)

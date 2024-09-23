@@ -27,7 +27,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 		return;
 	}
 
-	vertBuf->Select();
+	vertBuf->Bind();
 
 	if (object->HasTexture()) {
 		object->GetShader()->SetUniform("tex", object->GetTexture()->GetTextureUnit());
@@ -45,9 +45,9 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 
 	if (object->IsIndexed()) {
 		auto& idxBuf = object->GetIndexBuffer();
-		idxBuf->Select();
+		idxBuf->Bind();
 		glDrawElements(vertBuf->GetPrimitiveType(), (GLsizei) idxBuf->GetCount(), GL_UNSIGNED_SHORT, (void*)0);
-		idxBuf->Deselect();
+		idxBuf->Unbind();
 	}
 	else {
 		glDrawArrays(vertBuf->GetPrimitiveType(), 0, (GLsizei) vertBuf->GetNumberOfVertices());
