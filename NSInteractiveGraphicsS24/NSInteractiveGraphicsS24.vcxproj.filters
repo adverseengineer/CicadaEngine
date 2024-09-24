@@ -88,8 +88,12 @@
     <ClCompile Include="BoundingBox.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Behavior.cpp" />
+    <ClCompile Include="Behavior.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VertexBuffer.h">
@@ -146,8 +150,15 @@
     <ClInclude Include="Ray.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Behavior.h" />
+    <ClInclude Include="Mesh.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Behavior.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">

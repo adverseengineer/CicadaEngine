@@ -12,6 +12,9 @@ public:
 	IndexBuffer();
 	~IndexBuffer();
 
+	IndexBuffer(const IndexBuffer&) = delete;
+	IndexBuffer& operator=(const IndexBuffer&) = delete;
+
 	inline size_t GetCount() const { return m_indexData.size(); }
 	void Bind() const;
 	void Unbind() const;

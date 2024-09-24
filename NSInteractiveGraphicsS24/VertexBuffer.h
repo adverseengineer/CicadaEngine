@@ -23,10 +23,13 @@ protected:
 	std::unordered_map<std::string, VertexAttribute> attributeMap;
 
 public:
-	VertexBuffer(unsigned int numElementsPerVertex = 3);
+	VertexBuffer(unsigned int numElemsPerVert = 12);
 	~VertexBuffer();
 
-	inline std::size_t GetNumberOfVertices() const { return m_vertexData.size(); }
+	VertexBuffer(const VertexBuffer&) = delete;
+	VertexBuffer& operator=(const VertexBuffer&) = delete;
+	
+	inline size_t GetNumberOfVertices() const { return m_vertexData.size(); }
 
 	inline int GetPrimitiveType() const { return m_primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->m_primitiveType = primitiveType; }

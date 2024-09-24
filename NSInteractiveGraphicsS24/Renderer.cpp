@@ -21,13 +21,15 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 	//send the model matrix to the shader
 	object->GetShader()->SetUniform("world", object->GetGlobalReferenceFrame());
 
-	auto& vertBuf = object->GetVertexBuffer();
-	if(vertBuf == nullptr) {
-		Util::Log("vertex buffer is null");
+	auto& mesh = object->GetMesh();
+	if(mesh == nullptr) {
+		Util::Log("mesh is null");
 		return;
 	}
 
-	vertBuf->Bind();
+	auto& vBuf = mesh->GetVertexBuffer();
+
+	vBuf.Bind();
 
 	if (object->HasTexture()) {
 		object->GetShader()->SetUniform("tex", object->GetTexture()->GetTextureUnit());
@@ -41,16 +43,16 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 		object->GetShader()->SetUniform("materialShininess", material->shininess);
 	}
 
-	vertBuf->SetUpAttributeInterpretration();
+	vBuf.SetUpAttributeInterpretration();
 
-	if (object->IsIndexed()) {
-		auto& idxBuf = object->GetIndexBuffer();
-		idxBuf->Bind();
-		glDrawElements(vertBuf->GetPrimitiveType(), (GLsizei) idxBuf->GetCount(), GL_UNSIGNED_SHORT, (void*)0);
-		idxBuf->Unbind();
+	if (mesh->HasIndices()) {
+		auto& iBuf = mesh->GetIndexBuffer();
+		iBuf.Bind();
+		glDrawElements(vBuf.GetPrimitiveType(), (GLsizei) iBuf.GetCount(), GL_UNSIGNED_SHORT, (void*)0);
+		iBuf.Unbind();
 	}
 	else {
-		glDrawArrays(vertBuf->GetPrimitiveType(), 0, (GLsizei) vertBuf->GetNumberOfVertices());
+		glDrawArrays(vBuf.GetPrimitiveType(), 0, (GLsizei) vBuf.GetNumberOfVertices());
 	}
 
 	// Recursively render the children

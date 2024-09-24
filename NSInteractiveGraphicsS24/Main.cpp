@@ -14,11 +14,11 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto diffuseScene = std::make_shared<Scene>();
 	ge.AddRenderer("diffuse", diffuseShader, diffuseScene);
 
-	auto dummyVBuf = Generate::CuboidWithNormals(6, 2, 5);
-	auto crateVBuf = Generate::CuboidWithNormals(10, 10, 10, { 1, 1, 1, 1 }, { 1, 1 });
-	auto moverVBuf = Generate::CuboidWithNormals(1.0f, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 10.0f });
-	auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 12, 12 });
-	auto lightbulbVBuf = Generate::PlaneXYWithNormals(1, 1, { 1, 1, 1, 1 }, { 1, 1 });
+	auto dummyMesh = Generate::CuboidWithNormals(6.0, 2.0, 5.0, 1.0, 1.0);
+	auto crateMesh = Generate::CuboidWithNormals(10, 10, 10, 1.0, 1.0, { 1, 1, 1, 1 });
+	auto moverMesh = Generate::CuboidWithNormals(1.0f, 10.0f, 1.0f, 1.0, 1.0, { 1.0f, 1.0f, 1.0f, 1.0f });
+	//auto floorVBuf = Generate::PlaneXZWithNormals(100, 100, { 1, 1, 1, 1 }, { 12, 12 });
+	//auto lightbulbVBuf = Generate::PlaneXYWithNormals(1, 1, { 1, 1, 1, 1 }, { 1, 1 });
 
 	auto dummyTex = std::make_shared<Texture>("not-a-real-file.png");
 	auto crateTex = std::make_shared<Texture>("crate.png");
@@ -44,7 +44,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	dummy->SetTexture(dummyTex);
 	dummy->SetShader(diffuseShader);
-	dummy->SetVertexBuffer(dummyVBuf);
+	dummy->SetMesh(dummyMesh);
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
 	dummy->SetMaterial(dummyMat);
 	diffuseScene->AddObject(dummy);
@@ -56,7 +56,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	crate->SetTexture(crateTex);
 	crate->SetShader(diffuseShader);
-	crate->SetVertexBuffer(crateVBuf);
+	crate->SetMesh(crateMesh);
 	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
 	crate->SetMaterial(crateMat);
 	diffuseScene->AddObject(crate);
@@ -68,7 +68,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	mover->SetTexture(moverTex);
 	mover->SetShader(diffuseShader);
-	mover->SetVertexBuffer(moverVBuf);
+	mover->SetMesh(moverMesh);
 	mover->SetPosition(glm::vec3(40.0f, 10.0f, 40.0f));
 	mover->SetMaterial(moverMat);
 	diffuseScene->AddObject(mover);
@@ -78,13 +78,13 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	moverBB->SetReferenceFrame(mover->GetLocalReferenceFrame());
 	mover->SetBoundingBox(moverBB);
 
-	floor->SetTexture(floorTex);
+	/*floor->SetTexture(floorTex);
 	floor->SetShader(diffuseShader);
-	floor->SetVertexBuffer(floorVBuf);
+	floor->SetMesh(floorMesh);
 	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	floor->SetMaterial(floorMat);
 	diffuseScene->AddObject(floor);
-	ge.AddObject("floor", floor);
+	ge.AddObject("floor", floor);*/
 
 	auto localLightPos = glm::vec3{ 0, 10.0f, 0 };
 	auto localLightColor = glm::vec3{ 1.0f, 1.0f, 0.0f };
@@ -95,14 +95,14 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 0.5f);
 	diffuseScene->SetGlobalLight(globalLight);
 
-	lightbulb->SetTexture(lightbulbTex);
-	lightbulb->SetShader(diffuseShader);
-	lightbulb->SetVertexBuffer(lightbulbVBuf);
-	lightbulb->SetPosition(localLightPos);
-	lightbulb->SetMaterial(lightbulbMat);
-	//flatScene->AddObject(lightbulb);
-	diffuseScene->AddObject(lightbulb);
-	ge.AddObject("lightbulb", lightbulb);
+	//lightbulb->SetTexture(lightbulbTex);
+	//lightbulb->SetShader(diffuseShader);
+	//lightbulb->SetVertexBuffer(lightbulbVBuf);
+	//lightbulb->SetPosition(localLightPos);
+	//lightbulb->SetMaterial(lightbulbMat);
+	////flatScene->AddObject(lightbulb);
+	//diffuseScene->AddObject(lightbulb);
+	//ge.AddObject("lightbulb", lightbulb);
 
 	auto dummyHLBehavior = std::make_shared<HighlightBehavior>();
 	auto crateHLBehavior = std::make_shared<HighlightBehavior>();

@@ -2,8 +2,7 @@
 #include <cstdarg>
 
 //creates a new VertexBuffer with the specified number of elements per vertex
-VertexBuffer::VertexBuffer(unsigned int numElemsPerVert) {
-	m_numElemsPerVert = numElemsPerVert;
+VertexBuffer::VertexBuffer(unsigned int numElemsPerVert) : m_numElemsPerVert(numElemsPerVert) {
 	m_primitiveType = GL_TRIANGLES;
 	glGenBuffers(1, &m_vboId);
 }

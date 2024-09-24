@@ -2,10 +2,9 @@
 #include "Behavior.h"
 #include "BoundingBox.h"
 #include "GraphicsStructures.h"
-#include "IndexBuffer.h"
+#include "Mesh.h"
 #include "Ray.h"
 #include "Shader.h"
-#include "VertexBuffer.h"
 #include <glm/glm.hpp>
 #include <memory>
 #include <unordered_map>
@@ -21,8 +20,6 @@ struct RotationParams;
 class GameObject {
 protected:
 	glm::mat4 referenceFrame;
-	std::shared_ptr<VertexBuffer> vertBuf;
-	std::shared_ptr<IndexBuffer> idxBuf;
 	
 	std::unordered_set<std::shared_ptr<GameObject>> children;
 	GameObject* parent;
@@ -33,9 +30,11 @@ protected:
 	std::shared_ptr<Texture> texture;
 	std::shared_ptr<Shader> shader;
 
+	std::shared_ptr<Mesh> m_mesh;
+
 public:
 	inline GameObject() :
-		referenceFrame(1.0f), vertBuf(nullptr), idxBuf(nullptr),
+		referenceFrame(1.0f), m_mesh(nullptr),
 		parent(nullptr), material(nullptr), texture(nullptr) {
 	}
 	inline virtual ~GameObject() = default;
@@ -54,15 +53,8 @@ public:
 	//sets the reference frame of this object, not taking into account the parent
 	inline void SetLocalReferenceFrame(const glm::mat4& referenceFrame) { this->referenceFrame = referenceFrame; }
 	
-	inline const std::shared_ptr<VertexBuffer>& GetVertexBuffer() const { return vertBuf; }
-	inline void SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vertBuf) { this->vertBuf = vertBuf; }
-
-	inline const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const { return idxBuf; }
-	inline void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& idxBuf) { this->idxBuf = idxBuf; }
-	inline bool IsIndexed() const { return idxBuf != nullptr; }
-	inline void CreateIndexBuffer() const {
-		throw "not impl";
-	}
+	inline const std::shared_ptr<Mesh>& GetMesh() const { return m_mesh; }
+	inline void SetMesh(const std::shared_ptr<Mesh>& mesh) { this->m_mesh = mesh; }
 
 	//returns a const reference to the child container
 	inline const std::unordered_set<std::shared_ptr<GameObject>>& GetChildren() const { return children; }
