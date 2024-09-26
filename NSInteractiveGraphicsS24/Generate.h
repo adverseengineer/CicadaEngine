@@ -13,15 +13,14 @@ public:
 	//static std::shared_ptr<VertexBuffer> PlaneXZ(float width, float depth, glm::vec3 color = { 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
 	//static std::shared_ptr<VertexBuffer> PlaneXY(float width, float height, glm::vec3 color = { 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
 	
-	static std::shared_ptr<VertexBuffer> PlaneXZWithNormals(float width, float depth, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
-	static std::shared_ptr<VertexBuffer> PlaneXYWithNormals(float width, float height, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });	
+	static std::shared_ptr<Mesh> PlaneXZWithNormals(float width, float depth, float u, float v, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f });
+	static std::shared_ptr<Mesh> PlaneXYWithNormals(float width, float height, float u, float v, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f });	
 
 	//static std::shared_ptr<VertexBuffer> LineCircleVertices(float radius, unsigned int numSegments = 12, const glm::vec3& color = { 1.0f, 1.0f, 1.0f });
 	//static std::shared_ptr<IndexBuffer> LineCircleIndices(unsigned int numSegments, bool isClosed = true);
 
-	//static std::shared_ptr<VertexBuffer> LineCylinderVertices(float radius, float height, unsigned int numSegments = 12, const glm::vec3& color = { 1.0f, 1.0f, 1.0f });
-	//static std::shared_ptr<IndexBuffer> LineCylinderIndices(unsigned int numSegments = 12, bool isClosed = true);
-
+	static std::shared_ptr<Mesh> CylinderWithNormals(float radius, float height, unsigned int numSegments = 12, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+	
 	//static std::shared_ptr<VertexBuffer> LineSphereVertices(float radius, unsigned int numSegments = 12, const glm::vec3& color = { 1.0f, 1.0f, 1.0f });
 	//static std::shared_ptr<IndexBuffer> LineSphereIndices(unsigned int numSegments = 12);
 	

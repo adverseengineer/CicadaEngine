@@ -165,7 +165,7 @@ void GraphicsEnvironment::Run3D() {
 	RotationParams rap = {
 		&mouseRay,
 		glm::vec3{0,1,0},
-		360.0f
+		90.0f
 	};
 	TranslationParams tap = {
 		&mouseRay,
@@ -233,9 +233,9 @@ void GraphicsEnvironment::Run3D() {
 		auto& globalLight = diffuseScene->GetGlobalLight();
 
 		//always make the lightbulb face towards the camera
-		//auto sprite = ObjectManager::GetObject("lightbulb");
-		//sprite->RotateToFace(cam->GetPosition());
-		//sprite->SetPosition(diffuseScene->GetLocalLight()->position);
+		auto sprite = ObjectManager::GetObject("lightbulb");
+		sprite->RotateToFace(cam->GetPosition());
+		sprite->SetPosition(diffuseScene->GetLocalLight()->position);
 
 		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
 
