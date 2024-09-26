@@ -10,67 +10,6 @@
 #define NORM_FORWARD 0.0f, 0.0f, -1.0f
 #define NORM_BACKWARD 0.0f, 0.0f, 1.0f
 
-/*
-std::shared_ptr<VertexBuffer> Generate::Cuboid(float width, float height, float depth, glm::vec3 color, glm::vec2 tex) {
-
-	auto vertBuf = std::make_shared<VertexBuffer>(8);
-
-	float hw = width / 2;
-	float hh = height / 2;
-	float hd = depth / 2;
-
-	//front
-	vertBuf->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
-	vertBuf->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, tex.s, tex.t);
-	//right
-	vertBuf->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
-	vertBuf->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
-	//back
-	vertBuf->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, 0.0f, 0.0f);
-	vertBuf->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
-	//left
-	vertBuf->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, 0.0f, 0.0f);
-	vertBuf->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, tex.s, tex.t);
-	//top
-	vertBuf->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, -hw, hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
-	vertBuf->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, -hw, hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, hw, hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, hw, hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
-	//bottom
-	vertBuf->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, hw, -hh, hd, color.r, color.g, color.b, 0.0f, 0.0f);
-	vertBuf->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, hw, -hh, -hd, color.r, color.g, color.b, 0.0f, tex.t);
-	vertBuf->AddVertexData(8, -hw, -hh, hd, color.r, color.g, color.b, tex.s, 0.0f);
-	vertBuf->AddVertexData(8, -hw, -hh, -hd, color.r, color.g, color.b, tex.s, tex.t);
-	#pragma endregion
-
-	//add vertex attributes to the vertex buffer
-	vertBuf->AddVertexAttribute("position", 0, 3, 0);
-	vertBuf->AddVertexAttribute("vertexColor", 1, 3, 3);
-	vertBuf->AddVertexAttribute("texCoord", 2, 2, 6);
-
-    return vertBuf;
-}*/
-
 std::shared_ptr<Mesh> Generate::CuboidWithNormals(float width, float height, float depth, float u, float v, glm::vec4 color) {
 
 	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(12);
@@ -207,69 +146,43 @@ std::shared_ptr<Mesh> Generate::CylinderWithNormals(float radius, float height, 
 	float hh = height / 2;
 	double tau = 2 * M_PI;
 	double delta = tau / numSegments;
-	for (double theta = 0.0f; theta < tau; theta += delta) {
+	for (double theta = 0.0; theta <= tau; theta += delta) { 
 		double c = cos(theta);
 		double s = sin(theta);
 		double rc = radius * c;
 		double rs = radius * s;
 
+		double u = c / 2 + 0.5;
+		double v = s / 2 + 0.5;
+
 		//because we are using indices and those don't play well with normals, we need two copies of each rim
 		//upper rim, up facing
-		vBuf.AddVertexData(12, rc, hh, rs, color.r, color.g, color.b, color.a, NORM_UP, c + 0.5f, s + 0.5f);
+		vBuf.AddVertexData(12, rc, hh, rs, color.r, color.g, color.b, color.a, NORM_UP, 1.0 - u, v);
 		//lower rim, down facing
-		vBuf.AddVertexData(12, rc, -hh, rs, color.r, color.g, color.b, color.a, NORM_DOWN, c + 0.5f, s + 0.5f);
+		vBuf.AddVertexData(12, rc, -hh, rs, color.r, color.g, color.b, color.a, NORM_DOWN, u, v);
 		//upper rim, outward facing
-		vBuf.AddVertexData(12, rc, hh, rs, color.r, color.g, color.b, color.a, c, 0.0f, s, theta / tau, 1.0f);
+		vBuf.AddVertexData(12, rc, hh, rs, color.r, color.g, color.b, color.a, c, 0.0f, s, tau - theta / tau, 1.0f);
 		//lower rim, outward facing
-		vBuf.AddVertexData(12, rc, -hh, rs, color.r, color.g, color.b, color.a, c, 0.0f, s, theta / tau, 0.0f);
+		vBuf.AddVertexData(12, rc, -hh, rs, color.r, color.g, color.b, color.a, c, 0.0f, s, tau - theta / tau, 0.0f);
 	}
 
-	for (size_t i = 0; i < numSegments - 1; i++) {
+	//don't ask me how i got these numbers, it was a lot of desmos array fuckery
+	for (size_t i = 0; i < numSegments; i++) {
 		iBuf.AddIndexData(3, 0, 4 * (i + 1), 4 * i); //part of upper rim
-		iBuf.AddIndexData(3, 0 + 1, 4 * i + 1, 4 * (i + 1) + 1); //part of lower rim
+		iBuf.AddIndexData(3, 1, 4 * i + 1, 4 * (i + 1) + 1); //part of lower rim
 		iBuf.AddIndexData(3, 4 * i + 2, 4 * (i + 1) + 2, 4 * i + 3); //upper triangle of side face
 		iBuf.AddIndexData(3, 4 * (i + 1) + 2, 4 * (i + 1) + 3, 4 * i + 3); //lower triangle of side face
 	}
-
-	//close up the ring with two final triangles
-	iBuf.AddIndexData(3, 4 * (numSegments - 1) + 2, 2, 4 * (numSegments - 1) + 3);
-	iBuf.AddIndexData(3, 2, 3, 4 * (numSegments - 1) + 3);
 
 	return mesh;
 }
 
 /*
-std::shared_ptr<IndexBuffer> Generate::LineCylinderIndices(unsigned int numSegments, bool isClosed) {
-	
-	auto idxBuf = std::make_shared<IndexBuffer>();
-		
-	std::size_t i = 0;
-	for (i = 0; i < (numSegments - 1) * 2; i += 2) {
-		idxBuf->AddIndexData(2, i, i + 2); //top circle
-		idxBuf->AddIndexData(2, i + 1, i + 3); //bottom half
-		idxBuf->AddIndexData(2, i, i + 1); //stitch them together
-	}
-	if (isClosed) {
-		idxBuf->AddIndexData(2, i, 0); //top
-		idxBuf->AddIndexData(2, i + 1, 1); //bottom
-		idxBuf->AddIndexData(2, i, i + 1); //stitch
-	}
-
-	return idxBuf;
-}
-
 std::shared_ptr<VertexBuffer> Generate::LineSphereVertices(float radius, unsigned int numSegments, const glm::vec3& color) {
-	throw "not impl";
-}
-
-std::shared_ptr<IndexBuffer> Generate::LineSphereIndices(unsigned int numSegments) {
 	throw "not impl";
 }
 
 std::shared_ptr<VertexBuffer> Generate::LineQuadSphereVertices(float radius, unsigned int resolution, const glm::vec3& color) {
 	throw "not impl";
 }
-
-std::shared_ptr<IndexBuffer> Generate::LineQuadSphereIndices(unsigned int resolution) {
-	throw "not impl";
-}*/
+*/

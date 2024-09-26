@@ -16,13 +16,13 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 
 	auto dummyMesh = Generate::CuboidWithNormals(6.0, 2.0, 5.0, 1.0, 1.0);
 	auto crateMesh = Generate::CuboidWithNormals(10.0, 10.0, 10.0, 1.0, 1.0, { 1, 1, 1, 1 });
-	auto moverMesh = Generate::CylinderWithNormals(2, 2, 8);
+	auto moverMesh = Generate::CylinderWithNormals(2, 2, 18, {1.0, 1.0, 1.0, 0.05f});
 	auto floorMesh = Generate::PlaneXZWithNormals(100, 100, 12, 12, { 1, 1, 1, 1 });
 	auto lightbulbMesh = Generate::PlaneXYWithNormals(1, 1, 1, 1, { 1, 1, 1, 1 });
 
 	auto dummyTex = std::make_shared<Texture>("not-a-real-file.png");
 	auto crateTex = std::make_shared<Texture>("crate.png");
-	auto moverTex = std::make_shared<Texture>("gw.png (WRONG)!!!!");
+	auto moverTex = std::make_shared<Texture>("gw.png");
 	auto floorTex = std::make_shared<Texture>("floor.png");
 	auto lightbulbTex = std::make_shared<Texture>("lightbulb.png");
 
@@ -69,7 +69,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	mover->SetTexture(moverTex);
 	mover->SetShader(diffuseShader);
 	mover->SetMesh(moverMesh);
-	mover->SetPosition(glm::vec3(40.0f, 10.0f, 40.0f));
+	mover->SetPosition(glm::vec3(0.0f, 15.0f, -15.0f));
 	mover->SetMaterial(moverMat);
 	diffuseScene->AddObject(mover);
 	ge.AddObject("mover", mover);
@@ -91,7 +91,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge) {
 	auto localLight = std::make_shared<Light>(localLightPos, localLightColor, 1.0f, 0.0f);
 	diffuseScene->SetLocalLight(localLight);
 	auto globalLightPos = glm::vec3{ 40.0f, 40.0f, 40.0f };
-	auto globalLightColor = glm::vec3{ 1.0f, 1.0f, 1.0f };
+	auto globalLightColor = glm::vec3{ 0.0f, 0.0f, 1.0f };
 	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 0.5f);
 	diffuseScene->SetGlobalLight(globalLight);
 
