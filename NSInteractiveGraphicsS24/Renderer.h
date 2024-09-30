@@ -9,22 +9,11 @@
 
 class Renderer {
 private:
-	std::shared_ptr<Shader> shader;
-	std::shared_ptr<Scene> scene;
-
-	void RenderObject(const std::shared_ptr<GameObject>& object) const;
+	static void RenderObject(const std::shared_ptr<GameObject>& object);
 
 public:
-	Renderer(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Scene>& scene);
-	inline ~Renderer() = default;
+	inline Renderer() = delete;
 
-	inline const std::shared_ptr<Shader>& GetShader() const { return shader; }
-	inline void SetShader(const std::shared_ptr<Shader>& shader) { this->shader = shader; }
-
-	inline const std::shared_ptr<Scene>& GetScene() const { return scene; }
-	inline void GetScene(const std::shared_ptr<Scene>& scene) { this->scene = scene; }
-
-	void StaticAllocateBuffers() const;
-
-	void RenderScene(const std::shared_ptr<Camera>& cam) const;
+	static void StaticAllocateBuffers(const std::shared_ptr<Scene>& scene);
+	static void RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam);
 };

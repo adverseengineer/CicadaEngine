@@ -8,19 +8,19 @@
 
 MouseParams GraphicsEnvironment::mouse;
 
-GraphicsEnvironment::~GraphicsEnvironment() {
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-	glfwTerminate();
-}
-
-void GraphicsEnvironment::Init(unsigned int majorVersion, unsigned int minorVersion) {
+GraphicsEnvironment::GraphicsEnvironment() {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 4); //adds antialiasing capabilities
+}
+
+GraphicsEnvironment::~GraphicsEnvironment() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	glfwTerminate();
 }
 
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
@@ -81,11 +81,6 @@ void GraphicsEnvironment::SetupGraphics() {
 
 void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
-}
-
-void GraphicsEnvironment::StaticAllocate(void) const {
-	for(auto& [name, renderer] : rendererMap)
-		renderer->StaticAllocateBuffers();
 }
 
 static bool freeCamMode = true;
@@ -152,7 +147,7 @@ void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double 
 
 Ray mouseRay;
 
-void GraphicsEnvironment::Run3D() {
+void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader) {
 
 	glm::vec3 clearColor = { 0.1f, 0.1f, 0.1f };
 
@@ -222,23 +217,20 @@ void GraphicsEnvironment::Run3D() {
 			shader->SetUniform("projection", cam->projection);
 		}
 
-		auto& diffuseScene = GetRenderer("diffuse")->GetScene();
-		auto& localLight = diffuseScene->GetLocalLight();
-		auto& globalLight = diffuseScene->GetGlobalLight();
+		auto& localLight = scene->GetLocalLight();
+		auto& globalLight = scene->GetGlobalLight();
 
 		//always make the lightbulb face towards the camera
 		auto sprite = ObjectManager::GetObject("lightbulb");
 		sprite->RotateToFace(cam->GetPosition());
-		sprite->SetPosition(diffuseScene->GetLocalLight()->position);
+		sprite->SetPosition(scene->GetLocalLight()->position);
 
 		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
 
 		ObjectManager::Update(deltaTime);
 
 		//and finally call render
-		for (const auto& [name, renderer] : rendererMap) {
-			renderer->RenderScene(cam);
-		}
+		Renderer::RenderScene(scene, shader, cam);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

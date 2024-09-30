@@ -1,16 +1,12 @@
 #include "Renderer.h"
 #include "Shader.h"
 
-Renderer::Renderer(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Scene>& scene) :
-	shader(shader), scene(scene) {
-}
-
-void Renderer::StaticAllocateBuffers() const {
+void Renderer::StaticAllocateBuffers(const std::shared_ptr<Scene>& scene) {
 	for(const auto& obj : scene->GetObjects())
 		obj->StaticAllocate();
 }
 
-void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
+void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 
 	//send the model matrix to the shader
 	object->GetShader()->SetUniform("world", object->GetGlobalReferenceFrame());
@@ -60,7 +56,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 	mesh->Unbind();
 }
 
-void Renderer::RenderScene(const std::shared_ptr<Camera>& cam) const {
+void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam) {
 
 	if(shader->GetShaderProg() != 0) {
 

@@ -16,39 +16,27 @@
 class GraphicsEnvironment {
 
 protected:
-	GLFWwindow* window;
+	GLFWwindow* window = nullptr;
 
-	int windowWidth, windowHeight;
+	int windowWidth = 0, windowHeight = 0;
 
-	std::unordered_map<std::string, std::shared_ptr<Renderer>> rendererMap;
 	std::shared_ptr<Camera> cam;
 
 	static MouseParams mouse;
 
 public:
-	inline GraphicsEnvironment() : window(nullptr), windowWidth(0), windowHeight(0) {}
+	GraphicsEnvironment();
 	~GraphicsEnvironment();
 
 	inline GLFWwindow* GetWindow() { return window; }
 
-	void Init(unsigned int majorVersion, unsigned int minorVersion);
 	bool SetWindow(unsigned int width, unsigned int height, const std::string& title);
 	bool InitGlad();
 	void SetupGraphics();
 	static void OnWindowSizeChanged(GLFWwindow* window, int width, int height);
 
-	inline void AddRenderer(const std::string& name, std::shared_ptr<Shader> shad, std::shared_ptr<Scene> scene) {
-		rendererMap.emplace(name, std::make_shared<Renderer>(shad, scene));
-	}
-	inline std::shared_ptr<Renderer> GetRenderer(const std::string& name) const {
-		//don't worry about not found exceptions, its better than returning null from this. change over to std::optional eventually
-		return rendererMap.at(name);
-	}
-
 	inline const std::shared_ptr<Camera>& GetCamera() const { return cam; }
 	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
-
-	void StaticAllocate() const;
 
 	void ProcessInput(double elapsedSeconds) const;
 
@@ -57,5 +45,5 @@ public:
 
 	static void OnMouseMove(GLFWwindow* window, double mouseX, double mouseY);
 
-	void Run3D();
+	void Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
 };
