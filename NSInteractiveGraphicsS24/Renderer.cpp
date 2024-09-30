@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 Renderer::Renderer(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Scene>& scene) :
-	shader(shader), scene(scene), view(1.0f), proj(1.0f) {
+	shader(shader), scene(scene) {
 }
 
 void Renderer::StaticAllocateBuffers() const {
@@ -23,19 +23,21 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) const {
 
 	mesh->Bind();
 	auto& vBuf = mesh->GetVertexBuffer();
-
 	vBuf.Bind();
 
-	if (object->HasTexture()) {
-		object->GetShader()->SetUniform("tex", object->GetTexture()->GetTextureUnit());
-		object->GetTexture()->Bind();
+	auto& shader = object->GetShader();
+	auto& tex = object->GetTexture();
+
+	if (tex != nullptr) {
+		shader->SetUniform("tex", object->GetTexture()->GetTextureUnit());
+		tex->Bind();
 	}
 
 	auto& material = object->GetMaterial();
 	if (material != nullptr) {
-		object->GetShader()->SetUniform("materialAmbientIntensity", material->ambientIntensity);
-		object->GetShader()->SetUniform("materialSpecularIntensity", material->specularIntensity);
-		object->GetShader()->SetUniform("materialShininess", material->shininess);
+		shader->SetUniform("materialAmbientIntensity", material->ambientIntensity);
+		shader->SetUniform("materialSpecularIntensity", material->specularIntensity);
+		shader->SetUniform("materialShininess", material->shininess);
 	}
 
 	vBuf.SetUpAttributeInterpretration();

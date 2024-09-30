@@ -216,12 +216,6 @@ void GraphicsEnvironment::Run3D() {
 		else
 			cam->aspectRatio = windowHeight / (windowWidth * 1.0f);
 
-		//update the view matrix for each renderer, and send the view and projection to the shader
-		for (const auto& [name, renderer] : rendererMap) {
-			auto view = cam->GetView();
-			renderer->SetView(view);
-		}
-
 		for (const auto& [_, shader] : ShaderManager::GetAll()) {
 			auto view = cam->GetView();
 			shader->SetUniform("view", view);

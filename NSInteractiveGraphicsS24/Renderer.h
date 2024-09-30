@@ -11,8 +11,6 @@ class Renderer {
 private:
 	std::shared_ptr<Shader> shader;
 	std::shared_ptr<Scene> scene;
-	glm::mat4 view;
-	glm::mat4 proj;
 
 	void RenderObject(const std::shared_ptr<GameObject>& object) const;
 
@@ -26,12 +24,6 @@ public:
 	inline const std::shared_ptr<Scene>& GetScene() const { return scene; }
 	inline void GetScene(const std::shared_ptr<Scene>& scene) { this->scene = scene; }
 
-	inline const glm::mat4& GetView() { return view; }
-	inline void SetView(const glm::mat4& view) { this->view = view; }
-
-	inline const glm::mat4& GetProjection() { return proj; }
-	inline void SetProjection(const glm::mat4& proj) { this->proj = proj; }
-	
 	void StaticAllocateBuffers() const;
 
 	void RenderScene(const std::shared_ptr<Camera>& cam) const;
