@@ -9,7 +9,6 @@
 
 class Renderer {
 private:
-	unsigned int vaoId;
 	std::shared_ptr<Shader> shader;
 	std::shared_ptr<Scene> scene;
 	glm::mat4 view;
