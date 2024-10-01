@@ -17,9 +17,8 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 		return;
 	}
 
-	mesh->Bind();
-	auto& vBuf = mesh->GetVertexBuffer();
-	vBuf.Bind();
+	mesh->BindVAO();
+	mesh->BindVBO();
 
 	auto& shader = object->GetShader();
 	auto& tex = object->GetTexture();
@@ -36,16 +35,14 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 		shader->SetUniform("materialShininess", material->shininess);
 	}
 
-	vBuf.SetUpAttributeInterpretration();
+	mesh->SetUpAttributeInterpretration();
 
-	if (mesh->HasIndices()) {
-		auto& iBuf = mesh->GetIndexBuffer();
-		iBuf.Bind();
-		glDrawElements(vBuf.GetPrimitiveType(), (GLsizei) iBuf.GetCount(), GL_UNSIGNED_SHORT, (void*)0);
-		iBuf.Unbind();
+	if (mesh->IndexCount() != 0) {
+		mesh->BindIBO();
+		glDrawElements(mesh->GetPrimitiveType(), (GLsizei) mesh->IndexCount(), GL_UNSIGNED_SHORT, (void*)0);
 	}
 	else {
-		glDrawArrays(vBuf.GetPrimitiveType(), 0, (GLsizei) vBuf.GetNumberOfVertices());
+		glDrawArrays(mesh->GetPrimitiveType(), 0, (GLsizei) mesh->GetNumberOfVertices());
 	}
 
 	// Recursively render the children
@@ -53,7 +50,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 	for (const auto& child : children)
 		RenderObject(child);
 
-	mesh->Unbind();
+	mesh->UnbindVAO();
 }
 
 void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam) {

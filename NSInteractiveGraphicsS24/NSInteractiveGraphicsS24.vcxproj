@@ -146,8 +146,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GeometricLine.cpp" />
     <ClCompile Include="GeometricPlane.cpp" />
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="IndexBuffer.h" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
@@ -163,7 +161,6 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Behavior.h" />
@@ -186,7 +183,6 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Util.h" />
-    <ClInclude Include="VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.frag.glsl" />

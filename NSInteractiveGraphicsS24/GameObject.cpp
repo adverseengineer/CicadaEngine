@@ -73,18 +73,8 @@ void GameObject::RotateToFace(const glm::vec3& target) {
 
 void GameObject::StaticAllocate() const {
 	
-	auto& vBuf = m_mesh->GetVertexBuffer();
-	auto& iBuf = m_mesh->GetIndexBuffer();
-
-	vBuf.Bind();
-	vBuf.StaticAllocate();
-	vBuf.Unbind();
-
-	if (m_mesh->HasIndices()) {
-		iBuf.Bind();
-		iBuf.StaticAllocate();
-		iBuf.Unbind();
-	}
+	m_mesh->UploadVBO();
+	m_mesh->UploadIBO();
 
 	if (texture != nullptr)
 		texture->Allocate();

@@ -31,9 +31,6 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\3rdparty\glad\src\glad.c">
       <Filter>Source\Third Party</Filter>
     </ClCompile>
@@ -70,12 +67,6 @@
     <ClCompile Include="FallbackTexture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.h">
-      <Filter>Headers</Filter>
-    </ClCompile>
     <ClCompile Include="GeometricLine.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -96,9 +87,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Util.h">
       <Filter>Headers</Filter>
     </ClInclude>
