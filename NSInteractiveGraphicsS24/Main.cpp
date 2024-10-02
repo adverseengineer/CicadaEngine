@@ -1,16 +1,24 @@
+
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
 #include <Windows.h>
 
 static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene, std::shared_ptr<Shader>& shader) {
 
-	auto dummyMesh = Generate::CuboidWithNormals(6.0, 2.0, 5.0, 1.0, 1.0);
+	auto dummyMesh = std::make_shared<Mesh>(12);
+	dummyMesh->AddVertexAttribute("position", 0, 3, 0);
+	dummyMesh->AddVertexAttribute("vertexColor", 1, 4, 3);
+	dummyMesh->AddVertexAttribute("vertexNormal", 2, 3, 7);
+	dummyMesh->AddVertexAttribute("texCoord", 3, 2, 10);
+	dummyMesh->Setup();
+	dummyMesh->LoadObj("chicken brent.obj");
+
 	auto crateMesh = Generate::CuboidWithNormals(10.0, 10.0, 10.0, 1.0, 1.0, { 1, 1, 1, 1 });
 	auto moverMesh = Generate::CylinderWithNormals(2, 2, 18, {1.0, 1.0, 1.0, 0.05f});
 	auto floorMesh = Generate::PlaneXZWithNormals(100, 100, 12, 12, { 1, 1, 1, 1 });
 	auto lightbulbMesh = Generate::PlaneXYWithNormals(1, 1, 1, 1, { 1, 1, 1, 1 });
 
-	auto dummyTex = std::make_shared<Texture>("not-a-real-file.png");
+	auto dummyTex = std::make_shared<Texture>("br0_tex00.png");
 	auto crateTex = std::make_shared<Texture>("crate.png");
 	auto moverTex = std::make_shared<Texture>("gw.png");
 	auto floorTex = std::make_shared<Texture>("floor.png");

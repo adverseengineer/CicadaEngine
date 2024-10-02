@@ -147,6 +147,7 @@
     <ClCompile Include="GeometricLine.cpp" />
     <ClCompile Include="GeometricPlane.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="FallbackTexture.cpp" />
