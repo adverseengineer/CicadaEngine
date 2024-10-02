@@ -73,8 +73,8 @@ void GameObject::RotateToFace(const glm::vec3& target) {
 
 void GameObject::StaticAllocate() const {
 	
-	m_mesh->UploadVBO();
-	m_mesh->UploadIBO();
+	m_mesh->Setup();
+	m_mesh->Upload();
 
 	if (texture != nullptr)
 		texture->Allocate();

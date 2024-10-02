@@ -39,30 +39,46 @@ public:
 
 	inline ~Mesh() {
 		glDeleteVertexArrays(1, &m_vaoId);
+		glDeleteBuffers(1, &m_vboId);
+		glDeleteBuffers(1, &m_iboId);
 	}
 
-	Mesh(const Mesh&) = delete;
-	Mesh& operator=(const Mesh&) = delete;
+	Mesh(const Mesh&) = delete; //disallow copy constructing
+	Mesh& operator=(const Mesh&) = delete; //disallow copy assignment
 
-	inline void BindVAO() const { glBindVertexArray(m_vaoId); }
-	inline void UnbindVAO() const { glBindVertexArray(0); }
+	inline void Bind() const { glBindVertexArray(m_vaoId); }
+	inline void Unbind() const { glBindVertexArray(0); }
 
-	inline void BindVBO() const { glBindBuffer(GL_ARRAY_BUFFER, m_vboId); }
-	inline void UnbindVBO() const { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+	inline void Setup() const {
+		
+		glBindVertexArray(m_vaoId); //select this mesh's vao for modification
+		glBindBuffer(GL_ARRAY_BUFFER, m_vboId); //tie this mesh's vbo into the vao
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId); //tie this mesh's ibo into the vao
 
-	void BindIBO() const { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId); }
-	void UnbindIBO() const { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+		//set up vertex attribute pointers
+		for (const auto& item : attributeMap) {
+			const VertexAttribute& attr = item.second;
+			glEnableVertexAttribArray(attr.m_index);
+			glVertexAttribPointer(
+				attr.m_index,
+				attr.m_numComponents,
+				attr.m_type,
+				attr.m_isNormalized,
+				attr.m_bytesToNext,
+				attr.m_byteOffset
+			);
+		}
 
-	inline void UploadVBO() const {
-		BindVBO();
-		unsigned long long bytesToAllocate = m_vertexData.size() * sizeof(float);
-		glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr) bytesToAllocate, (void*) m_vertexData.data(), GL_STATIC_DRAW);
+		//unselect this vao for safety
+		glBindVertexArray(0);
 	}
 
-	inline void UploadIBO() const {
-		BindIBO();
-		unsigned long long bytesToAllocate = m_indexData.size() * sizeof(unsigned short);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr) bytesToAllocate, (void*) m_indexData.data(), GL_STATIC_DRAW);
+	inline void Upload() const {
+		glBindVertexArray(m_vaoId);
+		unsigned long long vboBytes = m_vertexData.size() * sizeof(float);
+		unsigned long long iboBytes = m_indexData.size() * sizeof(unsigned short);
+		glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr) vboBytes, (void*) m_vertexData.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr) iboBytes, (void*)m_indexData.data(), GL_STATIC_DRAW);
 	}
 
 	inline void AddVertexData(unsigned int count, ...) {
@@ -83,7 +99,7 @@ public:
 		unsigned int vertexSizeInBytes = sizeof(float) * m_numElemsPerVert;
 		unsigned int bytesToNext = vertexSizeInBytes;
 		unsigned long long offsetBytes = sizeof(float) * offsetCount;
-		VertexAttribute attr = {
+		attributeMap[name] = {
 			index,
 			numberOfElements,
 			GL_FLOAT,
@@ -91,22 +107,6 @@ public:
 			bytesToNext,
 			(void*)offsetBytes
 		};
-		attributeMap[name] = attr;
-	}
-
-	inline void SetUpAttributeInterpretration() const {
-		for (const auto& item : attributeMap) {
-			const VertexAttribute& attr = item.second;
-			glEnableVertexAttribArray(attr.m_index);
-			glVertexAttribPointer(
-				attr.m_index,
-				attr.m_numComponents,
-				attr.m_type,
-				attr.m_isNormalized,
-				attr.m_bytesToNext,
-				attr.m_byteOffset
-			);
-		}
 	}
 
 	inline size_t GetNumberOfVertices() const { return m_vertexData.size(); }

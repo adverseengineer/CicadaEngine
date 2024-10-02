@@ -17,8 +17,8 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 		return;
 	}
 
-	mesh->BindVAO();
-	mesh->BindVBO();
+	mesh->Bind();
+	//mesh->BindVBO();
 
 	auto& shader = object->GetShader();
 	auto& tex = object->GetTexture();
@@ -35,22 +35,22 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 		shader->SetUniform("materialShininess", material->shininess);
 	}
 
-	mesh->SetUpAttributeInterpretration();
+	//mesh->SetUpAttributeInterpretration();
 
-	if (mesh->IndexCount() != 0) {
-		mesh->BindIBO();
+	//if (mesh->IndexCount() != 0) {
+		//mesh->BindIBO();
 		glDrawElements(mesh->GetPrimitiveType(), (GLsizei) mesh->IndexCount(), GL_UNSIGNED_SHORT, (void*)0);
-	}
-	else {
-		glDrawArrays(mesh->GetPrimitiveType(), 0, (GLsizei) mesh->GetNumberOfVertices());
-	}
+	//}
+	//else {
+		//glDrawArrays(mesh->GetPrimitiveType(), 0, (GLsizei) mesh->GetNumberOfVertices());
+	//}
 
 	// Recursively render the children
 	auto& children = object->GetChildren();
 	for (const auto& child : children)
 		RenderObject(child);
 
-	mesh->UnbindVAO();
+	mesh->Unbind();
 }
 
 void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam) {
