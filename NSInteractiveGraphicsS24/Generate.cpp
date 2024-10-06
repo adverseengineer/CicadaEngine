@@ -217,12 +217,3 @@ std::shared_ptr<Mesh> Generate::PolarSphereWithNormals(float radius, unsigned in
 
 	return mesh;
 }
-
-std::shared_ptr<Mesh> Generate::QuadSphereWithNormals(float radius, unsigned int numSegments, const glm::vec4& color) {
-
-	auto mesh = std::make_shared<Mesh>(12);
-
-
-
-	return mesh;
-}
