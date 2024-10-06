@@ -188,8 +188,8 @@
   <ItemGroup>
     <None Include="basic.frag.glsl" />
     <None Include="basic.vert.glsl" />
-    <None Include="lighting.frag.glsl" />
-    <None Include="lighting.vert.glsl" />
+    <None Include="diffuse.frag.glsl" />
+    <None Include="diffuse.vert.glsl" />
     <None Include="norm.frag.glsl" />
     <None Include="norm.vert.glsl" />
     <None Include="texture.frag.glsl" />

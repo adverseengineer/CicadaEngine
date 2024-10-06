@@ -33,7 +33,7 @@ bool BoundingBox::IsIntersectingWithRay(const Ray& ray) {
 	glm::vec3 localDir = glm::vec3(inverseMat * glm::vec4(ray.direction, 0.0f));
 	localRay.direction = localDir;
 	for (std::size_t i = FRONT; i <= BOTTOM; i++) {
-		intersection = localRay.GetIntersectionWithPlane(planes[i]);
+		intersection = localRay.GetIntersection(planes[i]);
 		intersections.push_back(intersection);
 	}
 
@@ -82,6 +82,6 @@ bool BoundingBox::IsIntersectingWithRay(const Ray& ray) {
 		if (nearestFarI < farthestNearI) return false;
 	}
 
-	intersectionPoint = ray.GetPosition(farthestNearI);
+	intersectionPoint = ray.Project(farthestNearI);
 	return true;
 }

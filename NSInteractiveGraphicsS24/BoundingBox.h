@@ -5,7 +5,11 @@
 
 struct Ray;
 
-class BoundingBox {
+class BoundingVolume {
+
+};
+
+class BoundingBox : BoundingVolume {
 public:
 	static const int FRONT = 0;
 	static const int BACK = 1;

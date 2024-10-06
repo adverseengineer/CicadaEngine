@@ -181,10 +181,10 @@
     <None Include="texture.vert.glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="lighting.frag.glsl">
+    <None Include="diffuse.frag.glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="lighting.vert.glsl">
+    <None Include="diffuse.vert.glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="norm.vert.glsl">

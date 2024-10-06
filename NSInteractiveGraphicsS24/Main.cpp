@@ -130,8 +130,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	std::string vertexSource;
 	std::string fragmentSource;
-	Util::ReadFileToString("norm.vert.glsl", vertexSource);
-	Util::ReadFileToString("norm.frag.glsl", fragmentSource);
+	Util::ReadFileToString("diffuse.vert.glsl", vertexSource);
+	Util::ReadFileToString("diffuse.frag.glsl", fragmentSource);
 	std::shared_ptr<Shader> diffuseShader = std::make_shared<Shader>(vertexSource, fragmentSource);
 	ShaderManager::AddShader("diffuse", diffuseShader);
 
