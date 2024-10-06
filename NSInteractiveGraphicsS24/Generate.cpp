@@ -10,16 +10,11 @@
 #define NORM_FORWARD 0.0f, 0.0f, -1.0f
 #define NORM_BACKWARD 0.0f, 0.0f, 1.0f
 
-std::shared_ptr<Mesh> Generate::CuboidWithNormals(float width, float height, float depth, float u, float v, glm::vec4 color) {
+std::shared_ptr<Mesh> Generate::CuboidWithNormals(float width, float height, float depth, float u, float v, const glm::vec4& color) {
 
 	auto mesh = std::make_shared<Mesh>(12);
-
-	mesh->AddVertexAttribute("position", 0, 3, 0);
-	mesh->AddVertexAttribute("vertexColor", 1, 4, 3);
-	mesh->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	mesh->AddVertexAttribute("texCoord", 3, 2, 10);
-	unsigned int indexOffset = 0;
 	
+	unsigned int indexOffset = 0;
 	float hw = width / 2;
 	float hh = height / 2;
 	float hd = depth / 2;
@@ -42,7 +37,7 @@ std::shared_ptr<Mesh> Generate::CuboidWithNormals(float width, float height, flo
 	mesh->AddIndexData(3, 0 + indexOffset, 3 + indexOffset, 1 + indexOffset);
 	indexOffset += 4;
 
-	//left
+	//left-
 	mesh->AddVertexData(12, -hw, hh, -hd, color.r, color.g, color.b, color.a, NORM_LEFT, 0.0f, u);
 	mesh->AddVertexData(12, -hw, hh, hd, color.r, color.g, color.b, color.a, NORM_LEFT, v, u);
 	mesh->AddVertexData(12, -hw, -hh, -hd, color.r, color.g, color.b, color.a, NORM_LEFT, 0.0f, 0.0f);
@@ -81,14 +76,9 @@ std::shared_ptr<Mesh> Generate::CuboidWithNormals(float width, float height, flo
 	return mesh;
 }
 
-std::shared_ptr<Mesh> Generate::PlaneXZWithNormals(float width, float depth, float u, float v, glm::vec4 color) {
+std::shared_ptr<Mesh> Generate::PlaneXZWithNormals(float width, float depth, float u, float v, const glm::vec4& color) {
 
 	auto mesh = std::make_shared<Mesh>(12);
-	
-	mesh->AddVertexAttribute("position", 0, 3, 0);
-	mesh->AddVertexAttribute("vertexColor", 1, 4, 3);
-	mesh->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	mesh->AddVertexAttribute("texCoord", 3, 2, 10);
 
 	float hw = width / 2;
 	float hd = depth / 2;
@@ -103,14 +93,9 @@ std::shared_ptr<Mesh> Generate::PlaneXZWithNormals(float width, float depth, flo
 	return mesh;
 }
 
-std::shared_ptr<Mesh> Generate::PlaneXYWithNormals(float width, float height, float u, float v, glm::vec4 color) {
+std::shared_ptr<Mesh> Generate::PlaneXYWithNormals(float width, float height, float u, float v, const glm::vec4& color) {
 
 	auto mesh = std::make_shared<Mesh>(12);
-	
-	mesh->AddVertexAttribute("position", 0, 3, 0);
-	mesh->AddVertexAttribute("vertexColor", 1, 4, 3);
-	mesh->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	mesh->AddVertexAttribute("texCoord", 3, 2, 10);
 	
 	float hw = width / 2;
 	float hh = height / 2;
@@ -129,14 +114,11 @@ std::shared_ptr<Mesh> Generate::CylinderWithNormals(float radius, float height, 
 
 	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(12);
 	
-	mesh->AddVertexAttribute("position", 0, 3, 0);
-	mesh->AddVertexAttribute("vertexColor", 1, 4, 3);
-	mesh->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	mesh->AddVertexAttribute("texCoord", 3, 2, 10);
-
 	float hh = height / 2;
 	double tau = 2 * M_PI;
 	double delta = tau / numSegments;
+
+	//NOTE: this will generate duplicate vertices at the vertical "seam" of the cylinder. this is needed to properly UV map
 	for (double theta = 0.0; theta <= tau; theta += delta) { 
 		double c = cos(theta);
 		double s = sin(theta);
@@ -168,12 +150,79 @@ std::shared_ptr<Mesh> Generate::CylinderWithNormals(float radius, float height, 
 	return mesh;
 }
 
-/*
-std::shared_ptr<VertexBuffer> Generate::LineSphereVertices(float radius, unsigned int numSegments, const glm::vec3& color) {
-	throw "not impl";
+//NOTE: according to face counts, this function generates too many triangles for its vertices
+//the number of faces generated is supposed to be (longitudes)*(latitudes-1)*2, but instead
+//it is (longitudes)*(latitudes)*2
+//NOTE: also, when this function reaches the face loops, the meanings of latitudes and longitudes
+//are somehow switched. the code does work, but it runs counter to the way the desmos logic worked out
+std::shared_ptr<Mesh> Generate::PolarSphereWithNormals(float radius, unsigned int latitudes, unsigned int longitudes, const glm::vec4& color) {
+
+	if (latitudes < 2)
+		throw std::runtime_error("cannot generate polar sphere with less than 2 latitudes");
+	if (longitudes < 3)
+		throw std::runtime_error("cannot generate polar sphere with less than 3 longitudes");
+
+	auto mesh = std::make_shared<Mesh>(12);
+
+	double tau = 2 * M_PI;
+	double deltaTheta = tau / longitudes;
+	double deltaPhi = M_PI / latitudes;
+	double quarterTurn = M_PI / 2; //90 degrees
+
+	//NOTE: we generate the vertices along the "seam meridian" twice, this is needed to properly UV wrap the sphere
+	for (double theta = 0.0; theta <= tau; theta += deltaTheta) {
+
+		double cosTheta = cos(theta);
+		double sinTheta = sin(theta);
+
+		double u = theta / tau; //map from 0,2pi to 0,1
+
+		//NOTE: because we include -90* and 90*, multiple north and south poles are made
+		//this is needed for UV mapping to "pinch" the texture at the poles
+		for (double phi = -quarterTurn; phi <= quarterTurn; phi += deltaPhi) {
+			
+			double cosPhi = cos(phi);
+			
+			double x = cosTheta * cosPhi;
+			double y = sin(phi);
+			double z = sinTheta * cosPhi;
+			
+			double v = theta / M_PI + 0.5; //map from -pi/2,pi/2 to 0,1
+
+			mesh->AddVertexData(12,
+				radius * x, radius * y, radius * z,
+				color.r, color.g, color.b, color.a,
+				x, y, z,
+				u, v
+			);
+		}
+	}
+
+	for (size_t i = 0; i < latitudes; i++) { //which longitude we are on
+		for (size_t j = 0; j < longitudes; j++) { //which latitude we are on
+		
+			mesh->AddIndexData(3, //lower faces and north cap
+				i + j * (latitudes + 1),
+				i + j * (latitudes + 1) + latitudes + 2,
+				i + j * (latitudes + 1) + latitudes + 1
+			);
+
+			mesh->AddIndexData(3, //upper faces and south cap
+				i + j * (latitudes + 1),
+				i + j * (latitudes + 1) + 1,
+				i + j * (latitudes + 1) + latitudes + 2
+			);
+		}
+	}
+
+	return mesh;
 }
 
-std::shared_ptr<VertexBuffer> Generate::LineQuadSphereVertices(float radius, unsigned int resolution, const glm::vec3& color) {
-	throw "not impl";
+std::shared_ptr<Mesh> Generate::QuadSphereWithNormals(float radius, unsigned int numSegments, const glm::vec4& color) {
+
+	auto mesh = std::make_shared<Mesh>(12);
+
+
+
+	return mesh;
 }
-*/

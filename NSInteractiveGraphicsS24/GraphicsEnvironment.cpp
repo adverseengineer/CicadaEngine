@@ -160,7 +160,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 	RotationParams rap = {
 		&mouseRay,
 		glm::vec3{0,1,0},
-		90.0f
+		45.0f
 	};
 	TranslationParams tap = {
 		&mouseRay,

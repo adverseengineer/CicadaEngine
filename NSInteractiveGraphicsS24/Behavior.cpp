@@ -74,7 +74,7 @@ void HighlightBehavior::Update(double elapsedSeconds) {
 	auto& material = object->GetMaterial();
 	if (material == nullptr) return;
 	if ((*params.ray).IsIntersectingObject(*object))
-		material->ambientIntensity = 1.0f;
+		material->ambientIntensity;// = 1.0f;
 	else
 		material->ambientIntensity = ambientIntensity;
 }

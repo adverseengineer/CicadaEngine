@@ -9,6 +9,12 @@ Mesh::Mesh(unsigned int numElemsPerVert) : m_numElemsPerVert(numElemsPerVert) {
 	glGenVertexArrays(1, &m_vaoId);
 	glGenBuffers(1, &m_vboId);
 	glGenBuffers(1, &m_iboId);
+
+	//these are the default always there implicit attributes. others can be explicitly added
+	AddVertexAttribute("position", 0, 3, 0);
+	AddVertexAttribute("vertexColor", 1, 4, 3);
+	AddVertexAttribute("vertexNormal", 2, 3, 7);
+	AddVertexAttribute("texCoord", 3, 2, 10);
 }
 
 Mesh::~Mesh() {

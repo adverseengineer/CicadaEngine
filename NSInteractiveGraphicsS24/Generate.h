@@ -6,24 +6,10 @@
 class Generate {
 
 public:
-	//static std::shared_ptr<Mesh> Cuboid(float width, float height, float depth, glm::vec3 color = { 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
-	
-	static std::shared_ptr<Mesh> CuboidWithNormals(float width, float height, float depth, float u, float v, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f });
-	
-	//static std::shared_ptr<VertexBuffer> PlaneXZ(float width, float depth, glm::vec3 color = { 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
-	//static std::shared_ptr<VertexBuffer> PlaneXY(float width, float height, glm::vec3 color = { 1.0f, 1.0f, 1.0f }, glm::vec2 tex = { 1.0f, 1.0f });
-	
-	static std::shared_ptr<Mesh> PlaneXZWithNormals(float width, float depth, float u, float v, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f });
-	static std::shared_ptr<Mesh> PlaneXYWithNormals(float width, float height, float u, float v, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f });	
-
-	//static std::shared_ptr<VertexBuffer> LineCircleVertices(float radius, unsigned int numSegments = 12, const glm::vec3& color = { 1.0f, 1.0f, 1.0f });
-	//static std::shared_ptr<IndexBuffer> LineCircleIndices(unsigned int numSegments, bool isClosed = true);
-
+	static std::shared_ptr<Mesh> CuboidWithNormals(float width, float height, float depth, float u, float v, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+	static std::shared_ptr<Mesh> PlaneXZWithNormals(float width, float depth, float u, float v, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+	static std::shared_ptr<Mesh> PlaneXYWithNormals(float width, float height, float u, float v, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });	
 	static std::shared_ptr<Mesh> CylinderWithNormals(float radius, float height, unsigned int numSegments = 12, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
-	
-	//static std::shared_ptr<VertexBuffer> LineSphereVertices(float radius, unsigned int numSegments = 12, const glm::vec3& color = { 1.0f, 1.0f, 1.0f });
-	//static std::shared_ptr<IndexBuffer> LineSphereIndices(unsigned int numSegments = 12);
-	
-	//static std::shared_ptr<VertexBuffer> LineQuadSphereVertices(float radius, unsigned int resolution = 8, const glm::vec3& color = { 1.0f, 1.0f, 1.0f });
-	//static std::shared_ptr<IndexBuffer> LineQuadSphereIndices(unsigned int resolution);
+	static std::shared_ptr<Mesh> PolarSphereWithNormals(float radius, unsigned int latitudes, unsigned int longitudes, const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+	static std::shared_ptr<Mesh> QuadSphereWithNormals(float radius, unsigned int numSegments, const glm::vec4& color = { 1.0f, 1.0f, 1.0, 1.0f });
 };

@@ -39,7 +39,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 
 	//if (mesh->IndexCount() != 0) {
 		//mesh->BindIBO();
-		glDrawElements(mesh->GetPrimitiveType(), (GLsizei) mesh->IndexCount(), GL_UNSIGNED_SHORT, (void*)0);
+		glDrawElements(mesh->GetPrimitiveType(), (GLsizei) mesh->IndexElemCount(), GL_UNSIGNED_SHORT, (void*)0);
 	//}
 	//else {
 		//glDrawArrays(mesh->GetPrimitiveType(), 0, (GLsizei) mesh->GetNumberOfVertices());

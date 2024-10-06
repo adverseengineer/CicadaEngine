@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 class Util {
@@ -52,5 +53,11 @@ public:
 		content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 		file.close();
 		return true;
+	}
+
+	template <typename T>
+	inline static constexpr T NumericMap(T input, T inputMin, T inputMax, T outputMin, T outputMax) {
+		static_assert(std::is_arithmetic<T>::value, "type must be numeric");
+		return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (input - inputMin);
 	}
 };

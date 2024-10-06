@@ -47,8 +47,10 @@ public:
 	void AddVertexData(unsigned int count, ...);
 	void AddIndexData(unsigned int count, ...);
 
-	inline size_t VertexCount() const { return m_vertexData.size(); }
-	inline size_t IndexCount() const { return m_indexData.size(); }
+	inline size_t VertexElemCount() const { return m_vertexData.size(); }
+	inline size_t VertexCount() const { return m_vertexData.size() / m_numElemsPerVert; }
+	inline size_t IndexElemCount() const { return m_indexData.size(); }
+	inline size_t FaceCount() const { return m_indexData.size() / 3; }
 
 	inline int GetPrimitiveType() const { return m_primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->m_primitiveType = primitiveType; }

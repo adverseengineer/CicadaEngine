@@ -6,21 +6,17 @@
 static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene, std::shared_ptr<Shader>& shader) {
 
 	auto dummyMesh = std::make_shared<Mesh>(12);
-	dummyMesh->AddVertexAttribute("position", 0, 3, 0);
-	dummyMesh->AddVertexAttribute("vertexColor", 1, 4, 3);
-	dummyMesh->AddVertexAttribute("vertexNormal", 2, 3, 7);
-	dummyMesh->AddVertexAttribute("texCoord", 3, 2, 10);
 	dummyMesh->Setup();
 	dummyMesh->LoadObj("chicken brent.obj");
 
 	auto crateMesh = Generate::CuboidWithNormals(10.0, 10.0, 10.0, 1.0, 1.0, { 1, 1, 1, 1 });
-	auto moverMesh = Generate::CylinderWithNormals(2, 2, 18, {1.0, 1.0, 1.0, 0.05f});
+	auto moverMesh = Generate::PolarSphereWithNormals(1, 12, 18);
 	auto floorMesh = Generate::PlaneXZWithNormals(100, 100, 12, 12, { 1, 1, 1, 1 });
 	auto lightbulbMesh = Generate::PlaneXYWithNormals(1, 1, 1, 1, { 1, 1, 1, 1 });
 
 	auto dummyTex = std::make_shared<Texture>("br0_tex00.png");
 	auto crateTex = std::make_shared<Texture>("crate.png");
-	auto moverTex = std::make_shared<Texture>("gw.png");
+	auto moverTex = std::make_shared<Texture>("SHITANDPISS.png");
 	auto floorTex = std::make_shared<Texture>("floor.png");
 	auto lightbulbTex = std::make_shared<Texture>("lightbulb.png");
 
@@ -134,8 +130,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	std::string vertexSource;
 	std::string fragmentSource;
-	Util::ReadFileToString("lighting.vert.glsl", vertexSource);
-	Util::ReadFileToString("lighting.frag.glsl", fragmentSource);
+	Util::ReadFileToString("norm.vert.glsl", vertexSource);
+	Util::ReadFileToString("norm.frag.glsl", fragmentSource);
 	std::shared_ptr<Shader> diffuseShader = std::make_shared<Shader>(vertexSource, fragmentSource);
 	ShaderManager::AddShader("diffuse", diffuseShader);
 

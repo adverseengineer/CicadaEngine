@@ -187,6 +187,12 @@
     <None Include="lighting.vert.glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="norm.vert.glsl">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="norm.frag.glsl">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
