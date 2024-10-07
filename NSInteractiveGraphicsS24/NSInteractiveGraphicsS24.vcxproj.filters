@@ -67,9 +67,6 @@
     <ClCompile Include="FallbackTexture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="GeometricLine.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="GeometricPlane.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -128,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometricLine.h">
-      <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="GeometricPlane.h">
       <Filter>Resources</Filter>

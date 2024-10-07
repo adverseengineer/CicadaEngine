@@ -144,7 +144,6 @@
     <ClCompile Include="Behavior.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="GeometricLine.cpp" />
     <ClCompile Include="GeometricPlane.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -168,7 +167,6 @@
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Generate.h" />
-    <ClInclude Include="GeometricLine.h" />
     <ClInclude Include="GeometricPlane.h" />
     <ClInclude Include="GraphicsEnvironment.h" />
     <ClInclude Include="GameObject.h" />
