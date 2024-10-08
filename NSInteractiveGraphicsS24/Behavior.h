@@ -32,7 +32,7 @@ protected:
 public:
 	inline const std::shared_ptr<GameObject>& GetObject() const { return object; }
 	inline void SetObject(const std::shared_ptr<GameObject>& object) { this->object = object; }
-
+	
 	inline virtual void StoreDefaults() = 0; //any class with at least one virtual method set to 0 is abstract
 	inline virtual void SetParameter(BehaviorParams& params) = 0;
 	inline virtual void Update(double elapsedSeconds) = 0;

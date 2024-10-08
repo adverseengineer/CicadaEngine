@@ -20,10 +20,10 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene,
 	auto floorTex = std::make_shared<Texture>("floor.png");
 	auto lightbulbTex = std::make_shared<Texture>("lightbulb.png");
 
-	auto dummyMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
-	auto crateMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
-	auto moverMat = std::make_shared<Material>(1.0f, 1.0f, 1.0f);
-	auto floorMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
+	auto dummyMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
+	auto crateMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
+	auto moverMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
+	auto floorMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
 	auto lightbulbMat = std::make_shared<Material>(0.6f, 1.0f, 1.0f);
 
 	auto dummy = std::make_shared<GameObject>();

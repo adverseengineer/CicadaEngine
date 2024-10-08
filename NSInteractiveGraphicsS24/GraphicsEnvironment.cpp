@@ -1,4 +1,3 @@
-//#include "Behavior.h"
 #include "GraphicsEnvironment.h"
 #include "Shader.h"
 #include "Timer.h"
@@ -154,7 +153,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 	ImGuiIO& io = ImGui::GetIO();
 	Timer timer;
 
-	HighlightParams hlp = {
+	/*HighlightParams hlp = {
 		&mouseRay
 	};
 	RotationParams rap = {
@@ -169,20 +168,20 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		0.0f,
 		1,
 		0.3f
-	};
+	};*/
 
 	auto dummy = ObjectManager::GetObject("dummy");
-	auto& dummyMat = dummy->GetMaterial();
+	//auto& dummyMat = dummy->GetMaterial();
 	auto crate = ObjectManager::GetObject("crate");
-	auto& crateMat = crate->GetMaterial();
+	//auto& crateMat = crate->GetMaterial();
 	auto mover = ObjectManager::GetObject("mover");
-	auto& moverMat = mover->GetMaterial();
+	//auto& moverMat = mover->GetMaterial();
 
-	dummy->SetBehaviorParameters("highlight", hlp);
+	/*dummy->SetBehaviorParameters("highlight", hlp);
 	crate->SetBehaviorParameters("highlight", hlp);
 	mover->SetBehaviorParameters("highlight", hlp);
 	mover->SetBehaviorParameters("translate", tap);
-	mover->SetBehaviorParameters("rotate", rap);
+	mover->SetBehaviorParameters("rotate", rap);*/
 
 	while (!glfwWindowShouldClose(window)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
@@ -225,9 +224,9 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		sprite->RotateToFace(cam->GetPosition());
 		sprite->SetPosition(scene->GetLocalLight()->position);
 
-		mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
+		//mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
 
-		ObjectManager::Update(deltaTime);
+		//ObjectManager::Update(deltaTime);
 
 		//and finally call render
 		Renderer::RenderScene(scene, shader, cam);

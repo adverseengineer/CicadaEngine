@@ -67,9 +67,6 @@
     <ClCompile Include="FallbackTexture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="GeometricPlane.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Ray.cpp">
       <Filter>Resources</Filter>
     </ClCompile>

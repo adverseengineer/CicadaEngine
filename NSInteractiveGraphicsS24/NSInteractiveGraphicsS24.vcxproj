@@ -144,7 +144,6 @@
     <ClCompile Include="Behavior.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="GeometricPlane.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Ray.cpp" />

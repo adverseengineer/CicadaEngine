@@ -14,9 +14,6 @@ struct GeometricPlane {
 	glm::vec3 normal;
 	float distanceFromOrigin;
 
-	GeometricPlane();
-	~GeometricPlane() = default;
-
 	void SetNormal(glm::vec3 normal) { this->normal = normal; }
 	void SetDistanceFromOrigin(float distance){ 
 		distanceFromOrigin = fabs(distance);
@@ -25,7 +22,5 @@ struct GeometricPlane {
 		SetNormal(normal);
 		SetDistanceFromOrigin(distance);
 	}
-
-	Intersection GetIntersectionWithLine(const GeometricLine& line) const;
 };
 
