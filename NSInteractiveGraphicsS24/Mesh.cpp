@@ -1,6 +1,8 @@
 
 #include "Mesh.h"
 
+#include <glad/glad.h>
+
 #define NOMINMAX
 #include <OBJ_Loader.h>
 

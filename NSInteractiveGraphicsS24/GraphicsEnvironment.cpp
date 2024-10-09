@@ -82,7 +82,6 @@ void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int
 	glViewport(0, 0, width, height);
 }
 
-static bool freeCamMode = true;
 static bool correctGamma = true;
 
 void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
@@ -91,44 +90,20 @@ void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if(freeCamMode) {
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cam->MoveZ((float)elapsedSeconds);
+	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cam->MoveZ((float)elapsedSeconds, -1);
 
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			cam->MoveZ((float)elapsedSeconds);
-		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			cam->MoveZ((float)elapsedSeconds, -1);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cam->MoveX((float)elapsedSeconds);
+	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cam->MoveX((float)elapsedSeconds, -1);
 
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			cam->MoveX((float)elapsedSeconds);
-		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			cam->MoveX((float)elapsedSeconds, -1);
-
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-			cam->MoveY((float)elapsedSeconds);
-		else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-			cam->MoveY((float)elapsedSeconds, -1);
-	}
-
-	else {
-		auto id = glm::mat4(1.0f);
-		auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-			cam->SetPosition({ 0.0f, 5.0f, 60.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(0.0f), up));
-		}
-		else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-			cam->SetPosition({ 60.0f, 5.0f, 0.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(90.0f), up));
-		}
-		else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-			cam->SetPosition({ 0.0f, 5.0f, -60.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(180.0f), up));
-		}
-		else if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-			cam->SetPosition({ -60.0f, 5.0f, 0.0f });
-			cam->SetLookFrame(glm::rotate(id, glm::radians(270.0f), up));
-		}
-	}
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		cam->MoveY((float)elapsedSeconds);
+	else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		cam->MoveY((float)elapsedSeconds, -1);
 }
 
 void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double mouseY) {
@@ -195,10 +170,10 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		if (freeCamMode) {
-			auto spher = mouse.spherical.ToMat4();
-			cam->SetLookFrame(spher);
-		}
+		auto spher = mouse.spherical.ToMat4();
+		auto pos = cam->GetPosition();
+		cam->SetLocalTransform(spher);
+		cam->SetPosition(pos);
 
 		if (correctGamma)
 			glEnable(GL_FRAMEBUFFER_SRGB);
@@ -206,14 +181,14 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 			glDisable(GL_FRAMEBUFFER_SRGB);
 
 		if (windowWidth >= windowHeight)
-			cam->aspectRatio = windowWidth / (windowHeight * 1.0f);
+			cam->m_aspectRatio = windowWidth / (windowHeight * 1.0f);
 		else
-			cam->aspectRatio = windowHeight / (windowWidth * 1.0f);
+			cam->m_aspectRatio = windowHeight / (windowWidth * 1.0f);
 
 		for (const auto& [_, shader] : ShaderManager::GetAll()) {
-			auto view = cam->GetView();
+			auto view = glm::inverse(cam->GetLocalTransform());
 			shader->SetUniform("view", view);
-			shader->SetUniform("projection", cam->projection);
+			shader->SetUniform("projection", cam->m_projection);
 		}
 
 		auto& localLight = scene->GetLocalLight();
@@ -239,17 +214,15 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		
-		auto& camPos = cam->GetPosition();
-		ImGui::Text("CamPos: (%.3f, %.3f, %.3f)", camPos.x, camPos.y, camPos.z);
-		auto& camLook = cam->GetLookFrame();
+		auto& camTrans = cam->GetLocalTransform();
 		ImGui::Text(
-			"[%.3f %.3f %.3f]\n[%.3f %.3f %.3f]\n[%.3f %.3f %.3f]",
-			camLook[0][0], camLook[1][0], camLook[2][0],
-			camLook[0][1], camLook[1][1], camLook[2][1],
-			camLook[0][2], camLook[1][2], camLook[2][2]
+			"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
+			camTrans[0][0], camTrans[1][0], camTrans[2][0], camTrans[3][0],
+			camTrans[0][1], camTrans[1][1], camTrans[2][1], camTrans[3][1],
+			camTrans[0][2], camTrans[1][2], camTrans[2][2], camTrans[3][2],
+			camTrans[0][3], camTrans[1][3], camTrans[2][3], camTrans[3][3]
 		);
 
-		ImGui::Checkbox("Free Cam", &freeCamMode);
 		ImGui::Checkbox("Correct Gamma", &correctGamma);
 
 		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));

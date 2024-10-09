@@ -5,39 +5,37 @@
 class Camera {
 friend class GraphicsEnvironment;
 private:
-	float fov = 60.0f;
-	float nearClip = 0.01f;
-	float farClip = 200.0f;
+	float m_fov = 60.0f;
+	float m_nearClip = 0.01f;
+	float m_farClip = 200.0f;
 
-	float aspectRatio;
+	float m_aspectRatio;
 
-	glm::mat4 referenceFrame; //tracks the position
-	glm::mat4 lookFrame; //tracks the orientation
-	
-	//glm::mat4 view; //= ref * look
-	glm::mat4 projection;
+	glm::mat4 m_localTransform;
+	glm::mat4 m_projection;
 
-	float moveSpeed = 10.0f;
+	float m_temp_moveSpeed = 10.0f;
+
+	unsigned int m_uboId = 0;
 
 public:
 	Camera(float fov, float nearClip, float farClip, float aspectRatio);
+	~Camera();
+
+	void Update() const;
 
 	const glm::vec3 GetPosition() const;
 	void SetPosition(const glm::vec3& position);
 	
-	inline const auto& GetReferenceFrame() const { return referenceFrame; }
-	inline void SetReferenceFrame(const glm::mat4& referenceFrame) { this->referenceFrame = referenceFrame; }
+	inline const auto& GetLocalTransform() const { return m_localTransform; }
+	inline void SetLocalTransform(const glm::mat4& localTransform) { m_localTransform = localTransform; }
 
-	inline const glm::mat4& GetLookFrame() const { return lookFrame; }	
-	inline void SetLookFrame(const glm::mat4& lookFrame) { this->lookFrame = lookFrame; }
-
-	inline float GetMoveSpeed() const { return moveSpeed; }
-	inline void SetMoveSpeed(float moveSpeed) { this->moveSpeed = moveSpeed; }
+	inline float GetMoveSpeed() const { return m_temp_moveSpeed; }
+	inline void SetMoveSpeed(float moveSpeed) { m_temp_moveSpeed = moveSpeed; }
 	
 	void MoveX(float delta, int direction = 1);
 	void MoveY(float delta, int direction = 1);
 	void MoveZ(float delta, int direction = 1);
 
-	glm::mat4 GetView() const;
 	Ray GetMouseRay(float screenPosX, float screenPosY) const;
 };

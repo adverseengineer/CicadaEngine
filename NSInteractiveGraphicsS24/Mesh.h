@@ -2,7 +2,6 @@
 
 #include "texture.h"
 #include <cstdarg>
-#include <glad/glad.h> 
 #include <string>
 #include <unordered_map>
 #include <vector>

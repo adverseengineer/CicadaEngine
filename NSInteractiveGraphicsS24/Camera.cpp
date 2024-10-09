@@ -1,45 +1,59 @@
 #include "Camera.h"
+
 #include <ext/matrix_transform.hpp>
+#include <glad/glad.h>
+#include <gtc/type_ptr.hpp>
 
 Camera::Camera(float fov, float nearClip, float farClip, float aspectRatio) :
-	fov(fov), nearClip(nearClip), farClip(farClip), referenceFrame(1.0f), lookFrame(1.0f) {
-	projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
+	m_fov(fov), m_nearClip(nearClip), m_farClip(farClip), m_aspectRatio(aspectRatio),
+	m_localTransform(1.0f) {
+	m_projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
+
+	glGenBuffers(1, &m_uboId);
+	glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
+}
+
+Camera::~Camera() {
+	glDeleteBuffers(1, &m_uboId);
+}
+
+void Camera::Update() const {
+	
+	glm::mat4 view = glm::inverse(m_localTransform);
+
+	//bind the UBO and send the view and projection one after another
+	glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(view), glm::value_ptr(view));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(view), sizeof(m_projection), glm::value_ptr(m_projection));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0); //remember to unbind it
 }
 
 const glm::vec3 Camera::GetPosition() const {
-	return glm::vec3(referenceFrame[3]);
+	return glm::vec3(m_localTransform[3]);
 }
 
 void Camera::SetPosition(const glm::vec3& position) {
-	referenceFrame[3] = glm::vec4(position, 1.0f);
+	m_localTransform[3] = glm::vec4(position, 1.0f);
 }
 
 void Camera::MoveX(float delta, int direction) {
-	referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[0];
+	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[0];
 }
 
 void Camera::MoveY(float delta, int direction) {
-	referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[1];
+	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[1];
 }
 
 void Camera::MoveZ(float delta, int direction) {
-	referenceFrame[3] -= direction * moveSpeed * delta * lookFrame[2];
-}
-
-glm::mat4 Camera::GetView() const {
-	//we store the position and orientation of the camera in two separate matrices
-	//we need one matrix that represents both, so multiply them
-	auto fullTransform = referenceFrame * lookFrame;
-	//then simply take the inverse so that multiplying by the view converts from world to camera space
-	return glm::inverse(fullTransform);
+	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[2];
 }
 
 Ray Camera::GetMouseRay(float screenPosX, float screenPosY) const {
 
 	Ray ray;
 
-	glm::mat4 projInverse = glm::inverse(projection);
-	glm::mat4 viewInverse = glm::inverse(GetView());
+	glm::mat4 projInverse = glm::inverse(m_projection);
+	glm::mat4 viewInverse = m_localTransform;
 
 	glm::vec4 rayDirClip = glm::vec4(screenPosX, screenPosY, -1.0f, 1.0f);
 	glm::vec4 rayDirE = projInverse * rayDirClip;
