@@ -185,10 +185,12 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		else
 			cam->m_aspectRatio = windowHeight / (windowWidth * 1.0f);
 
+		cam->Update();
+
 		for (const auto& [_, shader] : ShaderManager::GetAll()) {
 			auto view = glm::inverse(cam->GetLocalTransform());
-			shader->SetUniform("view", view);
-			shader->SetUniform("projection", cam->m_projection);
+			shader->SendUniform("view", view);
+			shader->SendUniform("projection", cam->m_projection);
 		}
 
 		auto& localLight = scene->GetLocalLight();

@@ -17,6 +17,7 @@ private:
 	float m_temp_moveSpeed = 10.0f;
 
 	unsigned int m_uboId = 0;
+	unsigned int m_uboBindPoint = 1; //somehow this needs to be one or a random object will be excluded from the scene
 
 public:
 	Camera(float fov, float nearClip, float farClip, float aspectRatio);

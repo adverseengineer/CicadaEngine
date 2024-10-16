@@ -13,13 +13,17 @@ uniform mat4 world;
 uniform mat4 view;
 uniform mat4 projection;
 
-//layout(std140) uniform CameraData
-//{
-//  mat4 viewMatrix;
-//  mat4 projectionMatrix;
-//};
+layout(location = 0, std140) uniform CameraData {
+	//float _;
+	float foo;
+	vec2 bar;
+	mat4 baz;
+	//mat4 view;
+	//mat4 projection;
+}; 
 
 void main() {
+	
 	vec4 worldPosition = world * vec4(position, 1.0);
 	gl_Position = projection * view * worldPosition;
 

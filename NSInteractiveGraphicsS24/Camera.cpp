@@ -10,7 +10,9 @@ Camera::Camera(float fov, float nearClip, float farClip, float aspectRatio) :
 	m_projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
 
 	glGenBuffers(1, &m_uboId);
-	glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
+	//glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
+	glBindBufferBase(GL_UNIFORM_BUFFER, m_uboBindPoint, m_uboId); //attach the buffer to slot zero
+	//glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 Camera::~Camera() {
@@ -22,10 +24,10 @@ void Camera::Update() const {
 	glm::mat4 view = glm::inverse(m_localTransform);
 
 	//bind the UBO and send the view and projection one after another
-	glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(view), glm::value_ptr(view));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(view), sizeof(m_projection), glm::value_ptr(m_projection));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0); //remember to unbind it
+	//glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
+	//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(view), glm::value_ptr(view));
+	//glBufferSubData(GL_UNIFORM_BUFFER, sizeof(view), sizeof(m_projection), glm::value_ptr(m_projection));
+	//glBindBuffer(GL_UNIFORM_BUFFER, 0); //remember to unbind it
 }
 
 const glm::vec3 Camera::GetPosition() const {
@@ -70,26 +72,4 @@ Ray Camera::GetMouseRay(float screenPosX, float screenPosY) const {
 	ray.origin = glm::vec3(rayStartW);
 
 	return ray;
-	/*
-	Ray ray;
-
-	glm::mat4 projInverse = glm::inverse(projection);
-	glm::mat4 viewInverse = glm::inverse(GetView());
-
-	glm::vec4 tempOrigin = glm::vec4(screenPosX, screenPosY, 1.0f, 1.0f); //start with point in screen space
-	tempOrigin = projInverse * tempOrigin; //take the point from screen to camera space
-	tempOrigin.z = 1.0f;
-	tempOrigin.w = 1.0f; //points have one for their homogenous coord
-	tempOrigin = viewInverse * tempOrigin; //take the point from camera to world space
-	ray.origin = glm::vec3(tempOrigin);
-
-	glm::vec4 tempDir = glm::vec4(screenPosX, screenPosY, -1.0f, 1.0f); //start with vector in screen space
-	tempDir = projInverse * tempDir; //take the vector from screen to camera space
-	tempDir.z = -1.0f;
-	tempDir.w = 0.0f; //vectors have zero for their homogenous coord
-	tempDir = glm::normalize(viewInverse * tempDir); //take the vector from camera space to world space
-	ray.direction = tempDir;
-
-	return ray;
-	*/
 };

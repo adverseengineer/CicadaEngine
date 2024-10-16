@@ -9,7 +9,7 @@ void Renderer::StaticAllocateBuffers(const std::shared_ptr<Scene>& scene) {
 void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 
 	//send the model matrix to the shader
-	object->GetShader()->SetUniform("world", object->GetGlobalReferenceFrame());
+	object->GetShader()->SendUniform("world", object->GetGlobalReferenceFrame());
 
 	auto& mesh = object->GetMesh();
 	if(mesh == nullptr) {
@@ -24,15 +24,15 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 	auto& tex = object->GetTexture();
 
 	if (tex != nullptr) {
-		shader->SetUniform("tex", object->GetTexture()->GetTextureUnit());
+		shader->SendUniform("tex", object->GetTexture()->GetTextureUnit());
 		tex->Bind();
 	}
 
 	auto& material = object->GetMaterial();
 	if (material != nullptr) {
-		shader->SetUniform("materialAmbientIntensity", material->ambientIntensity);
-		shader->SetUniform("materialSpecularIntensity", material->specularIntensity);
-		shader->SetUniform("materialShininess", material->shininess);
+		shader->SendUniform("materialAmbientIntensity", material->ambientIntensity);
+		shader->SendUniform("materialSpecularIntensity", material->specularIntensity);
+		shader->SendUniform("materialShininess", material->shininess);
 	}
 
 	//mesh->SetUpAttributeInterpretration();
@@ -60,17 +60,17 @@ void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::share
 		//send the data for the global light source
 		auto& globalLight = scene->GetGlobalLight();
 		if (globalLight != nullptr) {
-			shader->SetUniform("globalLightPosition", globalLight->position);
-			shader->SetUniform("globalLightColor", globalLight->color);
-			shader->SetUniform("globalLightIntensity", globalLight->intensity);
+			shader->SendUniform("globalLightPosition", globalLight->position);
+			shader->SendUniform("globalLightColor", globalLight->color);
+			shader->SendUniform("globalLightIntensity", globalLight->intensity);
 		}
 		//send the data for the local light source
 		auto& localLight = scene->GetLocalLight();
 		if (localLight != nullptr) {
-			shader->SetUniform("localLightPosition", localLight->position);
-			shader->SetUniform("localLightColor", localLight->color);
-			shader->SetUniform("localLightIntensity", localLight->intensity);
-			shader->SetUniform("localLightAttenuationCoef", localLight->attenuationCoef);
+			shader->SendUniform("localLightPosition", localLight->position);
+			shader->SendUniform("localLightColor", localLight->color);
+			shader->SendUniform("localLightIntensity", localLight->intensity);
+			shader->SendUniform("localLightAttenuationCoef", localLight->attenuationCoef);
 		}
 
 		//for each object in the scene, render it separately
