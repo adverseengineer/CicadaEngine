@@ -13,7 +13,7 @@ uniform mat4 world;
 uniform mat4 view;
 uniform mat4 projection;
 
-layout(location = 0, std140) uniform CameraData {
+layout(std140) uniform CameraData {
 	//float _;
 	float foo;
 	vec2 bar;

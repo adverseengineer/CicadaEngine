@@ -25,6 +25,8 @@ public:
 	void SendUniform(const std::string& name, const glm::vec3& value) const;
 	void SendUniform(const std::string& name, const glm::mat4& value) const;
 
+	void DBG_ShowInfo() const;
+
 private:
 
 	struct UniformInfo {

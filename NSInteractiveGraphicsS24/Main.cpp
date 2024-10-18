@@ -135,6 +135,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	std::shared_ptr<Shader> diffuseShader = std::make_shared<Shader>(vertexSource, fragmentSource);
 	ShaderManager::AddShader("diffuse", diffuseShader);
 
+
+	diffuseShader->DBG_ShowInfo();
+
 	auto cam = std::make_shared<Camera>(60.0f, 0.01f, 500.0f, 1200.0f / 800.0f);
 	cam->SetPosition({ 0.0f, 15.0f, 30.0f });
 

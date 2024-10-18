@@ -185,3 +185,14 @@ void Shader::Reflect() {
 		m_UniformInfoCache[name] = { type, location };
 	}
 }
+
+void Shader::DBG_ShowInfo() const {
+
+	for (const auto& [name, info] : m_UniformInfoCache) {
+		Util::Log(
+			name +
+			": (type = " + std::to_string(info.type) +
+			", location = " + std::to_string(info.location) + ")"
+		);
+	}
+}
