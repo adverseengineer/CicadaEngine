@@ -117,11 +117,8 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderS
 		return -1;
 	}
 
-	if (type == GL_VERTEX_SHADER)
-		Util::Log("Compiled vertex shader");
-	else if (type == GL_FRAGMENT_SHADER)
-		Util::Log("Compiled fragment shader");
-
+	Util::Log("Compiled " + Util::TypeStr(type));
+	
 	return shaderId;
 }
 
@@ -191,7 +188,7 @@ void Shader::DBG_ShowInfo() const {
 	for (const auto& [name, info] : m_UniformInfoCache) {
 		Util::Log(
 			name +
-			": (type = " + std::to_string(info.type) +
+			": (type = " + Util::TypeStr(info.type) +
 			", location = " + std::to_string(info.location) + ")"
 		);
 	}

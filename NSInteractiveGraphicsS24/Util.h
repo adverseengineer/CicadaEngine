@@ -4,11 +4,13 @@
 #include <sstream>
 #include <string>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 class Util {
 private:
 	static std::stringstream s_log;
+	static std::unordered_map<unsigned int, const std::string> s_typeNameMap;
 	static const unsigned int MAX_CHARS = 512;
 
 public:
@@ -60,4 +62,6 @@ public:
 		static_assert(std::is_arithmetic<T>::value, "type must be numeric");
 		return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (input - inputMin);
 	}
+
+	static const std::string& TypeStr(unsigned int glType);
 };

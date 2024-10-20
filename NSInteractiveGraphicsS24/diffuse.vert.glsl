@@ -22,9 +22,17 @@ layout(std140) uniform CameraData {
 	//mat4 projection;
 }; 
 
+//function that superfluously uses the uniform block members to ensure they are not optimized out
+vec4 glog() {
+	return foo * baz * vec4(bar,bar);
+}
+
 void main() {
 	
-	vec4 worldPosition = world * vec4(position, 1.0);
+	//use the function in a way that doesnt matter here. hopefully this isnt optimized out
+	vec4 worldPosition = glog();
+	worldPosition = world * vec4(position, 1.0);
+	
 	gl_Position = projection * view * worldPosition;
 
 	//get the normal in world space
