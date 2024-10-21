@@ -3,24 +3,28 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+const std::string Texture::s_fallbackPath = "fallback.png";
+
 Texture::Texture(const std::string& filePath) {
+	
 	glGenTextures(1, &m_textureId);
 
 	stbi_set_flip_vertically_on_load(true);
-	m_textureData = stbi_load(filePath.c_str(), &m_width, &m_height, &m_numberOfChannels, 0);
+	m_textureData = stbi_load(filePath.c_str(), &m_width, &m_height, &m_numChannels, 0);
 	if (m_textureData == nullptr) {
-		Util::Log("Failed to load texture data from file: " + filePath);
-		UseFallbackData();
-		return;
+		Util::Log("Unable to load texture data from file \"" + filePath + "\", resorting to fallback");
+		m_isFallback = true;
+		m_textureData = stbi_load(s_fallbackPath.c_str(), &m_width, &m_height, &m_numChannels, 0);
+		assert(m_textureData != nullptr, "unable to load fallback texture");
 	}
 
-	if (m_numberOfChannels == 3) {
-		m_sourceFormat = GL_RGB;
+	if (m_numChannels == 3) {
+		m_sourceFormat = Format::RGB;
 	}
 
 	m_isLoadedFromFile = true;
-
-	Util::Log("Texture data loaded from file: " + filePath);
+	if (!m_isFallback)
+		Util::Log("Texture data loaded from file: " + filePath);
 }
 
 Texture::~Texture() {
@@ -35,21 +39,6 @@ Texture::~Texture() {
 	glDeleteTextures(1, &m_textureId);
 }
 
-void Texture::UseFallbackData() {
-
-	m_width = 64;
-	m_height = 64;
-
-	m_wrapS = GL_REPEAT;
-	m_wrapT = GL_REPEAT;
-	m_minFilter = GL_NEAREST;
-	m_magFilter = GL_NEAREST;
-
-	m_isLoadedFromFile = false;
-	//simply set m_textureData to the address of the fallback data, no need to copy
-	m_textureData = FallbackTexture::DATA;
-}
-
 void Texture::Bind() const {
 	glActiveTexture(GL_TEXTURE0 + (GLenum)m_textureUnit);
 	glBindTexture(GL_TEXTURE_2D, (GLuint)m_textureId);
@@ -57,13 +46,13 @@ void Texture::Bind() const {
 
 void Texture::Allocate() {
 	glBindTexture(GL_TEXTURE_2D, (GLuint)m_textureId); //select the texture for modification
-	//set up the texture params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_minFilter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_magFilter);
+	//set up the texture 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLint) m_wrapS);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLint) m_wrapT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLint) m_minFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLint) m_magFilter);
 	//send the texture data to the gpu
-	glTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_width, m_height, 0, m_sourceFormat, GL_UNSIGNED_BYTE, m_textureData);
+	glTexImage2D(GL_TEXTURE_2D, 0, (GLint) m_internalFormat, m_width, m_height, 0, (GLint) m_sourceFormat, GL_UNSIGNED_BYTE, m_textureData);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0); //deselect the texture for modification
 }

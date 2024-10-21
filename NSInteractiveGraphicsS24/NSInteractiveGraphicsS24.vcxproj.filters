@@ -64,9 +64,6 @@
     <ClCompile Include="ShaderManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="FallbackTexture.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Ray.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -156,6 +153,9 @@
       <Filter>Resources\Images</Filter>
     </Image>
     <Image Include="cipher.png">
+      <Filter>Resources\Images</Filter>
+    </Image>
+    <Image Include="..\fallback.png">
       <Filter>Resources\Images</Filter>
     </Image>
   </ItemGroup>

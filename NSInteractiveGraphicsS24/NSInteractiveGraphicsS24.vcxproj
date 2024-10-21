@@ -148,7 +148,6 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="FallbackTexture.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Generate.cpp" />
     <ClCompile Include="GraphicsEnvironment.cpp" />
@@ -194,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png" />
+    <Image Include="..\fallback.png" />
     <Image Include="cipher.png" />
     <Image Include="floor.png" />
     <Image Include="gw.png" />
