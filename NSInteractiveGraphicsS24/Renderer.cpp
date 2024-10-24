@@ -25,7 +25,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 
 	if (tex != nullptr) {
 		shader->SendUniform("tex", object->GetTexture()->GetTextureUnit());
-		tex->Bind();
+		tex->SelectForRendering();
 	}
 
 	auto& material = object->GetMaterial();

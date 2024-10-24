@@ -25,7 +25,7 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
+    <ClCompile Include="Texture2D.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
@@ -87,7 +87,7 @@
     <ClInclude Include="Timer.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="Texture2D.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
@@ -136,6 +136,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseTexture.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

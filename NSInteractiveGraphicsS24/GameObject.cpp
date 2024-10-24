@@ -77,7 +77,7 @@ void GameObject::StaticAllocate() const {
 	m_mesh->Upload();
 
 	if (texture != nullptr)
-		texture->Allocate();
+		texture->Upload();
 	
 	for (auto& child : children)
 		child->StaticAllocate();

@@ -27,7 +27,7 @@ protected:
 	std::shared_ptr<Material> material;
 	std::shared_ptr<BoundingBox> boundingBox;
 
-	std::shared_ptr<Texture> texture;
+	std::shared_ptr<Texture2D> texture;
 	std::shared_ptr<Shader> shader;
 
 	std::shared_ptr<Mesh> m_mesh;
@@ -66,13 +66,13 @@ public:
 	void SetBehaviorDefaults();
 	void SetBehaviorParameters(const std::string& name, BehaviorParams& params);
 	
-	inline const std::shared_ptr<Texture>& GetTexture() const { return texture; }
-	inline void SetTexture(const std::shared_ptr<Texture>& texture) { this->texture = texture; }
+	inline const std::shared_ptr<Texture2D>& GetTexture() const { return texture; }
+	inline void SetTexture(const std::shared_ptr<Texture2D>& texture) { this->texture = texture; }
 	inline bool HasTexture() const { return texture != nullptr; }
 
 	inline void SelectTexture(void) const {
 		if (texture != nullptr)
-			texture->Bind();
+			texture->SelectForRendering();
 	}
 
 	inline const std::shared_ptr<Shader>& GetShader() const { return shader; }

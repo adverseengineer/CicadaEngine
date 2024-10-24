@@ -1,6 +1,6 @@
 #pragma once
 
-#include "texture.h"
+#include "Texture2D.h"
 #include <cstdarg>
 #include <string>
 #include <unordered_map>
