@@ -1,9 +1,7 @@
 #pragma once
 
+#include "Defs.h"
 #include <glad/glad.h>
-
-//TODO: move into a defs header
-typedef unsigned char byte;
 
 class BaseTexture {
 public:
@@ -48,4 +46,27 @@ public:
 		CompressedSRGB = GL_COMPRESSED_SRGB,
 		CompressedSRGBAlpha = GL_COMPRESSED_SRGB_ALPHA
 	};
+
+protected:
+	const byte* m_textureData = nullptr;
+	bool m_isLoadedFromFile = false;
+	bool m_isFallback = false;
+
+	unsigned int m_texId;
+	unsigned int m_texUnit = 0;
+
+	Format m_internalFormat = Format::RGBA;
+	Format m_sourceFormat = Format::RGBA;
+
+	FilterMode m_minFilter = FilterMode::Nearest;
+	FilterMode m_magFilter = FilterMode::Nearest;
+
+	WrapMode m_wrapU = WrapMode::Repeat;
+	WrapMode m_wrapV = WrapMode::Repeat;
+	
+public:
+	BaseTexture();
+	~BaseTexture();
+
+	virtual void Upload() const = 0;
 };

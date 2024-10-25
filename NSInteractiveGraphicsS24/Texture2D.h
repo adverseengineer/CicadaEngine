@@ -5,25 +5,11 @@
 class Texture2D : public BaseTexture {
 private:
 	const static std::string s_fallbackPath;
-	
-	const byte* m_textureData = nullptr;
-	bool m_isLoadedFromFile = false;
-	bool m_isFallback = false;
-	
-	unsigned int m_texId;
-	unsigned int m_texUnit = 0;
+
 	int m_width;
 	int m_height;
-	int m_numChannels;
-
-	Format m_internalFormat = Format::RGBA;
-	Format m_sourceFormat = Format::RGBA;
-
-	WrapMode m_wrapU = WrapMode::Repeat;
-	WrapMode m_wrapV = WrapMode::Repeat;
-
-	FilterMode m_minFilter = FilterMode::Nearest;
-	FilterMode m_magFilter = FilterMode::Nearest;
+	int m_numChannels; //TODO: properly use this field with stb_load to detect source format
+	//this will require more research into stb. do this tomorrow
 	
 public:
 
@@ -41,15 +27,15 @@ public:
 	void Bind();
 
 	void SelectForRendering();
-	void Upload() const;
-
-	void SetWrapU(WrapMode mode);
-	void SetWrapV(WrapMode mode);
+	void Upload() const override;
 
 	void SetInternalFormat(Format format);
 	void SetSourceFormat(Format format);
 
 	void SetMinFilter(FilterMode mode);
 	void SetMagFilter(FilterMode mode);
+
+	void SetWrapU(WrapMode mode);
+	void SetWrapV(WrapMode mode);
 
 };

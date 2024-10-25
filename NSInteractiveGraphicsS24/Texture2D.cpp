@@ -5,10 +5,8 @@
 
 const std::string Texture2D::s_fallbackPath = "fallback.png";
 
-Texture2D::Texture2D(const std::string& filePath) {
+Texture2D::Texture2D(const std::string& filePath) : BaseTexture() {
 	
-	glGenTextures(1, &m_texId);
-
 	stbi_set_flip_vertically_on_load(true);
 	m_textureData = stbi_load(filePath.c_str(), &m_width, &m_height, &m_numChannels, 0);
 	if (m_textureData == nullptr) {
@@ -26,6 +24,7 @@ Texture2D::Texture2D(const std::string& filePath) {
 
 Texture2D::~Texture2D() {
 
+	//TODO: move this into the base class destructor
 	glDeleteTextures(1, &m_texId);
 
 	if (m_textureData == nullptr)

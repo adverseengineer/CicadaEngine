@@ -15,11 +15,10 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene,
 	auto lightbulbMesh = Generate::PlaneXYWithNormals(1, 1, 1, 1, { 1, 1, 1, 1 });
 
 	auto dummyTex = std::make_shared<Texture2D>("br0_tex00.png");
-	auto crateTex = std::make_shared<Texture2D>("gw.png");
-	auto moverTex = std::make_shared<Texture2D>("SHITANDPISS.png");	
+	auto crateTex = std::make_shared<Texture2D>("crate.png");
+	auto moverTex = std::make_shared<Texture2D>("not-a-real-texture.png");	
 	auto floorTex = std::make_shared<Texture2D>("floor.png");
-	auto lightbulbTex = std::make_shared<Texture2D>("gw.png");
-
+	auto lightbulbTex = std::make_shared<Texture2D>("lightbulb.png");
 
 	auto dummyMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
 	auto crateMat = std::make_shared<Material>(0.2f, 1.0f, 1.0f);
