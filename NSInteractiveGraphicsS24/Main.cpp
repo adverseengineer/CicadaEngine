@@ -128,6 +128,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	ge.SetupGraphics();
 
+	Ray r = { glm::vec3(0.0), glm::vec3(-1.0/sqrt(3))};
+	RaycastHit hit;
+	r.GetIntersection(glm::vec3(1,2,3), glm::vec3(2,3,1), glm::vec3(3,1,2), hit);
+	Util::Log("intersection: " + std::to_string(hit.offset));
+
 	std::string vertexSource;
 	std::string fragmentSource;
 	Util::ReadFileToString("diffuse.vert.glsl", vertexSource);
