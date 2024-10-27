@@ -19,7 +19,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 	}
 
 	//send the model matrix to the shader
-	shader->SendUniform("world", object->GetGlobalReferenceFrame());
+	shader->SendUniform("world", object->GetGlobalTransform());
 
 	mesh->Bind();
 

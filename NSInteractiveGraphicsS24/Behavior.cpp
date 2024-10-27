@@ -29,9 +29,9 @@ void TranslateAnimation::Update(double elapsedSeconds) {
 	}
 
 	glm::vec3 newPos = params.pointA + params.progress * (params.pointB - params.pointA);
-	glm::mat4 referenceFrame = object->GetLocalReferenceFrame();
+	glm::mat4 referenceFrame = object->GetLocalTransform();
 	referenceFrame[3] = glm::vec4(newPos, 1.0f);
-	object->SetLocalReferenceFrame(referenceFrame);
+	object->SetLocalTransform(referenceFrame);
 	if (object->HasBoundingBox()) {
 		object->GetBoundingBox()->SetReferenceFrame(referenceFrame);
 	}
@@ -51,9 +51,9 @@ void RotateAnimation::Update(double elapsedSeconds) {
 	if (object == nullptr) return;
 	float mult = (params.ray->IsIntersectingObject(*object)) ? 1.0f : 0.0f;
 	float deltaSpeed = static_cast<float>(params.angularVelocity * elapsedSeconds * mult);
-	glm::mat4 referenceFrame = object->GetLocalReferenceFrame();
+	glm::mat4 referenceFrame = object->GetLocalTransform();
 	referenceFrame = glm::rotate(referenceFrame, glm::radians(deltaSpeed), params.rotationAxis);
-	object->SetLocalReferenceFrame(referenceFrame);
+	object->SetLocalTransform(referenceFrame);
 	if (object->HasBoundingBox()) {
 		object->GetBoundingBox()->SetReferenceFrame(referenceFrame);
 	}

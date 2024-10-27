@@ -40,41 +40,33 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	auto floorMat = std::make_shared<Material>(diffuseShader, floorTex);
 	auto lightbulbMat = std::make_shared<Material>(diffuseShader, lightbulbTex);
 
-	auto dummy = std::make_shared<GameObject>();
-	auto crate = std::make_shared<GameObject>();
-	auto mover = std::make_shared<GameObject>();
-	auto floor = std::make_shared<GameObject>();
-	auto lightbulb = std::make_shared<GameObject>();
+	auto dummy = std::make_shared<GameObject>(dummyMesh, dummyMat);
+	auto crate = std::make_shared<GameObject>(crateMesh, crateMat);
+	auto mover = std::make_shared<GameObject>(moverMesh, moverMat);
+	auto floor = std::make_shared<GameObject>(floorMesh, floorMat);
+	auto lightbulb = std::make_shared<GameObject>(lightbulbMesh, lightbulbMat);
 
 	dummyTex->Upload();
-	dummy->SetMesh(dummyMesh);
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
-	dummy->SetMaterial(dummyMat);
-	dummy->SetMaterial(dummyMat_old);
+	dummy->SetMaterial_OLD(dummyMat_old);
 	scene->AddObject(dummy);
 	ge.AddObject("dummy", dummy);
 	
 	crateTex->Upload();
-	crate->SetMesh(crateMesh);
 	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
-	crate->SetMaterial(crateMat_old);
-	crate->SetMaterial(crateMat);
+	crate->SetMaterial_OLD(crateMat_old);
 	scene->AddObject(crate);
 	ge.AddObject("crate", crate);
 	
 	moverTex->Upload();
-	mover->SetMesh(moverMesh);
 	mover->SetPosition(glm::vec3(0.0f, 15.0f, -15.0f));
-	mover->SetMaterial(moverMat_old);
-	mover->SetMaterial(moverMat);
+	mover->SetMaterial_OLD(moverMat_old);
 	scene->AddObject(mover);
 	ge.AddObject("mover", mover);
 
 	floorTex->Upload();
-	floor->SetMesh(floorMesh);
 	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-	floor->SetMaterial(floorMat_old);
-	floor->SetMaterial(floorMat);
+	floor->SetMaterial_OLD(floorMat_old);
 	scene->AddObject(floor);
 	ge.AddObject("floor", floor);
 
@@ -88,10 +80,8 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	scene->SetGlobalLight(globalLight);
 
 	lightbulbTex->Upload();
-	lightbulb->SetMesh(lightbulbMesh);
 	lightbulb->SetPosition(localLightPos);
-	lightbulb->SetMaterial(lightbulbMat_old);
-	lightbulb->SetMaterial(lightbulbMat);
+	lightbulb->SetMaterial_OLD(lightbulbMat_old);
 	scene->AddObject(lightbulb);
 	ge.AddObject("lightbulb", lightbulb);
 }
