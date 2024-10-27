@@ -14,6 +14,6 @@ private:
 public:
 	inline Renderer() = delete;
 
-	static void StaticAllocateBuffers(const std::shared_ptr<Scene>& scene);
+	static void UploadResources(const std::shared_ptr<Scene>& scene);
 	static void RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam);
 };

@@ -11,6 +11,7 @@ struct UniformInfo {
 };
 
 class Shader {
+friend class Material;
 public:
 	Shader(const std::string& vertexSource, const std::string& fragmentSource);
 	~Shader();
@@ -39,6 +40,6 @@ private:
 	static unsigned int CompileShader(unsigned int type, const std::string& shaderSource);
 	void Link(const std::string& vertexSource, const std::string& fragmentSource);
 
-	bool GetUniform(const std::string& name, UniformInfo& info) const;
+	bool GetUniform(const std::string& name, UniformInfo& out_info) const;
 	void Reflect();
 };

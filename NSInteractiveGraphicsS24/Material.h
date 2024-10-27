@@ -5,14 +5,15 @@
 #include <variant>
 
 //TODO: add more types as needed
-using MaterialParamValueType = std::variant<
-	int, unsigned int, float, double,
-	glm::vec3, glm::vec4, glm::mat4
->;
+//using MaterialParamValueType = std::variant<
+//	int, unsigned int, float, double,
+//	glm::vec3, glm::vec4, glm::mat4
+//>;
 
 struct MaterialParam {
 	UniformInfo m_info;
-	MaterialParamValueType value;
+	//MaterialParamValueType m_value;
+	float m_value; //TODO: change back to variant once i know wtf im doing
 };
 
 class Material {
@@ -33,5 +34,7 @@ public:
 	const std::shared_ptr<Texture2D>& GetTexture() { return m_texture; }
 	void SetTexture(const std::shared_ptr<Texture2D>& texture) { m_texture = texture; }
 
-	//void SendUniforms
+	void GetUniforms();
+	void SendParams() const;
+	void DBG_ShowInfo() const;
 };

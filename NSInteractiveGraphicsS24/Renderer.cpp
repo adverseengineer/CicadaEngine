@@ -1,9 +1,9 @@
 #include "Renderer.h"
 #include "Shader.h"
 
-void Renderer::StaticAllocateBuffers(const std::shared_ptr<Scene>& scene) {
+void Renderer::UploadResources(const std::shared_ptr<Scene>& scene) {
 	for(const auto& obj : scene->GetObjects())
-		obj->StaticAllocate();
+		obj->UploadResources();
 }
 
 void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {

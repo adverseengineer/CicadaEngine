@@ -21,14 +21,14 @@ protected:
 	std::shared_ptr<Material> m_material;
 	std::shared_ptr<Texture2D> texture;
 	std::shared_ptr<Shader> shader;
-	std::shared_ptr<Material_OLD> material;
+	std::shared_ptr<Material_OLD> m_material_OLD;
 
 	std::shared_ptr<Mesh> m_mesh;
 
 public:
 	inline GameObject() :
 		referenceFrame(1.0f), m_mesh(nullptr),
-		parent(nullptr), material(nullptr), texture(nullptr) {
+		parent(nullptr), m_material(nullptr), texture(nullptr) {
 	}
 	inline virtual ~GameObject() = default;
 
@@ -67,9 +67,9 @@ public:
 	inline const std::shared_ptr<Shader>& GetShader() const { return shader; }
 	inline void SetShader(const std::shared_ptr<Shader>& shader) { this->shader = shader; }
 
-	inline const std::shared_ptr<Material_OLD>& GetMaterial_OLD() const { return material; }
+	inline const std::shared_ptr<Material_OLD>& GetMaterial_OLD() const { return m_material_OLD; }
 	inline const std::shared_ptr<Material>& GetMaterial() const { return m_material; }
-	inline void SetMaterial(const std::shared_ptr<Material_OLD>& material) { this->material = material; }
+	inline void SetMaterial(const std::shared_ptr<Material_OLD>& material) { m_material_OLD = material; }
 	inline void SetMaterial(const std::shared_ptr<Material>& material) { m_material = material; }
 
 	inline bool HasBoundingBox() const { return boundingBox != nullptr; }
@@ -87,6 +87,6 @@ public:
 	void RotateLocal(float xDeg, float yDeg, float zDeg);
 	void RotateToFace(const glm::vec3& target);
 
-	void StaticAllocate() const;
+	void UploadResources() const;
 	void Update(double elapsedSeconds);
 };

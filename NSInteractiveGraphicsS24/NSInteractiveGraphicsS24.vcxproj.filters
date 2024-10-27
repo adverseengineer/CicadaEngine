@@ -82,6 +82,7 @@
     <ClCompile Include="BaseTexture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">

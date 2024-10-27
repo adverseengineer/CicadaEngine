@@ -111,7 +111,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderS
 		glGetShaderInfoLog(shaderId, (GLsizei)maxLength, (GLsizei*)&maxLength, (GLchar*)&infoLog[0]);
 		Util::Log(infoLog);
 
-		//we don't need the shader anymore.
+		//we don't need the shader anymore
 		glDeleteShader(shaderId);
 
 		return -1;
@@ -160,22 +160,25 @@ void Shader::Link(const std::string& vertexSource, const std::string& fragmentSo
 }
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
-bool Shader::GetUniform(const std::string& name, UniformInfo& info) const {
+bool Shader::GetUniform(const std::string& name, UniformInfo& out_info) const {
 	bool uniformIsPresent = m_UniformInfoCache.count(name) > 0;
 	if (uniformIsPresent)
-		info = m_UniformInfoCache.at(name);
+		out_info = m_UniformInfoCache.at(name);
 	return uniformIsPresent;
 }
 
 //queries openGL to tell us all the uniforms for a compiled and linked shader program, and stores the info
 void Shader::Reflect() {
+
+	constexpr size_t uniformNameMaxChars = 256;
+
 	GLint numUniforms = 0;
 	glGetProgramiv(m_shaderProg, GL_ACTIVE_UNIFORMS, &numUniforms);
 
 	for (GLint i = 0; i < numUniforms; i++) {
 		GLint size;
 		GLenum type;
-		char name[256];
+		char name[uniformNameMaxChars];
 		glGetActiveUniform(m_shaderProg, (GLint)i, sizeof(name), nullptr, &size, &type, name);
 		GLint location = glGetUniformLocation(m_shaderProg, name);
 

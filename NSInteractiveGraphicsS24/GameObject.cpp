@@ -56,16 +56,22 @@ void GameObject::RotateToFace(const glm::vec3& target) {
 	referenceFrame[2] = glm::vec4(zAxis, 0.0f);
 }
 
-void GameObject::StaticAllocate() const {
-	
-	m_mesh->Setup();
-	m_mesh->Upload();
+void GameObject::UploadResources() const {
 
-	if (texture != nullptr)
-		texture->Upload();
-	
+	//only concern ourselves with mesh and material if there is a mesh
+	if (m_mesh) {
+
+		m_mesh->Setup();
+		m_mesh->Upload();
+ 
+		if (m_material) {
+			auto& tex = m_material->GetTexture();
+			if(tex) tex->Upload();
+		}
+	}
+
 	for (auto& child : children)
-		child->StaticAllocate();
+		child->UploadResources();
 }
 
 void GameObject::Update(double elapsedSeconds) {

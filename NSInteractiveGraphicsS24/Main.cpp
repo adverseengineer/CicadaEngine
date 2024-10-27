@@ -108,20 +108,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	ge.SetupGraphics();
 
-	Ray r = { glm::vec3(0.0), glm::vec3(-1.0/sqrt(3))};
-	RaycastHit hit;
-	r.GetIntersection(glm::vec3(1,2,3), glm::vec3(2,3,1), glm::vec3(3,1,2), hit);
-	Util::Log("intersection: " + std::to_string(hit.offset));
-
 	auto cam = std::make_shared<Camera>(60.0f, 0.01f, 500.0f, 1200.0f / 800.0f);
 	cam->SetPosition({ 0.0f, 15.0f, 30.0f });
-
-	//diffuseShader->BindUniformBlock(0, 1);
 
 	auto diffuseScene = std::make_shared<Scene>();
 
 	SetUp3DScene(ge, diffuseScene);
-	Renderer::StaticAllocateBuffers(diffuseScene);
+	Renderer::UploadResources(diffuseScene);
 
 	ge.SetCamera(cam);
 
