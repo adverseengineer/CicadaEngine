@@ -38,11 +38,5 @@ public:
 		return s_objectMap;
 	}
 
-	inline static void SetBehaviorDefaults() {
-		for (auto& [_, object] : s_objectMap) {
-			object->SetBehaviorDefaults();
-		}
-	}
-
 	static void Update(double elapsedSeconds);
 };

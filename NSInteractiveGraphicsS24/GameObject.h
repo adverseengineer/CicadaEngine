@@ -2,20 +2,13 @@
 #include "Behavior.h"
 #include "BoundingBox.h"
 #include "GraphicsStructures.h"
+#include "Material.h"
 #include "Mesh.h"
 #include "Ray.h"
-#include "Shader.h"
 #include <glm/glm.hpp>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
-
-//forward decl so that we can resolve a cyclical dependency
-class Behavior;
-struct BehaviorParams;
-struct HighlightParams;
-struct TranslationParams;
-struct RotationParams;
 
 class GameObject {
 protected:
@@ -23,12 +16,12 @@ protected:
 	
 	std::unordered_set<std::shared_ptr<GameObject>> children;
 	GameObject* parent;
-	std::unordered_map<std::string, std::shared_ptr<Behavior>> behaviorMap;
-	std::shared_ptr<Material> material;
 	std::shared_ptr<BoundingBox> boundingBox;
 
+	std::shared_ptr<Material> m_material;
 	std::shared_ptr<Texture2D> texture;
 	std::shared_ptr<Shader> shader;
+	std::shared_ptr<Material_OLD> material;
 
 	std::shared_ptr<Mesh> m_mesh;
 
@@ -62,10 +55,6 @@ public:
 	//inserts a new child under this object, returns true if success, false if already present
 	bool AddChild(const std::shared_ptr<GameObject>& child);
 
-	bool AddBehavior(const std::string& behaviorName, const std::shared_ptr<Behavior>& behavior);
-	void SetBehaviorDefaults();
-	void SetBehaviorParameters(const std::string& name, BehaviorParams& params);
-	
 	inline const std::shared_ptr<Texture2D>& GetTexture() const { return texture; }
 	inline void SetTexture(const std::shared_ptr<Texture2D>& texture) { this->texture = texture; }
 	inline bool HasTexture() const { return texture != nullptr; }
@@ -78,8 +67,10 @@ public:
 	inline const std::shared_ptr<Shader>& GetShader() const { return shader; }
 	inline void SetShader(const std::shared_ptr<Shader>& shader) { this->shader = shader; }
 
-	inline const std::shared_ptr<Material>& GetMaterial() const { return material; }
-	inline void SetMaterial(const std::shared_ptr<Material>& material) { this->material = material; }
+	inline const std::shared_ptr<Material_OLD>& GetMaterial_OLD() const { return material; }
+	inline const std::shared_ptr<Material>& GetMaterial() const { return m_material; }
+	inline void SetMaterial(const std::shared_ptr<Material_OLD>& material) { this->material = material; }
+	inline void SetMaterial(const std::shared_ptr<Material>& material) { m_material = material; }
 
 	inline bool HasBoundingBox() const { return boundingBox != nullptr; }
 	inline const std::shared_ptr<BoundingBox>& GetBoundingBox() const { return boundingBox; }

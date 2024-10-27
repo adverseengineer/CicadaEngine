@@ -8,46 +8,37 @@ void Renderer::StaticAllocateBuffers(const std::shared_ptr<Scene>& scene) {
 
 void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 
-	//send the model matrix to the shader
-	object->GetShader()->SendUniform("world", object->GetGlobalReferenceFrame());
+	auto& material = object->GetMaterial();
+	auto& tex = material->GetTexture();
+	auto& shader = material->GetShader();
 
 	auto& mesh = object->GetMesh();
-	if(mesh == nullptr) {
+	if(!mesh) {
 		Util::Log("mesh is null");
 		return;
 	}
 
-	mesh->Bind();
-	//mesh->BindVBO();
+	//send the model matrix to the shader
+	shader->SendUniform("world", object->GetGlobalReferenceFrame());
 
-	auto& shader = object->GetShader();
-	auto& tex = object->GetTexture();
+	mesh->Bind();
 
 	if (tex != nullptr) {
-		shader->SendUniform("tex", object->GetTexture()->GetTextureUnit());
+		shader->SendUniform("tex", tex->GetTextureUnit());
 		tex->SelectForRendering();
 	}
 
-	auto& material = object->GetMaterial();
+	auto& material_old = object->GetMaterial_OLD();
 	if (material != nullptr) {
-		shader->SendUniform("materialAmbientIntensity", material->ambientIntensity);
-		shader->SendUniform("materialSpecularIntensity", material->specularIntensity);
-		shader->SendUniform("materialShininess", material->shininess);
+		shader->SendUniform("materialAmbientIntensity", material_old->ambientIntensity);
+		shader->SendUniform("materialSpecularIntensity", material_old->specularIntensity);
+		shader->SendUniform("materialShininess", material_old->shininess);
 	}
 
-	//mesh->SetUpAttributeInterpretration();
-
-	//if (mesh->IndexCount() != 0) {
-		//mesh->BindIBO();
-		glDrawElements(mesh->GetPrimitiveType(), (GLsizei) mesh->IndexElemCount(), GL_UNSIGNED_SHORT, (void*)0);
-	//}
-	//else {
-		//glDrawArrays(mesh->GetPrimitiveType(), 0, (GLsizei) mesh->GetNumberOfVertices());
-	//}
-
-	// Recursively render the children
-	auto& children = object->GetChildren();
-	for (const auto& child : children)
+	glDrawElements(mesh->GetPrimitiveType(), (GLsizei) mesh->IndexElemCount(), GL_UNSIGNED_SHORT, (void*)0);
+	
+	//recursively render the children
+	for (const auto& child : object->GetChildren())
 		RenderObject(child);
 
 	mesh->Unbind();
@@ -78,5 +69,5 @@ void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::share
 			RenderObject(object);
 	}
 	else
-		Util::Log("this renderer's shader was not linked");
+		Util::Log("this shader was not linked");
 }

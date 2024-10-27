@@ -34,12 +34,12 @@ struct MouseParams {
     //float ndcX = 0, ndcY = 0;
 };
 
-struct Material {
+struct Material_OLD {
     float ambientIntensity;  // 0 to 1
     float specularIntensity; // 0 to 1
     float shininess;         // 0 to infinity
 
-    inline Material(float ambientIntensity, float specularIntensity, float shininess) :
+    inline Material_OLD(float ambientIntensity, float specularIntensity, float shininess) :
         ambientIntensity(ambientIntensity), specularIntensity(specularIntensity), shininess(shininess) {
     }
 };

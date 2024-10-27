@@ -173,6 +173,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GraphicsStructures.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Ray.h" />

@@ -8,21 +8,6 @@ bool GameObject::AddChild(const std::shared_ptr<GameObject>& child) {
 	return result.second;
 }
 
-bool GameObject::AddBehavior(const std::string& behaviorName, const std::shared_ptr<Behavior>& behavior) {
-	return behaviorMap.insert_or_assign(behaviorName, behavior).second;
-}
-
-void GameObject::SetBehaviorDefaults() {
-	for (auto& [name, behavior] : behaviorMap) {
-		behavior->StoreDefaults();
-	}
-}
-
-void GameObject::SetBehaviorParameters(const std::string& name, BehaviorParams& params) {
-	auto& behavior = behaviorMap.at(name);
-	behavior->SetParameter(params);
-}
-
 bool GameObject::IsIntersectingRay(const Ray& ray) const {
 	return ray.IsIntersectingObject(*this);
 }
@@ -84,8 +69,5 @@ void GameObject::StaticAllocate() const {
 }
 
 void GameObject::Update(double elapsedSeconds) {
-	for (auto& [name, behavior] : behaviorMap) {
-		behavior->Update(elapsedSeconds);
-	}
-	//TODO: any other per-frame updates that an object may need
+	//TODO: any per-frame updates that an object may need
 }

@@ -65,13 +65,13 @@ void HighlightBehavior::SetParameter(BehaviorParams& params) {
 }
 void HighlightBehavior::StoreDefaults() {
 	if (object == nullptr) return;
-	auto& material = object->GetMaterial();
+	auto& material = object->GetMaterial_OLD();
 	if (material == nullptr) return;
 	ambientIntensity = material->ambientIntensity;
 }
 void HighlightBehavior::Update(double elapsedSeconds) {
 	if (object == nullptr) return;
-	auto& material = object->GetMaterial();
+	auto& material = object->GetMaterial_OLD();
 	if (material == nullptr) return;
 	if ((*params.ray).IsIntersectingObject(*object))
 		material->ambientIntensity = 1.0f;

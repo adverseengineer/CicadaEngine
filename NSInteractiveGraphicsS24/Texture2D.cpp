@@ -44,7 +44,7 @@ void Texture2D::Bind() {
 //call this in order to render the texture
 void Texture2D::SelectForRendering() {
 	glActiveTexture(GL_TEXTURE0 + (GLenum) m_texUnit);
-	glBindTexture(GL_TEXTURE_2D, (GLuint)m_texId);
+	glBindTexture(GL_TEXTURE_2D, (GLuint) m_texId);
 }
 
 //TODO: for tomorrow: add the optimizations to this function too, or consider removing the optimizations bc they suck

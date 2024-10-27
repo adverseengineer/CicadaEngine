@@ -5,6 +5,11 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
+struct UniformInfo {
+	unsigned int type;
+	int location;
+};
+
 class Shader {
 public:
 	Shader(const std::string& vertexSource, const std::string& fragmentSource);
@@ -28,12 +33,6 @@ public:
 	void DBG_ShowInfo() const;
 
 private:
-
-	struct UniformInfo {
-		unsigned int type;
-		int location;
-	};
-
 	std::unordered_map<std::string, UniformInfo> m_UniformInfoCache;
 	unsigned int m_shaderProg = 0;
 
