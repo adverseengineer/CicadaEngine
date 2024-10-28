@@ -110,8 +110,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	SetUp3DScene(ge, diffuseScene);
 	Renderer::UploadResources(diffuseScene);
 
-	rapidjson::Document doc;
-	JsonUtils::ReadJson("asd.json", doc);
+	rapidjson::Document sceneSchema;
+	JsonUtils::ReadJson("scene_schema.json", sceneSchema);
+
+	rapidjson::Document sceneJson;
+	JsonUtils::ReadJson("test_scene.json", sceneJson);
+
+	bool ye = JsonUtils::ValidateAgainstSchema(sceneSchema, sceneJson);
+
+	if (ye)
+		Util::Log("All clear!");
 
 	ge.SetCamera(cam);
 	ge.Run3D(diffuseScene, ShaderManager::GetShader("diffuse"));
