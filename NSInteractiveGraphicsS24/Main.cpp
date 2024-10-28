@@ -28,12 +28,6 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	auto floorTex = std::make_shared<Texture2D>("floor.png");
 	auto lightbulbTex = std::make_shared<Texture2D>("lightbulb.png");
 
-	auto dummyMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
-	auto crateMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
-	auto moverMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
-	auto floorMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
-	auto lightbulbMat_old = std::make_shared<Material_OLD>(0.6f, 1.0f, 1.0f);
-
 	auto dummyMat = std::make_shared<Material>(diffuseShader, dummyTex);
 	auto crateMat = std::make_shared<Material>(diffuseShader, crateTex);
 	auto moverMat = std::make_shared<Material>(diffuseShader, moverTex);
@@ -45,6 +39,13 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	auto mover = std::make_shared<GameObject>(moverMesh, moverMat);
 	auto floor = std::make_shared<GameObject>(floorMesh, floorMat);
 	auto lightbulb = std::make_shared<GameObject>(lightbulbMesh, lightbulbMat);
+
+	auto dummyMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
+	auto crateMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
+	auto moverMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
+	auto floorMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
+	auto lightbulbMat_old = std::make_shared<Material_OLD>(0.6f, 1.0f, 1.0f);
+
 
 	dummyTex->Upload();
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
@@ -84,6 +85,10 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	lightbulb->SetMaterial_OLD(lightbulbMat_old);
 	scene->AddObject(lightbulb);
 	ge.AddObject("lightbulb", lightbulb);
+
+	dummy->SetParent(crate);
+	crate->RotateLocalZ(15.0);
+	
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {

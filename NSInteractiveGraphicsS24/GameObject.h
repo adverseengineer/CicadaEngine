@@ -51,6 +51,8 @@ public:
 
 	//inserts a new child under this object, returns true if success, false if already present
 	bool AddChild(const std::shared_ptr<GameObject>& child);
+	
+	//TODO: implemenet SetParent
 
 	inline const std::shared_ptr<Material_OLD>& GetMaterial_OLD() const { return m_material_OLD; }
 	inline const std::shared_ptr<Material>& GetMaterial() const { return m_material; }
