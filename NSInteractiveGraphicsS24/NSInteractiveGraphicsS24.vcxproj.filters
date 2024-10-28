@@ -200,6 +200,12 @@
     <None Include="norm.frag.glsl">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="scene_schema.json">
+      <Filter>Resources\Json</Filter>
+    </None>
+    <None Include="test_scene.json">
+      <Filter>Resources\Json</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -220,8 +226,8 @@
     <Filter Include="Resources\Images">
       <UniqueIdentifier>{61cc2e49-a1ef-4dae-ae71-eaf0df993ebe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\Raycasting">
-      <UniqueIdentifier>{4afec35a-8bf1-4c42-984c-c2993f68dd4a}</UniqueIdentifier>
+    <Filter Include="Resources\Json">
+      <UniqueIdentifier>{96489938-dbff-4757-9b85-09efca7ed67b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

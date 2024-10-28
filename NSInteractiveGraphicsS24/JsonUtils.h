@@ -15,23 +15,23 @@
 class JsonUtils {
 public:
 
-    inline static bool ReadJson(const std::string& path, rapidjson::Document& result) {
+    inline static bool ReadJson(const std::string& path, rapidjson::Document& out_result) {
 
         std::string jsonSource;
         if (!Util::ReadFileToString(path.c_str(), jsonSource))
             return false;
 
-        result.Parse(jsonSource);
-        if (result.HasParseError()) {
+        out_result.Parse(jsonSource);
+        if (out_result.HasParseError()) {
             Util::Log("file '%s' is not valid JSON\n" + path);
-            Util::Log("Error(offset %lu): %s\n", result.GetErrorOffset(), rapidjson::GetParseError_En(result.GetParseError()));
+            Util::Log("Error(offset %lu): %s\n", out_result.GetErrorOffset(), rapidjson::GetParseError_En(out_result.GetParseError()));
             return false;
         }
 
         return true;
     }
 
-    inline static bool ValidateAgainstSchema(const rapidjson::Document& schema, rapidjson::Document& json) {
+    inline static bool ValidateAgainstSchema(const rapidjson::Document& schema, const rapidjson::Document& json) {
 
         //create a schema validator from the provided json document
         rapidjson::SchemaDocument schemaDoc(schema);
@@ -57,7 +57,6 @@ public:
         json.Accept(writer);
         return buffer.GetString();
     }
-
 
     template<size_t C, size_t R>
     inline static bool ParseMatrix(const rapidjson::Value& json, glm::mat<C, R, float>& matrix) {

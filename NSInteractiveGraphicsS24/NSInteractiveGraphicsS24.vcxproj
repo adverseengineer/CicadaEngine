@@ -194,6 +194,8 @@
     <None Include="diffuse.vert.glsl" />
     <None Include="norm.frag.glsl" />
     <None Include="norm.vert.glsl" />
+    <None Include="scene_schema.json" />
+    <None Include="test_scene.json" />
     <None Include="texture.frag.glsl" />
     <None Include="texture.vert.glsl" />
   </ItemGroup>
@@ -208,4 +210,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties test_3scene_1json__JsonSchema="scene_schema.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

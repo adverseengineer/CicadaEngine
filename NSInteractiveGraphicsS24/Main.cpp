@@ -1,7 +1,10 @@
+#define NOMINMAX //this is needed so that rapidjson doesn't shit the bed, idk why
 
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
 #include <Windows.h>
+
+#include "JsonUtils.h"
 
 static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene) {
 
@@ -85,10 +88,6 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	lightbulb->SetMaterial_OLD(lightbulbMat_old);
 	scene->AddObject(lightbulb);
 	ge.AddObject("lightbulb", lightbulb);
-
-	dummy->SetParent(crate);
-	crate->RotateLocalZ(15.0);
-	
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
@@ -111,8 +110,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	SetUp3DScene(ge, diffuseScene);
 	Renderer::UploadResources(diffuseScene);
 
-	ge.SetCamera(cam);
+	rapidjson::Document doc;
+	JsonUtils::ReadJson("asd.json", doc);
 
+	ge.SetCamera(cam);
 	ge.Run3D(diffuseScene, ShaderManager::GetShader("diffuse"));
 
 	return 0;
