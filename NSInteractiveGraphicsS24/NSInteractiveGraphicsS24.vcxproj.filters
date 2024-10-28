@@ -151,6 +151,9 @@
     <ClInclude Include="Material.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="JsonUtils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\Downloads\crate.png">
