@@ -195,6 +195,7 @@
     <None Include="diffuse.vert.glsl" />
     <None Include="norm.frag.glsl" />
     <None Include="norm.vert.glsl" />
+    <None Include="player_control.lua" />
     <None Include="scene_schema.json" />
     <None Include="test_scene.json" />
     <None Include="texture.frag.glsl" />
