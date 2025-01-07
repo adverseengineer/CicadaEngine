@@ -12,6 +12,13 @@ struct UniformInfo {
 
 class Shader {
 friend class Material;
+private:
+	std::unordered_map<std::string, UniformInfo> m_UniformInfoCache;
+
+	std::unordered_map<std::string, UniformInfo> m_objectUniforms;
+	std::unordered_map<std::string, UniformInfo> m_materialUniforms;
+	unsigned int m_shaderProg = 0;
+
 public:
 	Shader(const std::string& vertexSource, const std::string& fragmentSource);
 	~Shader();
@@ -34,9 +41,6 @@ public:
 	void DBG_ShowInfo() const;
 
 private:
-	std::unordered_map<std::string, UniformInfo> m_UniformInfoCache;
-	unsigned int m_shaderProg = 0;
-
 	static unsigned int CompileShader(unsigned int type, const std::string& shaderSource);
 	void Link(const std::string& vertexSource, const std::string& fragmentSource);
 

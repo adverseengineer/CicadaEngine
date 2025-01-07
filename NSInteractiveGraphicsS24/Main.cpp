@@ -21,13 +21,13 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	dummyMesh->LoadObj("chicken brent.obj");
 
 	auto crateMesh = Generate::CuboidWithNormals(10.0, 10.0, 10.0, 1.0, 1.0, { 1, 1, 1, 1 });
-	auto moverMesh = Generate::PolarSphereWithNormals(1, 12, 18);
+	auto moverMesh = Generate::PolarSphereWithNormals(1, 4, 18);
 	auto floorMesh = Generate::PlaneXZWithNormals(100, 100, 12, 12, { 1, 1, 1, 1 });
 	auto lightbulbMesh = Generate::PlaneXYWithNormals(1, 1, 1, 1, { 1, 1, 1, 1 });
 
 	auto dummyTex = std::make_shared<Texture2D>("br0_tex00.png");
 	auto crateTex = std::make_shared<Texture2D>("crate.png");
-	auto moverTex = std::make_shared<Texture2D>("not-a-real-texture.png");	
+	auto moverTex = std::make_shared<Texture2D>("not-a-real-texture.png");
 	auto floorTex = std::make_shared<Texture2D>("floor.png");
 	auto lightbulbTex = std::make_shared<Texture2D>("lightbulb.png");
 
@@ -120,6 +120,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	if (ye)
 		Util::Log("All clear!");
+
+	auto& objectsJson = sceneJson["gameObjects"];
 
 	ge.SetCamera(cam);
 	ge.Run3D(diffuseScene, ShaderManager::GetShader("diffuse"));
