@@ -82,7 +82,9 @@
     <ClCompile Include="BaseTexture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Material.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">
@@ -206,6 +208,9 @@
     <None Include="test_scene.json">
       <Filter>Resources\Json</Filter>
     </None>
+    <None Include="player_control.lua">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -228,6 +233,9 @@
     </Filter>
     <Filter Include="Resources\Json">
       <UniqueIdentifier>{96489938-dbff-4757-9b85-09efca7ed67b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{90732bca-ba1b-4f34-9e5b-edbb662816cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

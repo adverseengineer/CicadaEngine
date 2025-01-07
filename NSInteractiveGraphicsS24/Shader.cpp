@@ -175,12 +175,20 @@ void Shader::Reflect() {
 	GLint numUniforms = 0;
 	glGetProgramiv(m_shaderProg, GL_ACTIVE_UNIFORMS, &numUniforms);
 
+	char name[uniformNameMaxChars];
 	for (GLint i = 0; i < numUniforms; i++) {
 		GLint size;
 		GLenum type;
-		char name[uniformNameMaxChars];
 		glGetActiveUniform(m_shaderProg, (GLint)i, sizeof(name), nullptr, &size, &type, name);
 		GLint location = glGetUniformLocation(m_shaderProg, name);
+
+		//TODO: this is horrible, please forgive me
+		std::string tempName(name);
+		if (tempName.starts_with("u_material_"))
+			m_materialUniforms[name] = { type, location };
+		else if (tempName.starts_with("u_object_"))
+			m_objectUniforms[name] = { type, location };
+
 
 		m_UniformInfoCache[name] = { type, location };
 	}
