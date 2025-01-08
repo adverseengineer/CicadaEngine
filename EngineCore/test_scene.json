@@ -1,0 +1,22 @@
+{
+	"gameObjects": [
+		{
+			"name": "teapot",
+			"transform": [
+				[ 1.0, 0.0, 0.0, -5.0 ],
+				[ 0.0, 1.0, 0.0, 0.0 ],
+				[ 0.0, 0.0, 1.0, 0.0 ],
+				[ 0.0, 0.0, 0.0, 1.0 ]
+			],
+			"mesh": {
+				"model": "teapot.obj",
+				"primitive": "triangles"
+			},
+			"material": {
+				"texture": "teapot.png",
+				"shader": "diffuse"
+			}
+		}
+	],
+	"parentObjects": []
+}
