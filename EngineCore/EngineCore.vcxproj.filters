@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\3rdparty">
+      <UniqueIdentifier>{b9f6f08e-0f00-4bbe-ae06-cedf91d2a07d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseTexture.cpp">
@@ -75,32 +78,29 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\3rdparty\glad\src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\3rdparty\glm\detail\glm.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui_impl_glfw.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\imgui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\3rdparty</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,9 +168,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BoundingBox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdparty\glad\include\glad\glad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\3rdparty\glad\include\KHR\khrplatform.h">
