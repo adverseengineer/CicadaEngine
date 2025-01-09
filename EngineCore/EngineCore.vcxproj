@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\3rdparty\glad\src\glad.c" />
     <ClCompile Include="..\3rdparty\glm\detail\glm.cpp" />
     <ClCompile Include="..\3rdparty\imgui\imgui.cpp" />
     <ClCompile Include="..\3rdparty\imgui\imgui_demo.cpp" />
@@ -50,7 +49,6 @@
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\3rdparty\glad\include\glad\glad.h" />
     <ClInclude Include="..\3rdparty\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="..\3rdparty\glfw\include\GLFW\glfw3.h" />
     <ClInclude Include="..\3rdparty\glfw\include\GLFW\glfw3native.h" />
@@ -546,6 +544,11 @@
     <None Include="..\3rdparty\glm\gtx\vector_query.inl" />
     <None Include="..\3rdparty\glm\gtx\wrap.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GLAD\GLAD.vcxproj">
+      <Project>{b42c3d50-0dcf-42d7-8a12-0dce7cc2cba2}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -638,6 +641,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>C:\Users\adver\source\repos\CicadaEngine\GLAD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -654,6 +658,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>C:\Users\adver\source\repos\CicadaEngine\GLAD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
