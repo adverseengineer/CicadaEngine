@@ -21,9 +21,9 @@ std::unordered_map<unsigned int, const std::string> Util::s_typeNameMap = {
 	{ GL_FRAGMENT_SHADER, "fragShader" }
 };
 
-const std::string& Util::TypeStr(unsigned int glType) {
+const std::string Util::TypeStr(unsigned int glType) {
 	if (s_typeNameMap.contains(glType))
 		return s_typeNameMap.at(glType);
 	else
-		return "invalid";
+		return std::string("invalid");
 }

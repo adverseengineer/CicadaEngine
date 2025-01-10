@@ -1,8 +1,8 @@
 #include "Camera.h"
 
-#include <ext/matrix_transform.hpp>
 #include <glad/glad.h>
-#include <gtc/type_ptr.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Camera::Camera(float fov, float nearClip, float farClip, float aspectRatio) :
 	m_fov(fov), m_nearClip(nearClip), m_farClip(farClip), m_aspectRatio(aspectRatio),

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Mesh.h"
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 class Generate {
 

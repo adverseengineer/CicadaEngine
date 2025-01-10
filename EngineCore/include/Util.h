@@ -63,5 +63,5 @@ public:
 		return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (input - inputMin);
 	}
 
-	static const std::string& TypeStr(unsigned int glType);
+	static const std::string TypeStr(unsigned int glType);
 };

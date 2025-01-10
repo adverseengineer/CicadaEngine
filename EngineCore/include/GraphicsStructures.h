@@ -1,6 +1,6 @@
 #pragma once
 #include "Ray.h"
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 struct SphericalCoordinate {
     float phi = 90.0f, theta = 0.0f, rho = 1.0f;

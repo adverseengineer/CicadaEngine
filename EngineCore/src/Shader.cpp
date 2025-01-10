@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 #include <glm/ext.hpp>
-#include <gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(const std::string& vertexSource, const std::string& fragmentSource) {
 	Link(vertexSource, fragmentSource);
