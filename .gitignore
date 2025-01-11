@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # ignore imgui junk files
 */imgui.ini
+
+#ignore local copies of dependencies
+vcpkg_installed/*
