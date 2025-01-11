@@ -1,0 +1,6 @@
+
+objects need to reside in C++ code, but accessible or creatable from both C++ and Lua code
+so we will accomplish this by maintaining an object registry in C++
+whenever an object needs to be made in C++, simply do it. If it needs to be created in Lua, we call a bound C function that creates the object and wraps a lightuserdata pointing to it in a userdata and pushes it to Lua
+
+whenever we need to fetch an object from C++, simply do it. If it needs to be fetched from Lua, do the same thing as creation, except fetch the pointer for the lightuserdata from the C++ object registry

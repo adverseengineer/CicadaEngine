@@ -1,11 +1,16 @@
 {
   "dependencies": [
     "glad",
-    "glfw",
+    "glfw3",
     "glm",
-    "imgui",
+    {
+      "name": "imgui",
+      "features": [ "glfw-binding", "opengl3-binding" ]
+    },
     "lua",
     "rapidjson",
-    "sol2"
+    "sol2",
+    "stb",
+    "tinyobjloader"
   ]
 }
