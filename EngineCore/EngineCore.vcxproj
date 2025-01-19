@@ -114,8 +114,11 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\adver\source\repos\CicadaEngine\EngineCore\3rdparty;C:\Users\adver\source\repos\CicadaEngine\EngineCore\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,8 +138,11 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\adver\source\repos\CicadaEngine\EngineCore\3rdparty;C:\Users\adver\source\repos\CicadaEngine\EngineCore\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,6 +160,7 @@
     <ClCompile Include="src\Behavior.cpp" />
     <ClCompile Include="src\BoundingBox.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\EventManager.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Generate.cpp" />
     <ClCompile Include="src\GraphicsEnvironment.cpp" />
@@ -181,6 +188,7 @@
     <ClInclude Include="include\BoundingBox.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Defs.h" />
+    <ClInclude Include="include\EventManager.h" />
     <ClInclude Include="include\GameObject.h" />
     <ClInclude Include="include\Generate.h" />
     <ClInclude Include="include\GeometricPlane.h" />
@@ -199,6 +207,10 @@
     <ClInclude Include="include\Texture2D.h" />
     <ClInclude Include="include\Timer.h" />
     <ClInclude Include="include\Util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="script.lua" />
+    <None Include="test.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

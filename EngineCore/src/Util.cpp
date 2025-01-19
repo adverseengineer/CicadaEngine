@@ -1,6 +1,7 @@
 #include "Util.h"
 #include <glad/glad.h>
-std::stringstream Util::s_log;
+
+std::vector<LogEntry> Util::s_log;
 
 std::unordered_map<unsigned int, const std::string> Util::s_typeNameMap = {
 	{ GL_BYTE, "byte" },

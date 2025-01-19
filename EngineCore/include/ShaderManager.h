@@ -13,7 +13,7 @@ public:
 		if (itr != s_shaderMap.end())
 			return itr->second;
 		else {
-			Util::Log("shader \"" + id + "\" not found");
+			Util::Log(LogEntry::Severity::Error, "shader \"" + id + "\" not found");
 			return nullptr;
 		}
 	}
@@ -22,14 +22,14 @@ public:
 		assert(shader != nullptr);
 		bool success = s_shaderMap.insert(std::make_pair(id, shader)).second;
 		if (!success)
-			Util::Log("failed to add shader \"" + id + "\"");
+			Util::Log(LogEntry::Severity::Error, "failed to add shader \"" + id + "\"");
 		return success;
 	}
 
 	inline static bool RemoveShader(const std::string& id) {
 		bool success = (s_shaderMap.erase(id) == 1);
 		if (!success)
-			Util::Log("shader \"" + id + "\" not found");
+			Util::Log(LogEntry::Severity::Error, "shader \"" + id + "\" not found");
 		return success;
 	}
 

@@ -35,7 +35,7 @@ void Shader::SendUniform(const std::string& name, int value) const {
 		glUniform1i(temp.location, value);
 	}
 	else
-		Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Util::Log(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //send a single unsigned integer
@@ -46,7 +46,7 @@ void Shader::SendUniform(const std::string& name, unsigned int value) const {
 		glUniform1ui(temp.location, value);
 	}
 	else
-		Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Util::Log(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //send a single float
@@ -57,7 +57,7 @@ void Shader::SendUniform(const std::string& name, float value) const {
 		glUniform1f(temp.location, value);
 	}
 	else
-		Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Util::Log(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //send a glm vector of dimension three
@@ -68,10 +68,10 @@ void Shader::SendUniform(const std::string& name, const glm::vec3& value) const 
 		glUniform3fv(temp.location, 1, glm::value_ptr(value));
 	}
 	else {
-		Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
-		for (const auto& uniform : m_UniformInfoCache) {
-			Util::Log(uniform.first);
-		}
+		Util::Log(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		//for (const auto& uniform : m_UniformInfoCache) {
+			//Util::Log(uniform.first);
+		//}
 	}
 }
 
@@ -83,7 +83,7 @@ void Shader::SendUniform(const std::string& name, const glm::mat4& value) const 
 		glUniformMatrix4fv(temp.location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 	else
-		Util::Log("Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Util::Log(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //given the source code for a vertex or fragment shader, compile it and store it on the GPU
@@ -106,10 +106,10 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderS
 		GLint maxLength;
 		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
-		//copy GL's log into a char vector
-		std::vector<char> infoLog(maxLength);
-		glGetShaderInfoLog(shaderId, (GLsizei)maxLength, (GLsizei*)&maxLength, (GLchar*)&infoLog[0]);
-		Util::Log(infoLog);
+		//copy GL's log into an appropriately sized std::string filled with null
+		std::string infoLog(maxLength, '\0');
+		glGetShaderInfoLog(shaderId, (GLsizei)maxLength, (GLsizei*)&maxLength, (GLchar*)infoLog.data());
+		Util::Log(LogEntry::Severity::Error, infoLog);
 
 		//we don't need the shader anymore
 		glDeleteShader(shaderId);
@@ -117,7 +117,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderS
 		return -1;
 	}
 
-	Util::Log("Compiled " + Util::TypeStr(type));
+	Util::Log(LogEntry::Severity::Info, "Compiled " + Util::TypeStr(type));
 	
 	return shaderId;
 }
@@ -143,9 +143,9 @@ void Shader::Link(const std::string& vertexSource, const std::string& fragmentSo
 		GLint maxLength = 0;
 		glGetProgramiv(m_shaderProg, GL_INFO_LOG_LENGTH, &maxLength);
 
-		std::vector<char> infoLog(maxLength);
-		glGetProgramInfoLog(m_shaderProg, maxLength, &maxLength, (GLchar*)&infoLog[0]);
-		Util::Log(infoLog);
+		std::string infoLog(maxLength, '\0');
+		glGetProgramInfoLog(m_shaderProg, maxLength, &maxLength, (GLchar*) infoLog.data());
+		Util::Log(LogEntry::Severity::Error, infoLog);
 
 		glDeleteProgram(m_shaderProg); //delete the bad program
 	}
@@ -156,7 +156,7 @@ void Shader::Link(const std::string& vertexSource, const std::string& fragmentSo
 	glDeleteShader(fragShaderId);
 
 	m_shaderProg = tempProg;
-	Util::Log("Linked shader program");
+	Util::Log(LogEntry::Severity::Info, "Linked shader program");
 }
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
@@ -198,6 +198,7 @@ void Shader::DBG_ShowInfo() const {
 
 	for (const auto& [name, info] : m_UniformInfoCache) {
 		Util::Log(
+			LogEntry::Severity::Info,\
 			name +
 			": (type = " + Util::TypeStr(info.type) +
 			", location = " + std::to_string(info.location) + ")"

@@ -23,8 +23,8 @@ public:
 
         out_result.Parse(jsonSource);
         if (out_result.HasParseError()) {
-            Util::Log("file '%s' is not valid JSON\n" + path);
-            Util::Log("Error(offset %lu): %s\n", out_result.GetErrorOffset(), rapidjson::GetParseError_En(out_result.GetParseError()));
+            Util::Log(LogEntry::Severity::Error, "file '%s' is not valid JSON\n" + path);
+            Util::Logf(LogEntry::Severity::Error, "Error(offset %lu): %s\n", out_result.GetErrorOffset(), rapidjson::GetParseError_En(out_result.GetParseError()));
             return false;
         }
 
@@ -41,11 +41,11 @@ public:
             // Get error message
             rapidjson::StringBuffer sb;
             validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);
-            Util::Log("Invalid schema: %s", sb.GetString());
-            Util::Log("Invalid keyword: %s", validator.GetInvalidSchemaKeyword());
+            Util::Logf(LogEntry::Severity::Error, "Invalid schema: %s", sb.GetString());
+            Util::Logf(LogEntry::Severity::Error, "Invalid keyword: %s", validator.GetInvalidSchemaKeyword());
             sb.Clear();
             validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);
-            Util::Log("Invalid document: %s", sb.GetString());
+            Util::Logf(LogEntry::Severity::Error, "Invalid document: %s", sb.GetString());
             return false;
         }
         return true;

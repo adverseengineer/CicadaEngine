@@ -5,6 +5,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "EventManager.h"
+
 MouseParams GraphicsEnvironment::mouse;
 
 GraphicsEnvironment::GraphicsEnvironment() {
@@ -25,21 +27,19 @@ GraphicsEnvironment::~GraphicsEnvironment() {
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
 	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL) {
-		Util::Log("Failed to create GLFW window");
+		Util::Log(LogEntry::Severity::Error, "Failed to create GLFW window");
 		glfwTerminate();
 		return false;
 	}
 	glfwMakeContextCurrent(window);
-	Util::Log("Created GLFW window");
 	return true;
 }
 
 bool GraphicsEnvironment::InitGlad() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		Util::Log("Failed to initialize GLAD");
+		Util::Log(LogEntry::Severity::Error, "Failed to initialize GLAD");
 		return false;
 	}
-	Util::Log("Initialized GLAD");
 	return true;
 }
 
@@ -161,6 +161,8 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 	while (!glfwWindowShouldClose(window)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
 
+		EventManager::TriggerEvent("OnUpdate");
+
 		ProcessInput(deltaTime);
 		glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
@@ -239,7 +241,10 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		ImGui::SliderFloat("Global Intensity", &globalLight->intensity, 0, 1);
 		ImGui::SliderFloat("Global Attenuation", &globalLight->attenuationCoef, 0, 1);
 
-		ImGui::Text(Util::GetLog().c_str());
+		auto& log = Util::GetLog();
+		for (const auto& entry : log) {
+			ImGui::Text(entry.m_content.c_str());
+		}
 
 		ImGui::End();
 		ImGui::Render();

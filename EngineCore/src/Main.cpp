@@ -4,14 +4,16 @@
 #include "GraphicsEnvironment.h"
 #include <Windows.h>
 
+#include "EventManager.h"
+
 #include "JsonUtils.h"
 
 static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene) {
 
-	std::string vertexSource;
-	std::string fragmentSource;
+	std::string vertexSource, fragmentSource;
 	Util::ReadFileToString("diffuse.vert.glsl", vertexSource);
 	Util::ReadFileToString("diffuse.frag.glsl", fragmentSource);
+
 	std::shared_ptr<Shader> diffuseShader = std::make_shared<Shader>(vertexSource, fragmentSource);
 	ShaderManager::AddShader("diffuse", diffuseShader);
 	diffuseShader->DBG_ShowInfo();
@@ -92,6 +94,12 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
 
+	//EventManager& em = EventManager::Instance();
+	EventManager::Init();
+	EventManager::LoadScript("test.lua");
+
+	EventManager::TriggerEvent("OnStart");
+
 	GraphicsEnvironment ge;
 	bool created = ge.SetWindow(1200, 800, "ETSU Computing Interactive Graphics");
 	if (created == false)
@@ -110,16 +118,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	SetUp3DScene(ge, diffuseScene);
 	Renderer::UploadResources(diffuseScene);
 
-	rapidjson::Document sceneSchema;
+	rapidjson::Document sceneSchema, sceneJson;
 	JsonUtils::ReadJson("scene_schema.json", sceneSchema);
-
-	rapidjson::Document sceneJson;
 	JsonUtils::ReadJson("test_scene.json", sceneJson);
 
 	bool ye = JsonUtils::ValidateAgainstSchema(sceneSchema, sceneJson);
 
 	if (ye)
-		Util::Log("All clear!");
+		Util::Log(LogEntry::Severity::Info, "All clear!");
 
 	auto& objectsJson = sceneJson["gameObjects"];
 
