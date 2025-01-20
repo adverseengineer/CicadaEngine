@@ -31,11 +31,11 @@ public:
 		sol::table eventTable = s_lua.create_table("Event");
 		eventTable.set_function("Register", &EventManager::RegisterEventCallback);
 
-		sol::table utilTable = s_lua.create_table("Util");
-		//utilTable.set_function("Log", &Util::Log);
-
-		//overwrite print with Util::Log
-		s_lua.set_function("print", Log::Writef);
+		//s_lua.set_function("print", sol::nil); //un-register print
+		sol::table logTable = s_lua.create_table("log");
+		logTable.set_function("info", &Log::Info);
+		logTable.set_function("warn", &Log::Warn);
+		logTable.set_function("error", &Log::Error);
 	};
 
 	/*static EventManager& Instance() {

@@ -1,20 +1,21 @@
 
 Event.Register('OnStart', function()
-	print('wahoo')
+	log.info('info text')
 end)
 
 Event.Register('OnStart', function()
-	print('SUCK ME !!!!!')
+	log.warn('warning text')
 end)
 
-Event.Register('OnStart', function() 
-	print('bing bong')
-end)
+local foo = function() 
+	log.error('this one is a local!')
+end
+Event.Register('OnStart', foo)
 
 local counter = 0
 Event.Register('OnUpdate', function()
 	counter = counter + 1
-	if counter % 100 then
-		print('another 100 frames!'..counter)
+	if counter % 100 == 0 then
+		log.info('another 100 frames! #'..counter)
 	end
 end)

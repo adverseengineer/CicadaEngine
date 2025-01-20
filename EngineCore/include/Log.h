@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <fmt/core.h>
+#include <fmt/chrono.h>
 #include <imgui.h>
 
 struct LogEntry {
@@ -27,6 +28,7 @@ struct LogEntry {
 class Log {
 private:
 	static bool s_showLog;
+	static bool s_autoScroll;
 	static size_t s_maxEntries;
 	static std::vector<LogEntry> s_log;
 	static std::unordered_map<LogEntry::Severity, const char*> s_msgSeverityMap;
@@ -51,17 +53,22 @@ public:
 			//s_log.erase(s_log.begin(), s_log.begin() + (s_log.size() - s_maxEntries));
 		}
 
+		ImGui::Checkbox("Auto-scroll", &s_autoScroll);
+
 		// Make the child window scrollable
 		if (ImGui::BeginChild("LogScroll", ImVec2(0, 0), true)) {
 			for (const auto& entry : s_log) {
-				
-				std::string text = fmt::format("{:s} {:s}", s_msgSeverityMap[entry.m_severity], entry.m_content);
+				std::string text = fmt::format("{:%H:%M:%S} {:s} {:s}",
+					fmt::localtime(entry.m_timeStamp),
+					s_msgSeverityMap[entry.m_severity],
+					entry.m_content
+				);
 				//ImGui::TextUnformatted(entry.m_content.c_str());
 				ImGui::TextUnformatted(text.c_str());
 			}
 
 			// Auto-scroll to the bottom
-			if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+			if (s_autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
 				ImGui::SetScrollHereY(1.0f);
 			}
 		}
@@ -84,5 +91,17 @@ public:
 		vsnprintf(message, CHAR_LIMIT, fmt, args);
 		va_end(args);
 		s_log.emplace_back(message, severity);
+	}
+
+	inline static void Info(const std::string& msg) {
+		Write(LogEntry::Severity::Info, msg);
+	}
+
+	inline static void Warn(const std::string& msg) {
+		Write(LogEntry::Severity::Warning, msg);
+	}
+
+	inline static void Error(const std::string& msg) {
+		Write(LogEntry::Severity::Error, msg);
 	}
 };

@@ -3,6 +3,7 @@
 #include "Log.h"
 
 bool Log::s_showLog = true;
+bool Log::s_autoScroll = true;
 size_t Log::s_maxEntries = 1000;
 std::vector<LogEntry> Log::s_log;
 
