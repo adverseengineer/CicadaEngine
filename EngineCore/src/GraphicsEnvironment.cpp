@@ -7,6 +7,8 @@
 
 #include "EventManager.h"
 
+#include "Log.h"
+
 MouseParams GraphicsEnvironment::mouse;
 
 GraphicsEnvironment::GraphicsEnvironment() {
@@ -27,7 +29,7 @@ GraphicsEnvironment::~GraphicsEnvironment() {
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
 	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL) {
-		Util::Log(LogEntry::Severity::Error, "Failed to create GLFW window");
+		Log::Write(LogEntry::Severity::Error, "Failed to create GLFW window");
 		glfwTerminate();
 		return false;
 	}
@@ -37,7 +39,7 @@ bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, con
 
 bool GraphicsEnvironment::InitGlad() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		Util::Log(LogEntry::Severity::Error, "Failed to initialize GLAD");
+		Log::Write(LogEntry::Severity::Error, "Failed to initialize GLAD");
 		return false;
 	}
 	return true;
@@ -241,12 +243,10 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		ImGui::SliderFloat("Global Intensity", &globalLight->intensity, 0, 1);
 		ImGui::SliderFloat("Global Attenuation", &globalLight->attenuationCoef, 0, 1);
 
-		auto& log = Util::GetLog();
-		for (const auto& entry : log) {
-			ImGui::Text(entry.m_content.c_str());
-		}
-
 		ImGui::End();
+
+		Log::RenderLog();
+		
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

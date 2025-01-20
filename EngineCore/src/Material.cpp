@@ -20,7 +20,7 @@ void Material::SendParams() const {
 
 void Material::DBG_ShowInfo() const {
 	for (const auto& [name, data] : m_params) {
-		Util::Log(
+		Log::Write(
 			LogEntry::Severity::Info,
 			name +
 			": (type = " + Util::TypeStr(data.m_info.type) +

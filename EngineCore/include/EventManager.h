@@ -5,7 +5,7 @@
 #define SOL_EXCEPTIONS_SAFE_PROPAGATION 1
 #include <sol/sol.hpp>
 
-#include "Util.h"
+#include "Log.h"
 
 //enum class EventType {
 //	FrameUpdate, //triggered every time we have a new frame
@@ -35,7 +35,7 @@ public:
 		//utilTable.set_function("Log", &Util::Log);
 
 		//overwrite print with Util::Log
-		s_lua.set_function("print", Util::Logf);
+		s_lua.set_function("print", Log::Writef);
 	};
 
 	/*static EventManager& Instance() {
@@ -49,7 +49,10 @@ public:
 
 	//to be called from c++ code in the game loop, not to be exposed to lua
 	//TODO: this will need to be reworked when i implement events that need parameters like input or deltatime
-	static void TriggerEvent(std::string eventType) {
+	static void TriggerEvent(const std::string& eventType) {
+		
+		//Log::Write(LogEntry::Severity::Info, "triggered event: " + eventType);
+		
 		auto it = s_events.find(eventType);
 		if (it != s_events.end()) {
 			for (const auto& callback : it->second) {
@@ -67,7 +70,7 @@ public:
 			//s_lua.script(source);
 		}
 		catch(sol::error e) {
-			Util::Log(LogEntry::Severity::Error, e.what());
+			Log::Write(LogEntry::Severity::Error, e.what());
 		}
 	}
 };

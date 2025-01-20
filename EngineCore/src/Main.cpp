@@ -101,7 +101,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	EventManager::TriggerEvent("OnStart");
 
 	GraphicsEnvironment ge;
-	bool created = ge.SetWindow(1200, 800, "ETSU Computing Interactive Graphics");
+	bool created = ge.SetWindow(1200, 800, "Cicada Engine");
 	if (created == false)
 		return -1;
 	bool loaded = ge.InitGlad();
@@ -125,7 +125,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	bool ye = JsonUtils::ValidateAgainstSchema(sceneSchema, sceneJson);
 
 	if (ye)
-		Util::Log(LogEntry::Severity::Info, "All clear!");
+		Log::Write(LogEntry::Severity::Info, "All clear!");
 
 	auto& objectsJson = sceneJson["gameObjects"];
 

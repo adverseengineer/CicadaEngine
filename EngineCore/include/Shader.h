@@ -1,9 +1,10 @@
 #pragma once
 #include "Camera.h"
-#include "Util.h"
 
 #include <glm/glm.hpp>
 #include <unordered_map>
+
+#include <string>
 
 struct UniformInfo {
 	unsigned int type;
