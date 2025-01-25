@@ -2,7 +2,9 @@
 
 #include "Log.h"
 
+#include <fmt/chrono.h>
 #include <glad/glad.h>
+#include <imgui.h>
 
 LogEntry::LogEntry(Severity severity, const std::string& content) :
 	m_severity(severity), m_timeStamp(std::time(nullptr)), m_content(content) {}
@@ -58,7 +60,17 @@ void Log::Write(LogEntry::Severity severity, const std::string& msg) {
 	s_log.emplace_back(severity, msg);
 }
 
-void Log::Writef(LogEntry::Severity severity, const std::string& fmt, ...) {
+//template <typename... Args>
+//void Log::Writef(LogEntry::Severity severity, fmt::format_string<Args...> fmt, Args&&... args) {
+//	Writefv(fmt, fmt::make_format_args(args...));
+//}
+
+void Log::Writefv(LogEntry::Severity severity, fmt::string_view fmt, fmt::format_args args) {
+	std::string msg = fmt::vformat(fmt, args);
+	s_log.emplace_back(severity, msg);
+}
+
+void Log::Writef_old(LogEntry::Severity severity, const std::string fmt, ...) {
 	static const unsigned int CHAR_LIMIT = 256;
 	va_list args;
 	va_start(args, fmt);

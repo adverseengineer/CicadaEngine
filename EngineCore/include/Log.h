@@ -1,13 +1,10 @@
 #pragma once
 
 #include <ctime>
+#include <fmt/format.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include <fmt/core.h>
-#include <fmt/chrono.h>
-#include <imgui.h>
 
 struct LogEntry {
 
@@ -38,7 +35,16 @@ public:
 	static void RenderLog();
 
 	static void Write(LogEntry::Severity severity, const std::string& msg);
-	static void Writef(LogEntry::Severity severity, const std::string& fmt, ...);
+	
+	//template <typename... Args>
+	//static void Writef(LogEntry::Severity severity, fmt::format_string<Args...> fmt, Args&&... args);
+	template <typename... Args>
+	inline static void Writef(LogEntry::Severity severity, fmt::format_string<Args...> fmt, Args&&... args) {
+		Writefv(severity, fmt, fmt::make_format_args(args...));
+	}
+	
+	static void Writefv(LogEntry::Severity severity, fmt::string_view fmt, fmt::format_args args);
+	static void Writef_old(LogEntry::Severity severity, const std::string fmt, ...);
 	
 	static void Info(const std::string& msg);
 	static void Warn(const std::string& msg);

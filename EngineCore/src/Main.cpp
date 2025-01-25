@@ -94,7 +94,8 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
 
-	//EventManager& em = EventManager::Instance();
+	Log::Writef(LogEntry::Severity::Warning, "{:s} {:s} {:d}", "my ass", "is hairy", 44);
+
 	EventManager::Init();
 	EventManager::LoadScript("test.lua");
 
