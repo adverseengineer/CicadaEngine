@@ -37,6 +37,4 @@ public:
 		static_assert(std::is_arithmetic<T>::value, "type must be numeric");
 		return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (input - inputMin);
 	}
-
-	static const std::string TypeStr(unsigned int glType);
 };

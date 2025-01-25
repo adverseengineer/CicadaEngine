@@ -120,7 +120,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderS
 		return -1;
 	}
 
-	Log::Write(LogEntry::Severity::Info, "Compiled " + Util::TypeStr(type));
+	Log::Write(LogEntry::Severity::Info, "Compiled " + Log::GLTypeToStr(type));
 	
 	return shaderId;
 }
@@ -203,7 +203,7 @@ void Shader::DBG_ShowInfo() const {
 		Log::Write(
 			LogEntry::Severity::Info,\
 			name +
-			": (type = " + Util::TypeStr(info.type) +
+			": (type = " + Log::GLTypeToStr(info.type) +
 			", location = " + std::to_string(info.location) + ")"
 		);
 	}

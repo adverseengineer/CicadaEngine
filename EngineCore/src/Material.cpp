@@ -23,7 +23,7 @@ void Material::DBG_ShowInfo() const {
 		Log::Write(
 			LogEntry::Severity::Info,
 			name +
-			": (type = " + Util::TypeStr(data.m_info.type) +
+			": (type = " + Log::GLTypeToStr(data.m_info.type) +
 			", location = " + std::to_string(data.m_info.location) +
 			", value = " + std::to_string(data.m_value) + ")"
 		);

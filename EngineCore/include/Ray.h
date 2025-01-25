@@ -24,7 +24,7 @@ struct Ray {
 	Intersection GetIntersection(const GeometricPlane& plane) const;
 	Intersection GetIntersection(const BoundingBox& boundingBox) const;
 
-	//Möller–Trumbore Intersection Algorithm
+	//Moller-Trumbore Intersection Algorithm
 	inline bool GetIntersection(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, RaycastHit& out_hit) {
 		
 		constexpr float epsilon = std::numeric_limits<float>::epsilon();
