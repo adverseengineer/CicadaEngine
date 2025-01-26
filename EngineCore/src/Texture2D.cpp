@@ -10,7 +10,7 @@ Texture2D::Texture2D(const std::string& filePath) : BaseTexture() {
 	stbi_set_flip_vertically_on_load(true);
 	m_textureData = stbi_load(filePath.c_str(), &m_width, &m_height, &m_numChannels, 0);
 	if (m_textureData == nullptr) {
-		Log::Write(LogEntry::Severity::Error, "Unable to load texture data from file \"" + filePath + "\", resorting to fallback");
+		Log::Writef(LogEntry::Severity::Error, "Unable to load texture data from file \"{:s}\", resorting to fallback", filePath);
 		m_isFallback = true;
 		m_textureData = stbi_load(s_fallbackPath.c_str(), &m_width, &m_height, &m_numChannels, 0);
 		assert(m_textureData != nullptr);
@@ -19,7 +19,7 @@ Texture2D::Texture2D(const std::string& filePath) : BaseTexture() {
 	//still need to set this flag, because it is used when freeing the memory
 	m_isLoadedFromFile = true;
 	if (!m_isFallback)
-		Log::Write(LogEntry::Severity::Info, "Texture data loaded from file: " + filePath);
+		Log::Writef(LogEntry::Severity::Info, "Texture data loaded from file: \"{:s}\"", filePath);
 }
 
 Texture2D::~Texture2D() {

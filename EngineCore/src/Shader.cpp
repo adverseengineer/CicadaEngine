@@ -200,11 +200,12 @@ void Shader::Reflect() {
 void Shader::DBG_ShowInfo() const {
 
 	for (const auto& [name, info] : m_UniformInfoCache) {
-		Log::Write(
-			LogEntry::Severity::Info,\
-			name +
-			": (type = " + Log::GLTypeToStr(info.type) +
-			", location = " + std::to_string(info.location) + ")"
+		Log::Writef(
+			LogEntry::Severity::Info,
+			"{:s}: (type = {:s}, location = {:d})",
+			name,
+			Log::GLTypeToStr(info.type),
+			info.location
 		);
 	}
 }

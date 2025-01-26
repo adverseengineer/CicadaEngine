@@ -30,25 +30,32 @@ private:
 	static const std::unordered_map<LogEntry::Severity, std::string> s_msgSeverityMap;
 	static const std::unordered_map<unsigned int, std::string> s_glTypeNameMap;
 
+	static void _Writefv(LogEntry::Severity severity, fmt::string_view fmt, fmt::format_args args);
 public:
 	static void ToggleLog();
 	static void RenderLog();
 
 	static void Write(LogEntry::Severity severity, const std::string& msg);
-	
-	//template <typename... Args>
-	//static void Writef(LogEntry::Severity severity, fmt::format_string<Args...> fmt, Args&&... args);
-	template <typename... Args>
-	inline static void Writef(LogEntry::Severity severity, fmt::format_string<Args...> fmt, Args&&... args) {
-		Writefv(severity, fmt, fmt::make_format_args(args...));
-	}
-	
-	static void Writefv(LogEntry::Severity severity, fmt::string_view fmt, fmt::format_args args);
-	static void Writef_old(LogEntry::Severity severity, const std::string fmt, ...);
-	
 	static void Info(const std::string& msg);
 	static void Warn(const std::string& msg);
 	static void Error(const std::string& msg);
+
+	template <typename... Args>
+	inline static void Writef(LogEntry::Severity severity, fmt::format_string<Args...> fmt, Args&&... args) {
+		_Writefv(severity, fmt, fmt::make_format_args(args...));
+	}
+	template <typename... Args>
+	inline static void Infof(fmt::format_string<Args...> fmt, Args&&... args) {
+		_Writefv(LogEntry::Severity::Info, fmt, fmt::make_format_args(args...));
+	}
+	template <typename... Args>
+	inline static void Warnf(fmt::format_string<Args...> fmt, Args&&... args) {
+		_Writefv(LogEntry::Severity::Warning, fmt, fmt::make_format_args(args...));
+	}
+	template <typename... Args>
+	inline static void Errorf(fmt::format_string<Args...> fmt, Args&&... args) {
+		_Writefv(LogEntry::Severity::Error, fmt, fmt::make_format_args(args...));
+	}
 
 	static std::string GLTypeToStr(unsigned int glType);
 };
