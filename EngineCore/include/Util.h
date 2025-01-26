@@ -22,10 +22,10 @@ public:
 	inline static bool ReadFileToString(const char* path, std::string& content) {
 		std::ifstream file(path);
 		if (!file.is_open()) {
-			Log::Writef_old(LogEntry::Severity::Error, "Could not open file: %s", path);
+			Log::Writef_old(LogEntry::Severity::Error, "Could not open file: {:s}", path);
 			return false;
 		}
-		Log::Writef_old(LogEntry::Severity::Error, "Successfully read file %s", path);
+		Log::Writef(LogEntry::Severity::Error, "Successfully read file {:s}", path);
 		content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 		file.close();
 		return true;

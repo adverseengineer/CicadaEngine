@@ -15,7 +15,7 @@ public:
 		if (itr != s_objectMap.end())
 			return itr->second;
 		else {
-			Log::Write(LogEntry::Severity::Warning, "object \"" + id + "\" not found");
+			Log::Writef(LogEntry::Severity::Warning, "object {:?} not found", id);
 			return nullptr;
 		}
 	}
@@ -24,14 +24,14 @@ public:
 		assert(object != nullptr);
 		bool success = s_objectMap.insert(std::make_pair(id, object)).second;
 		if (!success)
-			Log::Write(LogEntry::Severity::Warning, "failed to add object \"" + id + "\"");
+			Log::Writef(LogEntry::Severity::Warning, "failed to add object {:?}", id);
 		return success;
 	}
 
 	inline static bool RemoveObject(const std::string& id) {
 		bool success = (s_objectMap.erase(id) == 1);
 		if (!success)
-			Log::Write(LogEntry::Severity::Warning, "object \"" + id + "\" not found");
+			Log::Writef(LogEntry::Severity::Warning, "object {:?} not found", id);
 		return success;
 	}
 

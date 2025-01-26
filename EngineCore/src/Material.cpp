@@ -20,12 +20,12 @@ void Material::SendParams() const {
 
 void Material::DBG_ShowInfo() const {
 	for (const auto& [name, data] : m_params) {
-		Log::Write(
+		Log::Writef(
 			LogEntry::Severity::Info,
-			name +
-			": (type = " + Log::GLTypeToStr(data.m_info.type) +
-			", location = " + std::to_string(data.m_info.location) +
-			", value = " + std::to_string(data.m_value) + ")"
+			"{:s}: (type = {:s}, location = {:d})",
+			name,
+			Log::GLTypeToStr(data.m_info.type),
+			data.m_info.location
 		);
 	}
 }

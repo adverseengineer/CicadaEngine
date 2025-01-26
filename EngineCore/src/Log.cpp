@@ -60,12 +60,7 @@ void Log::Write(LogEntry::Severity severity, const std::string& msg) {
 	s_log.emplace_back(severity, msg);
 }
 
-//template <typename... Args>
-//void Log::Writef(LogEntry::Severity severity, fmt::format_string<Args...> fmt, Args&&... args) {
-//	Writefv(fmt, fmt::make_format_args(args...));
-//}
-
-void Log::Writefv(LogEntry::Severity severity, fmt::string_view fmt, fmt::format_args args) {
+void Log::_Writefv(LogEntry::Severity severity, fmt::string_view fmt, fmt::format_args args) {
 	std::string msg = fmt::vformat(fmt, args);
 	s_log.emplace_back(severity, msg);
 }
@@ -75,7 +70,7 @@ void Log::Writef_old(LogEntry::Severity severity, const std::string fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
 	char message[CHAR_LIMIT];
-	vsnprintf(message, CHAR_LIMIT, fmt.c_str(), args);
+	vsnprintf(message, CHAR_LIMIT, ("[OLD] " + fmt).c_str(), args);
 	va_end(args);
 	s_log.emplace_back(severity, message);
 }
