@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "Log.h"
 
+namespace Cicada {
+
 class ObjectManager {
 
 private:
@@ -41,3 +43,5 @@ public:
 
 	static void Update(double elapsedSeconds);
 };
+
+}

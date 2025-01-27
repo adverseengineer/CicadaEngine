@@ -1,6 +1,8 @@
 #include "BoundingBox.h"
 #include "Ray.h"
 
+using namespace Cicada;
+
 BoundingBox::BoundingBox() : referenceFrame(1.0f) {
 	Create(1.0f, 1.0f, 1.0f);
 }

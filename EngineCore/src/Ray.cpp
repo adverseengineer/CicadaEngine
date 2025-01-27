@@ -1,6 +1,8 @@
-#include "Ray.h"
-#include "GameObject.h"
 #include "BoundingBox.h"
+#include "GameObject.h"
+#include "Ray.h"
+
+using namespace Cicada;
 
 Intersection Ray::GetIntersection(const GeometricPlane& plane) const {
 

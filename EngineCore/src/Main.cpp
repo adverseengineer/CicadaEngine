@@ -1,12 +1,12 @@
 #define NOMINMAX //this is needed so that rapidjson doesn't shit the bed, idk why
 
+#include "EventManager.h"
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
+#include "JsonUtils.h"
 #include <Windows.h>
 
-#include "EventManager.h"
-
-#include "JsonUtils.h"
+using namespace Cicada;
 
 static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene) {
 

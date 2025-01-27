@@ -1,6 +1,8 @@
 #include "Renderer.h"
 #include "Shader.h"
 
+using namespace Cicada;
+
 void Renderer::UploadResources(const std::shared_ptr<Scene>& scene) {
 	for(const auto& obj : scene->GetObjects())
 		obj->UploadResources();

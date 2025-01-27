@@ -1,13 +1,14 @@
-#include "GraphicsEnvironment.h"
-#include "Shader.h"
-#include "Timer.h"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "EventManager.h"
-
+#include "GraphicsEnvironment.h"
 #include "Log.h"
+#include "Shader.h"
+#include "Timer.h"
+
+using namespace Cicada;
 
 MouseParams GraphicsEnvironment::mouse;
 

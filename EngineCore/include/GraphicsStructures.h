@@ -1,6 +1,10 @@
 #pragma once
+
 #include "Ray.h"
+
 #include <glm/glm.hpp>
+
+namespace Cicada {
 
 struct SphericalCoordinate {
     float phi = 90.0f, theta = 0.0f, rho = 1.0f;
@@ -54,3 +58,5 @@ struct Light {
         position(position), color(color), intensity(intensity), attenuationCoef(attenuationCoef) {
     }
 };
+
+}

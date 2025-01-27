@@ -1,5 +1,7 @@
 #include "Material.h"
 
+using namespace Cicada;
+
 void Material::GetUniforms() {
 
 	if (!m_shader)

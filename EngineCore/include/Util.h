@@ -1,17 +1,15 @@
 #pragma once
+
 #include <string>
 #include <type_traits>
 #include <unordered_map>
-
 #include <fstream>
 #include <sstream>
-
 #include "Log.h"
 
-class Util {
-private:
-	static std::unordered_map<unsigned int, const std::string> s_typeNameMap;
+namespace Cicada {
 
+class Util {
 public:
 	inline static void TrimWhitespace(std::string& str) {
 		const std::string delimiters = " \f\n\r\t\v";
@@ -19,6 +17,8 @@ public:
 		str.erase(0, str.find_first_not_of(delimiters));
 	}
 
+	//TODO: move to a more fitting place
+	//TODO: consider making return an optional
 	inline static bool ReadFileToString(const char* path, std::string& content) {
 		std::ifstream file(path);
 		if (!file.is_open()) {
@@ -38,3 +38,5 @@ public:
 		return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (input - inputMin);
 	}
 };
+
+}

@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
+namespace Cicada {
+
 struct LogEntry {
 
 	enum class Severity {
@@ -59,3 +61,5 @@ public:
 
 	static std::string GLTypeToStr(unsigned int glType);
 };
+
+}

@@ -1,6 +1,9 @@
 #pragma once
+
 #include "BaseTexture.h"
 #include "Util.h"
+
+namespace Cicada {
 
 class Texture2D : public BaseTexture {
 private:
@@ -39,3 +42,5 @@ public:
 	void SetWrapV(WrapMode mode);
 
 };
+
+}

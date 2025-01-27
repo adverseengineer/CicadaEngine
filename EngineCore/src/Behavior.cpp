@@ -1,5 +1,7 @@
 #include "Behavior.h"
 
+using namespace Cicada;
+
 bool Behavior::clicked = false;
 
 void Behavior::SetClickState(bool clicked) {

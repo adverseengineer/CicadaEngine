@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Defs.h"
+
 #include <glad/glad.h>
+
+namespace Cicada {
 
 class BaseTexture {
 public:
@@ -70,3 +73,5 @@ public:
 
 	virtual void Upload() const = 0;
 };
+
+}

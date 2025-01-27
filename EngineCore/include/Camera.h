@@ -1,6 +1,10 @@
 #pragma once
-#include <glm/glm.hpp>
+
 #include "Ray.h"
+
+#include <glm/glm.hpp>
+
+namespace Cicada {
 
 class Camera {
 friend class GraphicsEnvironment;
@@ -40,3 +44,5 @@ public:
 
 	Ray GetMouseRay(float screenPosX, float screenPosY) const;
 };
+
+}

@@ -10,6 +10,8 @@
 #define NORM_FORWARD 0.0f, 0.0f, -1.0f
 #define NORM_BACKWARD 0.0f, 0.0f, 1.0f
 
+using namespace Cicada;
+
 std::shared_ptr<Mesh> Generate::CuboidWithNormals(float width, float height, float depth, float u, float v, const glm::vec4& color) {
 
 	auto mesh = std::make_shared<Mesh>(12);

@@ -1,10 +1,11 @@
 #pragma once
-#include "Camera.h"
 
+#include "Camera.h"
 #include <glm/glm.hpp>
 #include <unordered_map>
-
 #include <string>
+
+namespace Cicada {
 
 struct UniformInfo {
 	unsigned int type;
@@ -48,3 +49,5 @@ private:
 	bool GetUniform(const std::string& name, UniformInfo& out_info) const;
 	void Reflect();
 };
+
+}

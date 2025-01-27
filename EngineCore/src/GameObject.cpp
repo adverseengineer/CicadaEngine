@@ -1,5 +1,8 @@
 #include "GameObject.h"
+
 #include <glm/gtc/matrix_transform.hpp>
+
+using namespace Cicada;
 
 bool GameObject::AddChild(const std::shared_ptr<GameObject>& child) {
 	const auto result = m_children.insert(child);

@@ -1,7 +1,10 @@
 #pragma once
+
+#include <chrono>
 #include <ctime>
 #include <ratio>
-#include <chrono>
+
+namespace Cicada {
 
 class Timer {
 protected:
@@ -12,3 +15,5 @@ public:
 	void StartTiming();
 	double GetElapsedTimeInSeconds();
 };
+
+}

@@ -3,6 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+using namespace Cicada;
+
 const std::string Texture2D::s_fallbackPath = "fallback.png";
 
 Texture2D::Texture2D(const std::string& filePath) : BaseTexture() {
@@ -10,7 +12,7 @@ Texture2D::Texture2D(const std::string& filePath) : BaseTexture() {
 	stbi_set_flip_vertically_on_load(true);
 	m_textureData = stbi_load(filePath.c_str(), &m_width, &m_height, &m_numChannels, 0);
 	if (m_textureData == nullptr) {
-		Log::Writef(LogEntry::Severity::Error, "Unable to load texture data from file \"{:s}\", resorting to fallback", filePath);
+		Log::Writef(LogEntry::Severity::Error, "Unable to load texture data from file {:?}, resorting to fallback", filePath);
 		m_isFallback = true;
 		m_textureData = stbi_load(s_fallbackPath.c_str(), &m_width, &m_height, &m_numChannels, 0);
 		assert(m_textureData != nullptr);
@@ -19,7 +21,7 @@ Texture2D::Texture2D(const std::string& filePath) : BaseTexture() {
 	//still need to set this flag, because it is used when freeing the memory
 	m_isLoadedFromFile = true;
 	if (!m_isFallback)
-		Log::Writef(LogEntry::Severity::Info, "Texture data loaded from file: \"{:s}\"", filePath);
+		Log::Writef(LogEntry::Severity::Info, "Texture data loaded from file: {:?}", filePath);
 }
 
 Texture2D::~Texture2D() {

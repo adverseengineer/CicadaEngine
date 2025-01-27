@@ -5,6 +5,8 @@
 
 #include <memory>
 
+namespace Cicada {
+
 class ShaderManager {
 
 private:
@@ -41,3 +43,5 @@ public:
 		return s_shaderMap;
 	}
 };
+
+}

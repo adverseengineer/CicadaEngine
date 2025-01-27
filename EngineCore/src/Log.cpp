@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Log.h"
-
 #include <fmt/chrono.h>
 #include <glad/glad.h>
 #include <imgui.h>
+
+using namespace Cicada;
 
 LogEntry::LogEntry(Severity severity, const std::string& content) :
 	m_severity(severity), m_timeStamp(std::time(nullptr)), m_content(content) {}

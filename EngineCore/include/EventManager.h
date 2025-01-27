@@ -3,7 +3,6 @@
 #define SOL_EXCEPTIONS_SAFE_PROPAGATION 1
 
 #include "Log.h"
-
 #include <glm/vec2.hpp>
 #include <sol/sol.hpp>
 #include <unordered_map>
@@ -18,6 +17,8 @@
 //	KeyDown, //triggered the frame a key begins being held down
 //	KeyUp //tiggered the frame a key ceases to be held down
 //};
+
+namespace Cicada {
 
 class EventManager {
 private:
@@ -47,8 +48,6 @@ public:
 	//TODO: this will need to be reworked when i implement events that need parameters like input or deltatime
 	static void TriggerEvent(const std::string& eventType) {
 		
-		//Log::Write(LogEntry::Severity::Info, "triggered event: " + eventType);
-		
 		auto it = s_events.find(eventType);
 		if (it != s_events.end()) {
 			for (const auto& callback : it->second) {
@@ -70,3 +69,5 @@ public:
 		}
 	}
 };
+
+}

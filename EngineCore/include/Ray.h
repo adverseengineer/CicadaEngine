@@ -1,8 +1,11 @@
 #pragma once
+
+#include "GeometricPlane.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "GeometricPlane.h"
 #include <vector>
+
+namespace Cicada {
 
 class GameObject;
 class BoundingBox;
@@ -62,3 +65,5 @@ struct Ray {
 
 	bool IsIntersectingObject(const GameObject& object) const;
 };
+
+}

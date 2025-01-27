@@ -1,5 +1,7 @@
 #include "Timer.h"
 
+using namespace Cicada;
+
 Timer::Timer() {
 	StartTiming();
 }

@@ -1,8 +1,11 @@
 #pragma once
+
 #include "GameObject.h"
 #include "GraphicsStructures.h"
 #include <memory>
 #include <unordered_set>
+
+namespace Cicada {
 
 class Scene {
 private:
@@ -23,3 +26,5 @@ public:
 	inline const std::shared_ptr<Light>& GetLocalLight() const { return localLight; }
 	inline void SetLocalLight(const std::shared_ptr<Light>& localLight) { this->localLight = localLight; }
 };
+
+}

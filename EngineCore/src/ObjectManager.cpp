@@ -1,5 +1,7 @@
 #include "ObjectManager.h"
 
+using namespace Cicada;
+
 std::unordered_map<std::string, std::shared_ptr<GameObject>> ObjectManager::s_objectMap;
 
 void ObjectManager::Update(double elapsedSeconds) {

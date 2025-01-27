@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
+namespace Cicada {
+
 struct VertexAttribute {
 	unsigned int m_index;
 	unsigned int m_numComponents;
@@ -54,3 +56,5 @@ public:
 	inline int GetPrimitiveType() const { return m_primitiveType; }
 	inline void SetPrimitiveType(int primitiveType) { this->m_primitiveType = primitiveType; }
 };
+
+}

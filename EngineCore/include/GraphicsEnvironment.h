@@ -13,6 +13,8 @@
 #include <imgui_impl_opengl3.h>
 #include <iostream>
 
+namespace Cicada {
+
 class GraphicsEnvironment {
 
 protected:
@@ -47,3 +49,5 @@ public:
 
 	void Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
 };
+
+}

@@ -3,6 +3,9 @@
 #include "Ray.h"
 #include "Util.h"
 
+namespace Cicada {
+//TODO: axe this whole fucking class
+
 //forward decl so that we can resolve a cyclical dependency
 class GameObject;
 
@@ -70,3 +73,5 @@ public:
 	void SetParameter(BehaviorParams& params);
 	void Update(double elapsedSeconds);
 };
+
+}

@@ -3,14 +3,14 @@
 #include "Util.h"
 
 #define RAPIDJSON_HAS_STDSTRING 1
-
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 #include <rapidjson/schema.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-
 #include <glm/matrix.hpp>
+
+namespace Cicada {
 
 class JsonUtils {
 public:
@@ -95,3 +95,5 @@ public:
         }
     }
 };
+
+}

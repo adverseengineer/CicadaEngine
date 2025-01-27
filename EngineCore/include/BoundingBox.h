@@ -1,7 +1,11 @@
 #pragma once
-#include <glm/glm.hpp>
+
 #include "GeometricPlane.h"
+
+#include <glm/glm.hpp>
 #include <vector>
+
+namespace Cicada {
 
 struct Ray;
 
@@ -50,3 +54,4 @@ public:
 	}
 };
 
+}

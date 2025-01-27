@@ -5,10 +5,13 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Ray.h"
+
 #include <glm/glm.hpp>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
+
+namespace Cicada {
 
 class GameObject {
 protected:
@@ -77,3 +80,5 @@ public:
 	void UploadResources() const;
 	void Update(double elapsedSeconds);
 };
+
+}

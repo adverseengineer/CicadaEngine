@@ -4,6 +4,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+using namespace Cicada;
+
 Camera::Camera(float fov, float nearClip, float farClip, float aspectRatio) :
 	m_fov(fov), m_nearClip(nearClip), m_farClip(farClip), m_aspectRatio(aspectRatio),
 	m_localTransform(1.0f) {

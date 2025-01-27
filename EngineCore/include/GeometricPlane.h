@@ -1,5 +1,8 @@
 #pragma once
+
 #include <glm/glm.hpp>
+
+namespace Cicada {
 
 class GeometricLine;
 
@@ -24,3 +27,4 @@ struct GeometricPlane {
 	}
 };
 
+}

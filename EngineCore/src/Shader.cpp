@@ -1,12 +1,12 @@
 
+#include "Log.h"
 #include "Shader.h"
-
+#include "Util.h"
 #include <glad/glad.h>
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Log.h"
-#include "Util.h"
+using namespace Cicada;
 
 Shader::Shader(const std::string& vertexSource, const std::string& fragmentSource) {
 	Link(vertexSource, fragmentSource);

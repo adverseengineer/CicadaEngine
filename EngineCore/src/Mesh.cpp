@@ -6,6 +6,8 @@
 #define NOMINMAX
 #include <OBJ_Loader.h>
 
+using namespace Cicada;
+
 Mesh::Mesh(unsigned int numElemsPerVert) : m_numElemsPerVert(numElemsPerVert) {
 	m_primitiveType = GL_TRIANGLES;
 	glGenVertexArrays(1, &m_vaoId);

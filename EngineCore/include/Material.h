@@ -4,6 +4,8 @@
 #include "Texture2D.h"
 #include <variant>
 
+namespace Cicada {
+
 //TODO: add more types as needed
 //using MaterialParamValueType = std::variant<
 //	int, unsigned int, float, double,
@@ -38,3 +40,5 @@ public:
 	void SendParams() const;
 	void DBG_ShowInfo() const;
 };
+
+}

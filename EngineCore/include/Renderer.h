@@ -7,6 +7,8 @@
 #include <sstream>
 #include <vector>
 
+namespace Cicada {
+
 class Renderer {
 private:
 	static void RenderObject(const std::shared_ptr<GameObject>& object);
@@ -17,3 +19,5 @@ public:
 	static void UploadResources(const std::shared_ptr<Scene>& scene);
 	static void RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam);
 };
+
+}
