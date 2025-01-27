@@ -1,11 +1,12 @@
 #pragma once
-#include <unordered_map>
-
 #define SOL_ALL_SAFETIES_ON 1
 #define SOL_EXCEPTIONS_SAFE_PROPAGATION 1
-#include <sol/sol.hpp>
 
 #include "Log.h"
+
+#include <glm/vec2.hpp>
+#include <sol/sol.hpp>
+#include <unordered_map>
 
 //enum class EventType {
 //	FrameUpdate, //triggered every time we have a new frame
@@ -37,11 +38,6 @@ public:
 		logTable.set_function("warn", &Log::Warn);
 		logTable.set_function("error", &Log::Error);
 	};
-
-	/*static EventManager& Instance() {
-		static EventManager instance;
-		return instance;
-	}*/
 
 	static void RegisterEventCallback(std::string eventType, sol::function luaCallback) {
 		s_events[eventType].push_back(luaCallback);
