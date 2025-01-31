@@ -109,7 +109,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -132,7 +132,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -167,7 +167,7 @@
     <ClCompile Include="src\Generate.cpp" />
     <ClCompile Include="src\GraphicsEnvironment.cpp" />
     <ClCompile Include="src\Input.cpp" />
-    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
@@ -175,6 +175,7 @@
     <ClCompile Include="src\Ray.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\ScriptManager.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
@@ -199,13 +200,18 @@
     <ClInclude Include="include\GraphicsStructures.h" />
     <ClInclude Include="include\Input.h" />
     <ClInclude Include="include\JsonUtils.h" />
-    <ClInclude Include="include\Log.h" />
+    <ClInclude Include="include\Logger.h" />
     <ClInclude Include="include\Material.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\ObjectManager.h" />
     <ClInclude Include="include\Ray.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Scene.h" />
+    <ClInclude Include="include\scripting\EntityBindings.h" />
+    <ClInclude Include="include\scripting\EventBindings.h" />
+    <ClInclude Include="include\scripting\GLMBindings.h" />
+    <ClInclude Include="include\scripting\LogBindings.h" />
+    <ClInclude Include="include\ScriptManager.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\ShaderManager.h" />
     <ClInclude Include="include\Texture2D.h" />

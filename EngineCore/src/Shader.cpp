@@ -1,5 +1,5 @@
 
-#include "Log.h"
+#include "Logger.h"
 #include "Shader.h"
 #include "Util.h"
 #include <glad/glad.h>
@@ -38,7 +38,7 @@ void Shader::SendUniform(const std::string& name, int value) const {
 		glUniform1i(temp.location, value);
 	}
 	else
-		Log::Write(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //send a single unsigned integer
@@ -49,7 +49,7 @@ void Shader::SendUniform(const std::string& name, unsigned int value) const {
 		glUniform1ui(temp.location, value);
 	}
 	else
-		Log::Write(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //send a single float
@@ -60,7 +60,7 @@ void Shader::SendUniform(const std::string& name, float value) const {
 		glUniform1f(temp.location, value);
 	}
 	else
-		Log::Write(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //send a glm vector of dimension three
@@ -71,7 +71,7 @@ void Shader::SendUniform(const std::string& name, const glm::vec3& value) const 
 		glUniform3fv(temp.location, 1, glm::value_ptr(value));
 	}
 	else {
-		Log::Write(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 		//for (const auto& uniform : m_UniformInfoCache) {
 			//Util::Log(uniform.first);
 		//}
@@ -86,7 +86,7 @@ void Shader::SendUniform(const std::string& name, const glm::mat4& value) const 
 		glUniformMatrix4fv(temp.location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 	else
-		Log::Write(LogEntry::Severity::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //given the source code for a vertex or fragment shader, compile it and store it on the GPU
@@ -112,7 +112,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderS
 		//copy GL's log into an appropriately sized std::string filled with null
 		std::string infoLog(maxLength, '\0');
 		glGetShaderInfoLog(shaderId, (GLsizei)maxLength, (GLsizei*)&maxLength, (GLchar*)infoLog.data());
-		Log::Write(LogEntry::Severity::Error, infoLog);
+		Logger::Write(LogEntry::Level::Error, infoLog);
 
 		//we don't need the shader anymore
 		glDeleteShader(shaderId);
@@ -120,7 +120,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderS
 		return -1;
 	}
 
-	Log::Write(LogEntry::Severity::Info, "Compiled " + Log::GLTypeToStr(type));
+	Logger::Write(LogEntry::Level::Info, "Compiled " + Logger::GLTypeToStr(type));
 	
 	return shaderId;
 }
@@ -148,7 +148,7 @@ void Shader::Link(const std::string& vertexSource, const std::string& fragmentSo
 
 		std::string infoLog(maxLength, '\0');
 		glGetProgramInfoLog(m_shaderProg, maxLength, &maxLength, (GLchar*) infoLog.data());
-		Log::Write(LogEntry::Severity::Error, infoLog);
+		Logger::Write(LogEntry::Level::Error, infoLog);
 
 		glDeleteProgram(m_shaderProg); //delete the bad program
 	}
@@ -159,7 +159,7 @@ void Shader::Link(const std::string& vertexSource, const std::string& fragmentSo
 	glDeleteShader(fragShaderId);
 
 	m_shaderProg = tempProg;
-	Log::Write(LogEntry::Severity::Info, "Linked shader program");
+	Logger::Write(LogEntry::Level::Info, "Linked shader program");
 }
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
@@ -200,11 +200,11 @@ void Shader::Reflect() {
 void Shader::DBG_ShowInfo() const {
 
 	for (const auto& [name, info] : m_UniformInfoCache) {
-		Log::Writef(
-			LogEntry::Severity::Info,
+		Logger::Writef(
+			LogEntry::Level::Info,
 			"{:s}: (type = {:s}, location = {:d})",
 			name,
-			Log::GLTypeToStr(info.type),
+			Logger::GLTypeToStr(info.type),
 			info.location
 		);
 	}

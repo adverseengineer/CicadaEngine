@@ -4,6 +4,7 @@
 #include "Generate.h"
 #include "GraphicsEnvironment.h"
 #include "JsonUtils.h"
+#include "ScriptManager.h"
 #include <Windows.h>
 
 using namespace Cicada;
@@ -94,11 +95,8 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
 
-	Log::Writef(LogEntry::Severity::Warning, "{:s} {:s} {:d}", "my ass", "is hairy", 44);
-	Log::Writef(LogEntry::Severity::Warning, "{:p}", (void*)EventManager::Init);
-
-	EventManager::Init();
-	EventManager::LoadScript("test.lua");
+	ScriptManager::Init();
+	ScriptManager::LoadScript("test.lua");
 
 	EventManager::TriggerEvent("OnStart");
 
@@ -127,7 +125,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	bool ye = JsonUtils::ValidateAgainstSchema(sceneSchema, sceneJson);
 
 	if (ye)
-		Log::Write(LogEntry::Severity::Info, "All clear!");
+		Logger::Write(LogEntry::Level::Info, "All clear!");
 
 	auto& objectsJson = sceneJson["gameObjects"];
 

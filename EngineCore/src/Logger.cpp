@@ -1,25 +1,25 @@
 #pragma once
 
-#include "Log.h"
+#include "Logger.h"
 #include <fmt/chrono.h>
 #include <glad/glad.h>
 #include <imgui.h>
 
 using namespace Cicada;
 
-LogEntry::LogEntry(Severity severity, const std::string& content) :
-	m_severity(severity), m_timeStamp(std::time(nullptr)), m_content(content) {}
+LogEntry::LogEntry(Level level, const std::string& content) :
+	m_severity(level), m_timeStamp(std::time(nullptr)), m_content(content) {}
 
-bool Log::s_showLog = true;
-bool Log::s_autoScroll = true;
-size_t Log::s_maxEntries = 1000;
-std::vector<LogEntry> Log::s_log;
+bool Logger::s_showLog = true;
+bool Logger::s_autoScroll = true;
+size_t Logger::s_maxEntries = 1000;
+std::vector<LogEntry> Logger::s_log;
 
-void Log::ToggleLog() {
+void Logger::ToggleLog() {
 	s_showLog = !s_showLog;
 }
 
-void Log::RenderLog() {
+void Logger::RenderLog() {
 	ImGui::Begin("Log", &s_showLog);
 
 	if (ImGui::Button("Clear")) {
@@ -57,41 +57,41 @@ void Log::RenderLog() {
 	ImGui::End();
 }
 
-void Log::Write(LogEntry::Severity severity, const std::string& msg) {
+void Logger::Write(LogEntry::Level severity, const std::string& msg) {
 	s_log.emplace_back(severity, msg);
 }
 
-void Log::_Writefv(LogEntry::Severity severity, fmt::string_view fmt, fmt::format_args args) {
+void Logger::_Writefv(LogEntry::Level severity, fmt::string_view fmt, fmt::format_args args) {
 	std::string msg = fmt::vformat(fmt, args);
 	s_log.emplace_back(severity, msg);
 }
 
-void Log::Info(const std::string& msg) {
-	Write(LogEntry::Severity::Info, msg);
+void Logger::Log(const std::string& msg) {
+	Write(LogEntry::Level::Info, msg);
 }
 
-void Log::Warn(const std::string& msg) {
-	Write(LogEntry::Severity::Warning, msg);
+void Logger::Warn(const std::string& msg) {
+	Write(LogEntry::Level::Warning, msg);
 }
 
-void Log::Error(const std::string& msg) {
-	Write(LogEntry::Severity::Error, msg);
+void Logger::Error(const std::string& msg) {
+	Write(LogEntry::Level::Error, msg);
 }
 
-std::string Log::GLTypeToStr(unsigned int glType) {
+std::string Logger::GLTypeToStr(unsigned int glType) {
 	if (s_glTypeNameMap.contains(glType))
 		return s_glTypeNameMap.at(glType);
 	else
 		return "invalid";
 }
 
-const std::unordered_map<LogEntry::Severity, std::string> Log::s_msgSeverityMap = {
-	{ LogEntry::Severity::Info, "[INFO]" },
-	{ LogEntry::Severity::Warning, "[WARNING]" },
-	{ LogEntry::Severity::Error, "[ERROR]" }
+const std::unordered_map<LogEntry::Level, std::string> Logger::s_msgSeverityMap = {
+	{ LogEntry::Level::Info, "[INFO]" },
+	{ LogEntry::Level::Warning, "[WARN]" },
+	{ LogEntry::Level::Error, "[ERROR]" }
 };
 
-const std::unordered_map<unsigned int, std::string> Log::s_glTypeNameMap = {
+const std::unordered_map<unsigned int, std::string> Logger::s_glTypeNameMap = {
 	{ GL_BYTE, "byte" },
 	{ GL_UNSIGNED_BYTE, "ubyte" },
 	{ GL_SHORT, "short"},

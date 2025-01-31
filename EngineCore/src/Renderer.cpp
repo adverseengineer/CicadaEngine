@@ -16,7 +16,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 
 	auto& mesh = object->GetMesh();
 	if(!mesh) {
-		Log::Write(LogEntry::Severity::Warning, "mesh is null");
+		Logger::Write(LogEntry::Level::Warning, "mesh is null");
 		return;
 	}
 
@@ -71,5 +71,5 @@ void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::share
 			RenderObject(object);
 	}
 	else
-		Log::Write(LogEntry::Severity::Warning, "this shader was not linked");
+		Logger::Write(LogEntry::Level::Warning, "this shader was not linked");
 }

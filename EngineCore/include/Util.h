@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Logger.h"
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <type_traits>
 #include <unordered_map>
-#include <fstream>
-#include <sstream>
-#include "Log.h"
 
 namespace Cicada {
 
@@ -22,10 +22,10 @@ public:
 	inline static bool ReadFileToString(const char* path, std::string& content) {
 		std::ifstream file(path);
 		if (!file.is_open()) {
-			Log::Writef(LogEntry::Severity::Error, "Could not open file: {:?}", path);
+			Logger::Writef(LogEntry::Level::Error, "Could not open file: {:?}", path);
 			return false;
 		}
-		Log::Writef(LogEntry::Severity::Error, "Successfully read file {:?}", path);
+		Logger::Writef(LogEntry::Level::Error, "Successfully read file {:?}", path);
 		content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 		file.close();
 		return true;

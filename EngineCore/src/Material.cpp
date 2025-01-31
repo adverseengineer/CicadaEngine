@@ -22,11 +22,11 @@ void Material::SendParams() const {
 
 void Material::DBG_ShowInfo() const {
 	for (const auto& [name, data] : m_params) {
-		Log::Writef(
-			LogEntry::Severity::Info,
+		Logger::Writef(
+			LogEntry::Level::Info,
 			"{:s}: (type = {:s}, location = {:d})",
 			name,
-			Log::GLTypeToStr(data.m_info.type),
+			Logger::GLTypeToStr(data.m_info.type),
 			data.m_info.location
 		);
 	}

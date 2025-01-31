@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Log.h"
+#include "Logger.h"
 #include "Shader.h"
 
 #include <memory>
@@ -19,7 +19,7 @@ public:
 		if (itr != s_shaderMap.end())
 			return itr->second;
 		else {
-			Log::Writef(LogEntry::Severity::Error, "shader {:?} not found", id);
+			Logger::Writef(LogEntry::Level::Error, "shader {:?} not found", id);
 			return nullptr;
 		}
 	}
@@ -28,14 +28,14 @@ public:
 		assert(shader != nullptr);
 		bool success = s_shaderMap.insert(std::make_pair(id, shader)).second;
 		if (!success)
-			Log::Writef(LogEntry::Severity::Error, "failed to add shader {:?}", id);
+			Logger::Writef(LogEntry::Level::Error, "failed to add shader {:?}", id);
 		return success;
 	}
 
 	inline static bool RemoveShader(const std::string& id) {
 		bool success = (s_shaderMap.erase(id) == 1);
 		if (!success)
-			Log::Writef(LogEntry::Severity::Error, "shader {:?} not found", id);
+			Logger::Writef(LogEntry::Level::Error, "shader {:?} not found", id);
 		return success;
 	}
 

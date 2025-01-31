@@ -1,12 +1,11 @@
+#include "EventManager.h"
+#include "GraphicsEnvironment.h"
+#include "Logger.h"
+#include "Shader.h"
+#include "Timer.h"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "EventManager.h"
-#include "GraphicsEnvironment.h"
-#include "Log.h"
-#include "Shader.h"
-#include "Timer.h"
 
 using namespace Cicada;
 
@@ -30,7 +29,7 @@ GraphicsEnvironment::~GraphicsEnvironment() {
 bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
 	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL) {
-		Log::Write(LogEntry::Severity::Error, "Failed to create GLFW window");
+		Logger::Write(LogEntry::Level::Error, "Failed to create GLFW window");
 		glfwTerminate();
 		return false;
 	}
@@ -40,7 +39,7 @@ bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, con
 
 bool GraphicsEnvironment::InitGlad() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		Log::Write(LogEntry::Severity::Error, "Failed to initialize GLAD");
+		Logger::Write(LogEntry::Level::Error, "Failed to initialize GLAD");
 		return false;
 	}
 	return true;
@@ -246,7 +245,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 
 		ImGui::End();
 
-		Log::RenderLog();
+		Logger::RenderLog();
 		
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

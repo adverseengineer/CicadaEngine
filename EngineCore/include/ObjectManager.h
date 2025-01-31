@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Log.h"
+#include "Logger.h"
 
 namespace Cicada {
 
@@ -17,7 +17,7 @@ public:
 		if (itr != s_objectMap.end())
 			return itr->second;
 		else {
-			Log::Writef(LogEntry::Severity::Warning, "object {:?} not found", id);
+			Logger::Writef(LogEntry::Level::Warning, "object {:?} not found", id);
 			return nullptr;
 		}
 	}
@@ -26,14 +26,14 @@ public:
 		assert(object != nullptr);
 		bool success = s_objectMap.insert(std::make_pair(id, object)).second;
 		if (!success)
-			Log::Writef(LogEntry::Severity::Warning, "failed to add object {:?}", id);
+			Logger::Writef(LogEntry::Level::Warning, "failed to add object {:?}", id);
 		return success;
 	}
 
 	inline static bool RemoveObject(const std::string& id) {
 		bool success = (s_objectMap.erase(id) == 1);
 		if (!success)
-			Log::Writef(LogEntry::Severity::Warning, "object {:?} not found", id);
+			Logger::Writef(LogEntry::Level::Warning, "object {:?} not found", id);
 		return success;
 	}
 
