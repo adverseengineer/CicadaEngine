@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Ray.h"
-
 #include <glm/glm.hpp>
 
 namespace Cicada {
