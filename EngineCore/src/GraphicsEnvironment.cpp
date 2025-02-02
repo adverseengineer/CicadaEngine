@@ -9,9 +9,8 @@
 
 using namespace Cicada;
 
-MouseParams GraphicsEnvironment::mouse;
-
 GraphicsEnvironment::GraphicsEnvironment() {
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -23,23 +22,24 @@ GraphicsEnvironment::~GraphicsEnvironment() {
 	glfwTerminate();
 }
 
-bool GraphicsEnvironment::SetWindow(unsigned int width, unsigned int height, const std::string& title) {
-	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-	if (window == NULL) {
-		Logger::Write(LogEntry::Level::Error, "Failed to create GLFW window");
+void GraphicsEnvironment::CreateWindow(unsigned int width, unsigned int height, const std::string& title) {
+	
+	if (m_windowHandle != nullptr)
+		throw std::runtime_error("window has already been initialized");
+
+	if ((m_windowHandle = glfwCreateWindow(width, height, title.c_str(), NULL, NULL)) == nullptr) {
 		glfwTerminate();
-		return false;
+		throw std::runtime_error("failed to create GLFW window");
 	}
-	glfwMakeContextCurrent(window);
-	return true;
+
+	glfwMakeContextCurrent(m_windowHandle); //basically, designate this window to be the one we render in (i think)
+	//TODO: ^^^ make this safer, catch any errors, log them, etc.
 }
 
-bool GraphicsEnvironment::InitGlad() {
+void GraphicsEnvironment::InitGlad() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		Logger::Write(LogEntry::Level::Error, "Failed to initialize GLAD");
-		return false;
+		throw std::runtime_error("failed to initialize GLAD");
 	}
-	return true;
 }
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
@@ -50,10 +50,10 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 void GraphicsEnvironment::SetupGraphics() {
 	//set up a callback for whenever the window is resized
-	glfwSetFramebufferSizeCallback(window, OnWindowSizeChanged);
-	glfwSetCursorPosCallback(window, OnMouseMove);
+	glfwSetFramebufferSizeCallback(m_windowHandle, OnWindowSizeChanged);
+	glfwSetCursorPosCallback(m_windowHandle, OnMouseMove);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetMouseButtonCallback(window, mouseButtonCallback);
+	glfwSetMouseButtonCallback(m_windowHandle, mouseButtonCallback);
 
 	//enable transparency in textures
 	glEnable(GL_BLEND);
@@ -69,48 +69,29 @@ void GraphicsEnvironment::SetupGraphics() {
 	glEnable(GL_MULTISAMPLE);
 }
 
-void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-}
-
 static bool correctGamma = true;
 
 void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 
 	//if the user hits escape, close the window
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(m_windowHandle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(m_windowHandle, true);
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cam->MoveZ((float)elapsedSeconds);
-	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cam->MoveZ((float)elapsedSeconds, -1);
+	if (glfwGetKey(m_windowHandle, GLFW_KEY_W) == GLFW_PRESS)
+		m_cam->MoveZ((float)elapsedSeconds);
+	else if (glfwGetKey(m_windowHandle, GLFW_KEY_S) == GLFW_PRESS)
+		m_cam->MoveZ((float)elapsedSeconds, -1);
 
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		cam->MoveX((float)elapsedSeconds);
-	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		cam->MoveX((float)elapsedSeconds, -1);
+	if (glfwGetKey(m_windowHandle, GLFW_KEY_A) == GLFW_PRESS)
+		m_cam->MoveX((float)elapsedSeconds);
+	else if (glfwGetKey(m_windowHandle, GLFW_KEY_D) == GLFW_PRESS)
+		m_cam->MoveX((float)elapsedSeconds, -1);
 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		cam->MoveY((float)elapsedSeconds);
-	else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		cam->MoveY((float)elapsedSeconds, -1);
+	if (glfwGetKey(m_windowHandle, GLFW_KEY_Q) == GLFW_PRESS)
+		m_cam->MoveY((float)elapsedSeconds);
+	else if (glfwGetKey(m_windowHandle, GLFW_KEY_E) == GLFW_PRESS)
+		m_cam->MoveY((float)elapsedSeconds, -1);
 }
-
-void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double mouseY) {
-
-	auto& mouse = GraphicsEnvironment::mouse;
-	mouse.x = mouseX;
-	mouse.y = mouseY;
-
-	float xPercent = static_cast<float>(mouse.x / mouse.windowWidth);
-	float yPercent = static_cast<float>(mouse.y / mouse.windowHeight);
-
-	mouse.spherical.theta = 90.0f - (xPercent * 180); //left/right
-	mouse.spherical.phi = 180.0f - (yPercent * 180); //up/down
-}
-
-Ray mouseRay;
 
 void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader) {
 
@@ -149,41 +130,41 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 	mover->SetBehaviorParameters("translate", tap);
 	mover->SetBehaviorParameters("rotate", rap);*/
 
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(m_windowHandle)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
 
 		EventManager::TriggerEvent("OnUpdate");
 
 		ProcessInput(deltaTime);
-		glfwGetWindowSize(window, &windowWidth, &windowHeight);
+		glfwGetWindowSize(m_windowHandle, &m_windowWidth, &m_windowHeight);
 
-		mouse.windowWidth = windowWidth;
-		mouse.windowHeight = windowHeight;
+		s_mouse.windowWidth = m_windowWidth;
+		s_mouse.windowHeight = m_windowHeight;
 
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		auto spher = mouse.spherical.ToMat4();
-		auto pos = cam->GetPosition();
-		cam->SetLocalTransform(spher);
-		cam->SetPosition(pos);
+		auto spher = s_mouse.spherical.ToMat4();
+		auto pos = m_cam->GetPosition();
+		m_cam->SetLocalTransform(spher);
+		m_cam->SetPosition(pos);
 
 		if (correctGamma)
 			glEnable(GL_FRAMEBUFFER_SRGB);
 		else
 			glDisable(GL_FRAMEBUFFER_SRGB);
 
-		if (windowWidth >= windowHeight)
-			cam->m_aspectRatio = windowWidth / (windowHeight * 1.0f);
+		if (m_windowWidth >= m_windowHeight)
+			m_cam->m_aspectRatio = m_windowWidth / (m_windowHeight * 1.0f);
 		else
-			cam->m_aspectRatio = windowHeight / (windowWidth * 1.0f);
+			m_cam->m_aspectRatio = m_windowHeight / (m_windowWidth * 1.0f);
 
-		cam->Update();
+		m_cam->Update();
 
 		for (const auto& [_, shader] : ShaderManager::GetAll()) {
-			auto view = glm::inverse(cam->GetLocalTransform());
+			auto view = glm::inverse(m_cam->GetLocalTransform());
 			shader->SendUniform("view", view);
-			shader->SendUniform("projection", cam->m_projection);
+			shader->SendUniform("projection", m_cam->m_projection);
 		}
 
 		auto& localLight = scene->GetLocalLight();
@@ -191,7 +172,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 
 		//always make the lightbulb face towards the camera
 		auto sprite = ObjectManager::GetObject("lightbulb");
-		sprite->RotateToFace(cam->GetPosition());
+		sprite->RotateToFace(m_cam->GetPosition());
 		sprite->SetPosition(scene->GetLocalLight()->position);
 
 		//mouseRay = cam->GetMouseRay((float) mouse.windowX, (float) mouse.windowY);
@@ -199,7 +180,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		//ObjectManager::Update(deltaTime);
 
 		//and finally call render
-		Renderer::RenderScene(scene, shader, cam);
+		Renderer::RenderScene(scene, shader, m_cam);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -209,7 +190,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		
-		auto& camTrans = cam->GetLocalTransform();
+		auto& camTrans = m_cam->GetLocalTransform();
 		ImGui::Text(
 			"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
 			camTrans[0][0], camTrans[1][0], camTrans[2][0], camTrans[3][0],
@@ -239,7 +220,27 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(m_windowHandle);
 		glfwPollEvents();
 	}
+}
+
+MouseParams GraphicsEnvironment::s_mouse;
+Ray mouseRay;
+
+void GraphicsEnvironment::OnWindowSizeChanged(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
+void GraphicsEnvironment::OnMouseMove(GLFWwindow* window, double mouseX, double mouseY) {
+
+	auto& mouse = GraphicsEnvironment::s_mouse;
+	mouse.x = mouseX;
+	mouse.y = mouseY;
+
+	float xPercent = static_cast<float>(mouse.x / mouse.windowWidth);
+	float yPercent = static_cast<float>(mouse.y / mouse.windowHeight);
+
+	mouse.spherical.theta = 90.0f - (xPercent * 180); //left/right
+	mouse.spherical.phi = 180.0f - (yPercent * 180); //up/down
 }

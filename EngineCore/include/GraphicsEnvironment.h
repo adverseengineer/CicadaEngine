@@ -18,11 +18,11 @@ namespace Cicada {
 class GraphicsEnvironment {
 
 private:
-	GLFWwindow* window = nullptr;
-	int windowWidth = 0, windowHeight = 0;
+	GLFWwindow* m_windowHandle = nullptr;
+	int m_windowWidth = 0, m_windowHeight = 0;
 
-	std::shared_ptr<Camera> cam;
-	static MouseParams mouse;
+	std::shared_ptr<Camera> m_cam;
+	static MouseParams s_mouse;
 
 	GraphicsEnvironment();
 	~GraphicsEnvironment();
@@ -33,22 +33,20 @@ public:
 		return instance;
 	}
 
-	inline GLFWwindow* GetWindow() { return window; }
+	inline GLFWwindow* GetWindow() { return m_windowHandle; }
 
-	bool SetWindow(unsigned int width, unsigned int height, const std::string& title);
-	bool InitGlad();
+	void CreateWindow(unsigned int width, unsigned int height, const std::string& title);
+	void InitGlad();
+	
 	void SetupGraphics();
-	static void OnWindowSizeChanged(GLFWwindow* window, int width, int height);
-
-	inline const std::shared_ptr<Camera>& GetCamera() const { return cam; }
-	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->cam = cam; }
+	
+	inline const std::shared_ptr<Camera>& GetCamera() const { return m_cam; }
+	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->m_cam = cam; }
 
 	void ProcessInput(double elapsedSeconds) const;
 
-	inline void AddObject(const std::string& key, const std::shared_ptr<GameObject>& obj) { ObjectManager::AddObject(key, obj); }
-	inline std::shared_ptr<GameObject> GetObject(const std::string& key) const { return ObjectManager::GetObject(key); }
-
-	static void OnMouseMove(GLFWwindow* window, double mouseX, double mouseY);
+	static void OnWindowSizeChanged(GLFWwindow* windowHandle, int width, int height);
+	static void OnMouseMove(GLFWwindow* windowHandle, double mouseX, double mouseY);
 
 	void Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
 };

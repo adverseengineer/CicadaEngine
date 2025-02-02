@@ -6,7 +6,12 @@
 #include "JsonUtils.h"
 #include "ScriptManager.h"
 #include "ui/UISystem.h"
+
 #include <Windows.h>
+
+#ifdef CreateWindow //fuck you microsoft, i want this function name
+#undef CreateWindow
+#endif
 
 using namespace Cicada;
 
@@ -58,25 +63,25 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
 	dummy->SetMaterial_OLD(dummyMat_old);
 	scene->AddObject(dummy);
-	ge.AddObject("dummy", dummy);
+	ObjectManager::AddObject("dummy", dummy);
 	
 	crateTex->Upload();
 	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
 	crate->SetMaterial_OLD(crateMat_old);
 	scene->AddObject(crate);
-	ge.AddObject("crate", crate);
+	ObjectManager::AddObject("crate", crate);
 	
 	moverTex->Upload();
 	mover->SetPosition(glm::vec3(0.0f, 15.0f, -15.0f));
 	mover->SetMaterial_OLD(moverMat_old);
 	scene->AddObject(mover);
-	ge.AddObject("mover", mover);
+	ObjectManager::AddObject("mover", mover);
 
 	floorTex->Upload();
 	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	floor->SetMaterial_OLD(floorMat_old);
 	scene->AddObject(floor);
-	ge.AddObject("floor", floor);
+	ObjectManager::AddObject("floor", floor);
 
 	auto localLightPos = glm::vec3{ 0, 10.0f, 0 };
 	auto localLightColor = glm::vec3{ 1.0f, 1.0f, 0.0f };
@@ -91,7 +96,7 @@ static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene)
 	lightbulb->SetPosition(localLightPos);
 	lightbulb->SetMaterial_OLD(lightbulbMat_old);
 	scene->AddObject(lightbulb);
-	ge.AddObject("lightbulb", lightbulb);
+	ObjectManager::AddObject("lightbulb", lightbulb);
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
@@ -102,13 +107,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	EventManager::TriggerEvent("OnStart");
 
 	auto& ge = GraphicsEnvironment::Instance();
-
-	bool created = ge.SetWindow(1200, 800, "Cicada Engine");
-	if (created == false)
-		return -1;
-	bool loaded = ge.InitGlad();
-	if (loaded == false)
-		return -1;
+	ge.CreateWindow(1200, 800, "Cicada Engine");
+	ge.InitGlad();
 
 	ge.SetupGraphics();
 
