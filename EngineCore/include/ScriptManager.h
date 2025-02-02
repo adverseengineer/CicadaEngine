@@ -3,6 +3,7 @@
 #include "scripting/EntityBindings.h"
 #include "scripting/EventBindings.h"
 #include "scripting/GLMBindings.h"
+#include "scripting/InputBindings.h"
 #include "scripting/LogBindings.h"
 
 namespace Cicada {
@@ -24,7 +25,9 @@ public:
 		Scripting::CreateVec3Bindings(s_lua);
 		Scripting::CreateVec4Bindings(s_lua);
 
+		Scripting::CreateInputBindings(s_lua);
 		Scripting::CreateEntityBindings(s_lua);
+
 	};
 
 	inline static void LoadScript(const std::string& path) {

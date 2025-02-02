@@ -188,6 +188,9 @@
     <ClInclude Include="include\scripting\EntityBindings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\scripting\InputBindings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="script.lua" />

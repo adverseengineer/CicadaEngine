@@ -210,6 +210,7 @@
     <ClInclude Include="include\scripting\EntityBindings.h" />
     <ClInclude Include="include\scripting\EventBindings.h" />
     <ClInclude Include="include\scripting\GLMBindings.h" />
+    <ClInclude Include="include\scripting\InputBindings.h" />
     <ClInclude Include="include\scripting\LogBindings.h" />
     <ClInclude Include="include\ScriptManager.h" />
     <ClInclude Include="include\Shader.h" />

@@ -1,12 +1,16 @@
 
 log('these', 'are', 'args', 4, true, {})
 
+for k,_ in pairs(Key) do
+	log(k)
+end
+
 Event.Register('OnStart', function()
 	log('info text')
 end)
 
 Event.Register('OnStart', function()
-	warn('warning text'..'wahoo?')
+	warn('warning text'..'EAT MY PANTS')
 end)
 
 local foo = function() 
@@ -15,9 +19,10 @@ end
 Event.Register('OnStart', foo)
 
 local counter = 0
+local interval = 1500
 Event.Register('OnUpdate', function()
 	counter = counter + 1
-	if counter % 100 == 0 then
-		log('another 100 frames! #'..counter)
+	if counter % interval == 0 then
+		log('another '..interval..' frames! #'..counter)
 	end
 end)
