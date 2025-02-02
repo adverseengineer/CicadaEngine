@@ -20,9 +20,6 @@ GraphicsEnvironment::GraphicsEnvironment() {
 }
 
 GraphicsEnvironment::~GraphicsEnvironment() {
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
 	glfwTerminate();
 }
 
@@ -57,14 +54,6 @@ void GraphicsEnvironment::SetupGraphics() {
 	glfwSetCursorPosCallback(window, OnMouseMove);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetMouseButtonCallback(window, mouseButtonCallback);
-
-
-	//set up ImGui
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 430");
 
 	//enable transparency in textures
 	glEnable(GL_BLEND);

@@ -17,18 +17,21 @@ namespace Cicada {
 
 class GraphicsEnvironment {
 
-protected:
+private:
 	GLFWwindow* window = nullptr;
-
 	int windowWidth = 0, windowHeight = 0;
 
 	std::shared_ptr<Camera> cam;
-
 	static MouseParams mouse;
 
-public:
 	GraphicsEnvironment();
 	~GraphicsEnvironment();
+
+public:
+	inline static GraphicsEnvironment& Instance() {
+		static GraphicsEnvironment instance;
+		return instance;
+	}
 
 	inline GLFWwindow* GetWindow() { return window; }
 

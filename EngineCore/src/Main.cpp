@@ -5,6 +5,7 @@
 #include "GraphicsEnvironment.h"
 #include "JsonUtils.h"
 #include "ScriptManager.h"
+#include "ui/UISystem.h"
 #include <Windows.h>
 
 using namespace Cicada;
@@ -100,7 +101,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	EventManager::TriggerEvent("OnStart");
 
-	GraphicsEnvironment ge;
+	auto& ge = GraphicsEnvironment::Instance();
+
 	bool created = ge.SetWindow(1200, 800, "Cicada Engine");
 	if (created == false)
 		return -1;
@@ -109,6 +111,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 		return -1;
 
 	ge.SetupGraphics();
+
+	//need to initialize UI after window is made
+	auto& ui = UI::UISystem::Instance();
 
 	auto cam = std::make_shared<Camera>(60.0f, 0.01f, 500.0f, 1200.0f / 800.0f);
 	cam->SetPosition({ 0.0f, 15.0f, 30.0f });
