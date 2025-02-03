@@ -207,5 +207,6 @@
   <ItemGroup>
     <None Include="script.lua" />
     <None Include="test.lua" />
+    <None Include="test_input.json" />
   </ItemGroup>
 </Project>

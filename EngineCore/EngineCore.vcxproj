@@ -226,6 +226,7 @@
   <ItemGroup>
     <None Include="script.lua" />
     <None Include="test.lua" />
+    <None Include="test_input.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
