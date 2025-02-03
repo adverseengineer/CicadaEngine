@@ -179,7 +179,7 @@
     <ClInclude Include="include\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\scripting\GLMBindings.h">
+    <ClInclude Include="include\scripting\MathBindings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\scripting\LogBindings.h">

@@ -1,5 +1,7 @@
 
 log('these', 'are', 'args', 4, true, {})
+local v = vec4(1,4,9,9)
+log(v)
 
 for k,_ in pairs(Key) do
 	log(k)

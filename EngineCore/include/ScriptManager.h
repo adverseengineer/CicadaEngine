@@ -2,9 +2,9 @@
 
 #include "scripting/EntityBindings.h"
 #include "scripting/EventBindings.h"
-#include "scripting/GLMBindings.h"
 #include "scripting/InputBindings.h"
 #include "scripting/LogBindings.h"
+#include "scripting/MathBindings.h"
 
 namespace Cicada {
 
