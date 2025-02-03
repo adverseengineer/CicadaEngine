@@ -9,7 +9,7 @@ namespace Cicada {
 struct SphericalCoordinate {
     float phi = 90.0f, theta = 0.0f, rho = 1.0f;
 
-    glm::mat4 ToMat4() {
+    glm::mat4 ToMat4() const {
         float thetaRadians = glm::radians(theta);
         float phiRadians = glm::radians(phi);
         float sinPhi = sin(phiRadians);

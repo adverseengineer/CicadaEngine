@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GraphicsEnvironment.h"
+#include "GraphicsContext.h"
 #include "Logger.h"
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
@@ -14,7 +14,7 @@ private:
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
-		ImGui_ImplGlfw_InitForOpenGL(GraphicsEnvironment::Instance().GetWindow(), true);
+		ImGui_ImplGlfw_InitForOpenGL(GraphicsContext::Instance().GetWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 430");
 	}
 	~UISystem() {

@@ -2,6 +2,7 @@
 
 #include "EventManager.h"
 #include "Generate.h"
+#include "GraphicsContext.h"
 #include "GraphicsEnvironment.h"
 #include "JsonUtils.h"
 #include "ScriptManager.h"
@@ -15,7 +16,7 @@
 
 using namespace Cicada;
 
-static void SetUp3DScene(GraphicsEnvironment& ge, std::shared_ptr<Scene>& scene) {
+static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 
 	std::string vertexSource, fragmentSource;
 	Util::ReadFileToString("diffuse.vert.glsl", vertexSource);
@@ -106,11 +107,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	EventManager::TriggerEvent("OnStart");
 
-	auto& ge = GraphicsEnvironment::Instance();
-	ge.CreateWindow(1200, 800, "Cicada Engine");
-	ge.InitGlad();
+	auto& gc = GraphicsContext::Instance();
+	gc.CreateWindow(1200, 800, "Cicada Engine");
+	gc.InitGlad();
+	gc.Configure();
 
-	ge.SetupGraphics();
+	auto& ge = GraphicsEnvironment::Instance();
 
 	//need to initialize UI after window is made
 	auto& ui = UI::UISystem::Instance();
@@ -120,7 +122,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	auto diffuseScene = std::make_shared<Scene>();
 
-	SetUp3DScene(ge, diffuseScene);
+	SetUp3DScene(diffuseScene);
 	Renderer::UploadResources(diffuseScene);
 
 	rapidjson::Document sceneSchema, sceneJson;
