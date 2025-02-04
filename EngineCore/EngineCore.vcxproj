@@ -224,11 +224,18 @@
     <ClInclude Include="include\Util.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="scene_schema.json" />
     <None Include="script.lua" />
     <None Include="test.lua" />
     <None Include="test_input.json" />
+    <None Include="test_scene.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties test_3scene_1json__JsonSchema="scene_schema.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

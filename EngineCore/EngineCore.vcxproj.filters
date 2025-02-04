@@ -208,5 +208,7 @@
     <None Include="script.lua" />
     <None Include="test.lua" />
     <None Include="test_input.json" />
+    <None Include="scene_schema.json" />
+    <None Include="test_scene.json" />
   </ItemGroup>
 </Project>
