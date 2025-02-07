@@ -1,24 +1,13 @@
 
-log('these', 'are', 'args', 4, true, {})
-local v = vec4(1,4,9,9)
-log(v)
+local testMath = function()
 
-for k,_ in pairs(Key) do
-	log(k)
+	log(math.pi)
+	log(w)
 end
 
-Event.Register('OnStart', function()
-	log('info text')
-end)
+log(math.pi)
 
-Event.Register('OnStart', function()
-	warn('warning text'..'EAT MY PANTS')
-end)
-
-local foo = function() 
-	error('this one is a local!')
-end
-Event.Register('OnStart', foo)
+Event.Register('OnStart', testMath)
 
 local counter = 0
 local interval = 1500

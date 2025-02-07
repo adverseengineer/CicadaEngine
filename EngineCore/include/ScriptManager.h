@@ -13,18 +13,21 @@ class ScriptManager {
 private:
 	static sol::state s_lua;
 
+	static int panic(lua_State*) {
+		Logger::Error("PANIC!!");
+		return 0;
+	}
+
 public:
 	inline static void Init() {
 		//set up the script environment for the entire state of the engine
 		s_lua.open_libraries(sol::lib::base);
 
+		s_lua.set_panic(panic);
+
 		Scripting::CreateLogBindings(s_lua);
 		Scripting::CreateEventBindings(s_lua);
-
-		Scripting::CreateVec2Bindings(s_lua);
-		Scripting::CreateVec3Bindings(s_lua);
-		Scripting::CreateVec4Bindings(s_lua);
-
+		Scripting::CreateMathBindings(s_lua);
 		Scripting::CreateInputBindings(s_lua);
 		Scripting::CreateEntityBindings(s_lua);
 
