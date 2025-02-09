@@ -196,6 +196,7 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Defs.h" />
     <ClInclude Include="include\EventManager.h" />
+    <ClInclude Include="include\FileSystem.h" />
     <ClInclude Include="include\GameObject.h" />
     <ClInclude Include="include\Generate.h" />
     <ClInclude Include="include\GeometricPlane.h" />
