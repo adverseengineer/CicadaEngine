@@ -5,7 +5,7 @@
 namespace Cicada {
 
 class FileSystem {
-
+public:
 	//TODO: consider making return an optional
 	inline static bool ReadFileToString(std::string_view path, std::string& content) {
 		std::ifstream file(path.data());
