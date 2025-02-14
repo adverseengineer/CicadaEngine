@@ -159,7 +159,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\BaseTexture.cpp" />
-    <ClCompile Include="src\Behavior.cpp" />
     <ClCompile Include="src\BoundingBox.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\EventManager.cpp" />
@@ -179,11 +178,9 @@
     <ClCompile Include="src\scripting\MathBindings.cpp" />
     <ClCompile Include="src\ScriptManager.cpp" />
     <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\ui\UISystem.cpp" />
-    <ClCompile Include="src\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdparty\glfw\include\glfw3.h" />
@@ -191,7 +188,6 @@
     <ClInclude Include="3rdparty\OBJ_Loader.h" />
     <ClInclude Include="3rdparty\stb_image.h" />
     <ClInclude Include="include\BaseTexture.h" />
-    <ClInclude Include="include\Behavior.h" />
     <ClInclude Include="include\BoundingBox.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Defs.h" />
@@ -219,13 +215,14 @@
     <ClInclude Include="include\scripting\LogBindings.h" />
     <ClInclude Include="include\ScriptManager.h" />
     <ClInclude Include="include\Shader.h" />
-    <ClInclude Include="include\ShaderManager.h" />
     <ClInclude Include="include\Texture2D.h" />
     <ClInclude Include="include\Timer.h" />
     <ClInclude Include="include\ui\UISystem.h" />
     <ClInclude Include="include\Util.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="diffuse.frag.glsl" />
+    <None Include="diffuse.vert.glsl" />
     <None Include="scene_schema.json" />
     <None Include="script.lua" />
     <None Include="test.lua" />

@@ -15,7 +15,7 @@ void Material::GetUniforms() {
 void Material::SendParams() const {
 	
 	for (const auto& [name, param] : m_params)
-		m_shader->SendUniform(name, param.m_value);
+		m_shader->SetFloat(name, param.m_value);
 }
 
 //TODO: maybe need a SetParam method?

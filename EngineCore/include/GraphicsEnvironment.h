@@ -4,7 +4,6 @@
 #include "ObjectManager.h"
 #include "Renderer.h"
 #include "Scene.h"
-#include "ShaderManager.h"
 #include "Util.h"
 #include <imgui.h>
 #include <imgui_impl_glfw.h>

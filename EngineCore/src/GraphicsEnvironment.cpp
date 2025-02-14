@@ -77,11 +77,11 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 
 		m_cam->Update();
 
-		for (const auto& [_, shader] : ShaderManager::GetAll()) {
-			auto view = glm::inverse(m_cam->GetLocalTransform());
-			shader->SendUniform("view", view);
-			shader->SendUniform("projection", m_cam->m_projection);
-		}
+		auto view = glm::inverse(m_cam->GetLocalTransform());
+		Shader::DBG_ForEach([&](auto shader) {
+			shader->SetMat4("view", view);
+			shader->SetMat4("projection", m_cam->m_projection);
+		});
 
 		auto& localLight = scene->GetLocalLight();
 		auto& globalLight = scene->GetGlobalLight();

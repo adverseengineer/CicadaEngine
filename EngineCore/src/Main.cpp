@@ -1,6 +1,7 @@
 #define NOMINMAX //this is needed so that rapidjson doesn't shit the bed, idk why
 
 #include "EventManager.h"
+#include "FileSystem.h"
 #include "Generate.h"
 #include "GraphicsContext.h"
 #include "GraphicsEnvironment.h"
@@ -18,12 +19,7 @@ using namespace Cicada;
 
 static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 
-	std::string vertexSource, fragmentSource;
-	Util::ReadFileToString("diffuse.vert.glsl", vertexSource);
-	Util::ReadFileToString("diffuse.frag.glsl", fragmentSource);
-
-	std::shared_ptr<Shader> diffuseShader = std::make_shared<Shader>(vertexSource, fragmentSource);
-	ShaderManager::AddShader("diffuse", diffuseShader);
+	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
 	diffuseShader->DBG_ShowInfo();
 
 	auto dummyMesh = std::make_shared<Mesh>(12);
@@ -136,8 +132,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	auto& objectsJson = sceneJson["gameObjects"];
 
+	auto diffuseShader = Shader::Get("diffuse");
+
 	ge.SetCamera(cam);
-	ge.Run3D(diffuseScene, ShaderManager::GetShader("diffuse"));
+	ge.Run3D(diffuseScene, diffuseShader);
 
 	return 0;
 }

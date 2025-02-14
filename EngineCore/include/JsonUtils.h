@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Util.h"
+#include "FileSystem.h"
 
 #define RAPIDJSON_HAS_STDSTRING 1
 #include <rapidjson/document.h>
@@ -18,7 +18,7 @@ public:
     inline static bool ReadJson(const std::string& path, rapidjson::Document& out_result) {
 
         std::string jsonSource;
-        if (!Util::ReadFileToString(path.c_str(), jsonSource))
+        if (!FileSystem::ReadFileToString(path.c_str(), jsonSource))
             return false;
 
         out_result.Parse(jsonSource);

@@ -18,9 +18,6 @@
     <ClCompile Include="src\BaseTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Behavior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\BoundingBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,16 +60,10 @@
     <ClCompile Include="src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ShaderManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\EventManager.cpp">
@@ -96,9 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BaseTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Behavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BoundingBox.h">
@@ -150,9 +138,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ShaderManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Texture2D.h">
@@ -216,5 +201,7 @@
     <None Include="test_input.json" />
     <None Include="scene_schema.json" />
     <None Include="test_scene.json" />
+    <None Include="diffuse.frag.glsl" />
+    <None Include="diffuse.vert.glsl" />
   </ItemGroup>
 </Project>

@@ -26,7 +26,7 @@ private:
 	std::unordered_map<std::string, MaterialParam> m_params;
 
 public:
-	inline Material(const std::shared_ptr<Shader> shader, const std::shared_ptr<Texture2D>& texture) : m_shader(shader), m_texture(texture) {
+	inline Material(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture2D>& texture) : m_shader(shader), m_texture(texture) {
 	}
 	~Material() = default;
 

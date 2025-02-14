@@ -46,18 +46,6 @@ public:
 	inline static void Writef(LogEntry::Level severity, fmt::format_string<Args...> fmt, Args&&... args) {
 		_Writefv(severity, fmt, fmt::make_format_args(args...));
 	}
-	template <typename... Args>
-	inline static void Infof(fmt::format_string<Args...> fmt, Args&&... args) {
-		_Writefv(LogEntry::Level::Info, fmt, fmt::make_format_args(args...));
-	}
-	template <typename... Args>
-	inline static void Warnf(fmt::format_string<Args...> fmt, Args&&... args) {
-		_Writefv(LogEntry::Level::Warning, fmt, fmt::make_format_args(args...));
-	}
-	template <typename... Args>
-	inline static void Errorf(fmt::format_string<Args...> fmt, Args&&... args) {
-		_Writefv(LogEntry::Level::Error, fmt, fmt::make_format_args(args...));
-	}
 
 	static std::string GLTypeToStr(unsigned int glType);
 };

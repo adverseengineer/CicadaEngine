@@ -1,5 +1,4 @@
 #pragma once
-#include "Behavior.h"
 #include "BoundingBox.h"
 #include "GraphicsStructures.h"
 #include "Material.h"

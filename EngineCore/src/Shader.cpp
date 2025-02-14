@@ -3,175 +3,126 @@
 #include "Logger.h"
 #include "Shader.h"
 #include <glad/glad.h>
-#include <glm/ext.hpp>
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 using namespace Cicada;
 
-Shader::Shader(const std::string& vertexSource, const std::string& fragmentSource) {
-	Link(vertexSource, fragmentSource);
-	Reflect();
+std::unordered_map<std::string, std::weak_ptr<Shader>> Shader::s_instances;
+
+Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) : m_name(shaderName) {
+	
+	std::string vertSource, fragSource;
+	//TODO: make these return optionals
+	FileSystem::ReadFileToString(vertSourcePath, vertSource);
+	FileSystem::ReadFileToString(fragSourcePath, fragSource);
+	
+	unsigned int vertProg = CompileStage(GL_VERTEX_SHADER, vertSource);
+	unsigned int fragProg = CompileStage(GL_FRAGMENT_SHADER, fragSource);
+	m_shaderProg = Link(vertProg, fragProg);
+
+	QueryUniforms();
 }
 
 Shader::~Shader() {
 	glDeleteProgram(m_shaderProg);
+	Logger::Log("Destroying shader");
 }
 
-void Shader::Bind() const {
-	glUseProgram(m_shaderProg);
-};
+std::shared_ptr<Shader> Shader::Create(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) {
 
-void Shader::Unbind() const {
-	glUseProgram(0);
-}
-
-void Shader::AttachUniformBlock(const std::string& blockName, unsigned int bindingPoint) const {
-	GLuint blockIndex = glGetUniformBlockIndex(m_shaderProg, blockName.c_str());
-	glUniformBlockBinding(m_shaderProg, blockIndex, bindingPoint);
-}
-
-//send a single signed integer
-void Shader::SendUniform(const std::string& name, int value) const {
-	UniformInfo temp;
-	if (GetUniform(name, temp)) {
-		glUseProgram(m_shaderProg);
-		glUniform1i(temp.location, value);
+	//if we already have a shader by this name, just return it
+	auto itr = s_instances.find(shaderName.data());
+	if (itr != s_instances.end()) {
+		Logger::Writef(LogEntry::Level::Warning, "Shader {:?} already exists", shaderName);
+		return itr->second.lock();
 	}
-	else
-		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
+
+	//otherwise, create it, register it, and return it
+	auto instance = std::shared_ptr<Shader>(new Shader(shaderName, vertSourcePath, fragSourcePath));
+	s_instances.emplace(shaderName, instance);
+	return instance;
 }
 
-//send a single unsigned integer
-void Shader::SendUniform(const std::string& name, unsigned int value) const {
-	UniformInfo temp;
-	if (GetUniform(name, temp)) {
-		glUseProgram(m_shaderProg);
-		glUniform1ui(temp.location, value);
-	}
-	else
-		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
-}
-
-//send a single float
-void Shader::SendUniform(const std::string& name, float value) const {
-	UniformInfo temp;
-	if (GetUniform(name, temp)) {
-		glUseProgram(m_shaderProg);
-		glUniform1f(temp.location, value);
-	}
-	else
-		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
-}
-
-//send a glm vector of dimension three
-void Shader::SendUniform(const std::string& name, const glm::vec3& value) const {
-	UniformInfo temp;
-	if (GetUniform(name, temp)) {
-		glUseProgram(m_shaderProg);
-		glUniform3fv(temp.location, 1, glm::value_ptr(value));
-	}
+//return a shared pointer to the shader with the given name
+//TODO: handle failure more gracefully than returning a null
+std::shared_ptr<Shader> Shader::Get(std::string_view shaderName) {
+	if (s_instances.contains(shaderName.data()))
+		return s_instances.at(shaderName.data()).lock();
 	else {
-		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
-		//for (const auto& uniform : m_UniformInfoCache) {
-			//Util::Log(uniform.first);
-		//}
+		Logger::Writef(LogEntry::Level::Error, "shader {:?} not found", shaderName);
+		return nullptr;
 	}
 }
 
-//send a 4x4 glm matrix
-void Shader::SendUniform(const std::string& name, const glm::mat4& value) const {
-	UniformInfo temp;
-	if (GetUniform(name, temp)) {
-		glUseProgram(m_shaderProg);
-		glUniformMatrix4fv(temp.location, 1, GL_FALSE, glm::value_ptr(value));
+void Shader::Cleanup() {
+	for (auto it = s_instances.begin(); it != s_instances.end();) {
+		if (it->second.expired()) {
+			it = s_instances.erase(it); // Remove expired entries
+		}
 	}
-	else
-		Logger::Write(LogEntry::Level::Warning, "Warning: shader " + std::to_string(m_shaderProg) + " has no such uniform \"" + name + "\"");
 }
 
 //given the source code for a vertex or fragment shader, compile it and store it on the GPU
-unsigned int Shader::CompileShader(unsigned int type, const std::string& shaderSource) {
+unsigned int Shader::CompileStage(unsigned int type, const std::string& shaderSource) {
 
-	GLuint shaderId = glCreateShader((GLenum)type);
+	unsigned int shaderId = glCreateShader(type);
 
-	//send the vertex shader source code to GL
-	//note that std::string's .c_str is NULL character terminated.
-	const GLchar* temp = (const GLchar*)shaderSource.c_str();
-	glShaderSource(shaderId, 1, &temp, (const GLint*) nullptr);
+	//send the vertex shader source code to the graphics card and compile it
+	const char* temp = shaderSource.c_str();
+	glShaderSource(shaderId, 1, &temp, nullptr);
 	glCompileShader(shaderId);
 
 	//check if the shader successfully compiled
-	GLint isCompiled;
+	int isCompiled;
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &isCompiled);
-	if (isCompiled == GL_FALSE) {
+	if (isCompiled == GL_TRUE)
+		return shaderId;
 
-		//get the max length of a log entry
-		GLint maxLength;
-		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
+	//edge case: it didn't
+	int maxLength;
+	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
-		//copy GL's log into an appropriately sized std::string filled with null
-		std::string infoLog(maxLength, '\0');
-		glGetShaderInfoLog(shaderId, (GLsizei)maxLength, (GLsizei*)&maxLength, (GLchar*)infoLog.data());
-		Logger::Write(LogEntry::Level::Error, infoLog);
+	//copy GL's log into an appropriately sized std::string filled with null
+	std::string errorMsg(maxLength, '\0');
+	glGetShaderInfoLog(shaderId, maxLength, &maxLength, errorMsg.data());
 
-		//we don't need the shader anymore
-		glDeleteShader(shaderId);
+	//we don't need the shader anymore
+	glDeleteShader(shaderId);
 
-		return -1;
-	}
-
-	Logger::Write(LogEntry::Level::Info, "Compiled " + Logger::GLTypeToStr(type));
-	
-	return shaderId;
+	throw std::runtime_error(errorMsg);
 }
 
 //given the source for a vertex shader and fragment shader, link them into a shader program
-void Shader::Link(const std::string& vertexSource, const std::string& fragmentSource) {
+unsigned int Shader::Link(unsigned int vertProg, unsigned int fragProg) {
 
-	GLuint vertShaderId;
-	if ((vertShaderId = (GLuint)CompileShader(GL_VERTEX_SHADER, vertexSource)) == 0) return;
+	unsigned int shaderProg = glCreateProgram();
+	glAttachShader(shaderProg, vertProg);
+	glAttachShader(shaderProg, fragProg);
+	glLinkProgram(shaderProg);
 
-	GLuint fragShaderId;
-	if ((fragShaderId = (GLuint)CompileShader(GL_FRAGMENT_SHADER, fragmentSource)) == 0) return;
+	int isLinked;
+	glGetProgramiv(shaderProg, GL_LINK_STATUS, &isLinked);
+	if (isLinked == GL_TRUE) {
+		glDetachShader(shaderProg, vertProg);
+		glDetachShader(shaderProg, fragProg);
+		glDeleteShader(vertProg);
+		glDeleteShader(fragProg);
 
-	GLuint tempProg = glCreateProgram();
-	glAttachShader(tempProg, vertShaderId);
-	glAttachShader(tempProg, fragShaderId);
-	glLinkProgram(tempProg);
-
-	GLint isLinked;
-	glGetProgramiv(m_shaderProg, GL_LINK_STATUS, &isLinked);
-	if (isLinked == GL_FALSE) {
-
-		GLint maxLength = 0;
-		glGetProgramiv(m_shaderProg, GL_INFO_LOG_LENGTH, &maxLength);
-
-		std::string infoLog(maxLength, '\0');
-		glGetProgramInfoLog(m_shaderProg, maxLength, &maxLength, (GLchar*) infoLog.data());
-		Logger::Write(LogEntry::Level::Error, infoLog);
-
-		glDeleteProgram(m_shaderProg); //delete the bad program
+		return shaderProg;
 	}
 
-	glDetachShader(m_shaderProg, vertShaderId);
-	glDetachShader(m_shaderProg, fragShaderId);
-	glDeleteShader(vertShaderId);
-	glDeleteShader(fragShaderId);
+	int maxLength = 0;
+	glGetProgramiv(shaderProg, GL_INFO_LOG_LENGTH, &maxLength);
 
-	m_shaderProg = tempProg;
-	Logger::Write(LogEntry::Level::Info, "Linked shader program");
-}
-
-//fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
-bool Shader::GetUniform(const std::string& name, UniformInfo& out_info) const {
-	bool uniformIsPresent = m_UniformInfoCache.count(name) > 0;
-	if (uniformIsPresent)
-		out_info = m_UniformInfoCache.at(name);
-	return uniformIsPresent;
+	std::string errorMsg(maxLength, '\0');
+	glGetProgramInfoLog(shaderProg, maxLength, &maxLength, errorMsg.data());
+	glDeleteProgram(shaderProg); //delete the bad program
+	throw std::runtime_error(errorMsg);
 }
 
 //queries openGL to tell us all the uniforms for a compiled and linked shader program, and stores the info
-void Shader::Reflect() {
+void Shader::QueryUniforms() {
 
 	constexpr size_t uniformNameMaxChars = 256;
 
@@ -192,20 +143,77 @@ void Shader::Reflect() {
 		else if (tempName.starts_with("u_object_"))
 			m_objectUniforms[name] = { type, location };
 
-
 		m_UniformInfoCache[name] = { type, location };
 	}
 }
 
-void Shader::DBG_ShowInfo() const {
+//fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
+std::optional<UniformInfo> Shader::GetUniform(std::string_view uniformName) const {
+	if (m_UniformInfoCache.contains(uniformName.data()))
+		return m_UniformInfoCache.at(uniformName.data());
+	else
+		return std::nullopt;
+}
 
-	for (const auto& [name, info] : m_UniformInfoCache) {
-		Logger::Writef(
-			LogEntry::Level::Info,
-			"{:s}: (type = {:s}, location = {:d})",
-			name,
-			Logger::GLTypeToStr(info.type),
-			info.location
-		);
+void Shader::Bind() const {
+	glUseProgram(m_shaderProg);
+};
+
+void Shader::Unbind() const {
+	glUseProgram(0);
+}
+
+//void Shader::AttachUniformBlock(const std::string& blockName, unsigned int bindingPoint) const {
+//	GLuint blockIndex = glGetUniformBlockIndex(m_shaderProg, blockName.c_str());
+//	glUniformBlockBinding(m_shaderProg, blockIndex, bindingPoint);
+//}
+
+void Shader::SetInt(std::string_view uniformName, int value) const {
+	std::optional<UniformInfo> temp = GetUniform(uniformName);
+	if (temp.has_value()) {
+		glUseProgram(m_shaderProg);
+		glUniform1i(temp.value().location, value);
 	}
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+}
+
+void Shader::SetUint(std::string_view uniformName, unsigned int value) const {
+	std::optional<UniformInfo> temp = GetUniform(uniformName);
+	if (temp.has_value()) {
+		glUseProgram(m_shaderProg);
+		glUniform1ui(temp.value().location, value);
+	}
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+}
+
+void Shader::SetFloat(std::string_view uniformName, float value) const {
+	std::optional<UniformInfo> temp = GetUniform(uniformName);
+	if (temp.has_value()) {
+		glUseProgram(m_shaderProg);
+		glUniform1f(temp.value().location, value);
+	}
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+}
+
+void Shader::SetVec3(std::string_view uniformName, const glm::vec3& value) const {
+	std::optional<UniformInfo> temp = GetUniform(uniformName);
+	if (temp.has_value()) {
+		glUseProgram(m_shaderProg);
+		glUniform3fv(temp.value().location, 1, glm::value_ptr(value));
+	}
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+}
+
+void Shader::SetMat4(std::string_view uniformName, const glm::mat4& value) const {
+	std::optional<UniformInfo> temp = GetUniform(uniformName);
+	if (temp.has_value()) {
+		glUseProgram(m_shaderProg);
+		glUniformMatrix4fv(temp.value().location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
