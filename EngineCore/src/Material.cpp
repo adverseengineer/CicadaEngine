@@ -2,32 +2,41 @@
 
 using namespace Cicada;
 
-void Material::GetUniforms() {
-
-	if (!m_shader)
-		return;
-
-	for (const auto& uniformInfo : m_shader->m_UniformInfoCache) {
-		m_params.emplace(uniformInfo.first, MaterialParam(uniformInfo.second, 0.0f));
-	}
+Material::Material(std::string_view materialName, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture2D>& texture) :
+	m_name(materialName), m_shader(shader), m_texture(texture) {
 }
 
-void Material::SendParams() const {
-	
-	for (const auto& [name, param] : m_params)
-		m_shader->SetFloat(name, param.m_value);
+void Material::SetInt(std::string_view uniformName, int value) const {
+	if (m_shader != nullptr)
+		m_shader->SetInt(uniformName, value);
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
 }
 
-//TODO: maybe need a SetParam method?
+void Material::SetUint(std::string_view uniformName, unsigned int value) const {
+	if (m_shader != nullptr)
+		m_shader->SetUint(uniformName, value);
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+}
 
-void Material::DBG_ShowInfo() const {
-	for (const auto& [name, data] : m_params) {
-		Logger::Writef(
-			LogEntry::Level::Info,
-			"{:s}: (type = {:s}, location = {:d})",
-			name,
-			Logger::GLTypeToStr(data.m_info.type),
-			data.m_info.location
-		);
-	}
+void Material::SetFloat(std::string_view uniformName, float value) const {
+	if (m_shader != nullptr)
+		m_shader->SetFloat(uniformName, value);
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+}
+
+void Material::SetVec3(std::string_view uniformName, const glm::vec3& value) const {
+	if (m_shader != nullptr)
+		m_shader->SetVec3(uniformName, value);
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+}
+
+void Material::SetMat4(std::string_view uniformName, const glm::mat4& value) const {
+	if (m_shader != nullptr)
+		m_shader->SetMat4(uniformName, value);
+	else
+		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
 }

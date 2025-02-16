@@ -37,11 +37,11 @@ static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 	auto floorTex = std::make_shared<Texture2D>("floor.png");
 	auto lightbulbTex = std::make_shared<Texture2D>("lightbulb.png");
 
-	auto dummyMat = std::make_shared<Material>(diffuseShader, dummyTex);
-	auto crateMat = std::make_shared<Material>(diffuseShader, crateTex);
-	auto moverMat = std::make_shared<Material>(diffuseShader, moverTex);
-	auto floorMat = std::make_shared<Material>(diffuseShader, floorTex);
-	auto lightbulbMat = std::make_shared<Material>(diffuseShader, lightbulbTex);
+	auto dummyMat = std::make_shared<Material>("dummy", diffuseShader, dummyTex);
+	auto crateMat = std::make_shared<Material>("crate", diffuseShader, crateTex);
+	auto moverMat = std::make_shared<Material>("mover", diffuseShader, moverTex);
+	auto floorMat = std::make_shared<Material>("floor", diffuseShader, floorTex);
+	auto lightbulbMat = std::make_shared<Material>("lightbulb", diffuseShader, lightbulbTex);
 
 	auto dummy = std::make_shared<GameObject>(dummyMesh, dummyMat);
 	auto crate = std::make_shared<GameObject>(crateMesh, crateMat);
@@ -81,7 +81,7 @@ static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 	ObjectManager::AddObject("floor", floor);
 
 	auto localLightPos = glm::vec3{ 0, 10.0f, 0 };
-	auto localLightColor = glm::vec3{ 1.0f, 1.0f, 0.0f };
+	auto localLightColor = glm::vec3{ 0.3f, 0.9f, 0.4f };
 	auto localLight = std::make_shared<Light>(localLightPos, localLightColor, 1.0f, 0.0f);
 	scene->SetLocalLight(localLight);
 	auto globalLightPos = glm::vec3{ 40.0f, 40.0f, 40.0f };
