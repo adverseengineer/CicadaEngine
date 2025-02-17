@@ -13,6 +13,6 @@ void Timer::StartTiming() {
 double Timer::GetElapsedTimeInSeconds() {
 	endTime = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> timeSpan = duration_cast<std::chrono::duration<double>>(endTime - startTime);
-	startTime = std::chrono::high_resolution_clock::now();
+	startTime = endTime;
 	return timeSpan.count();
 }
