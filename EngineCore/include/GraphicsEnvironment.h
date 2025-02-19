@@ -3,7 +3,7 @@
 #include "GraphicsStructures.h"
 #include "ObjectManager.h"
 #include "Renderer.h"
-#include "Scene.h"
+#include "SceneManager.h"
 #include "Util.h"
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -15,6 +15,9 @@ namespace Cicada {
 class GraphicsEnvironment {
 
 private:
+	GraphicsEnvironment() = default;
+	~GraphicsEnvironment() = default;
+
 	std::shared_ptr<Camera> m_cam;
 
 public:
@@ -28,7 +31,7 @@ public:
 
 	void ProcessInput(double elapsedSeconds) const;
 
-	void Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
+	void Run3D(const std::shared_ptr<SceneManager>& scene, const std::shared_ptr<Shader>& shader);
 };
 
 }
