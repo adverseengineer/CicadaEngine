@@ -15,8 +15,8 @@ namespace Cicada {
 class GraphicsEnvironment {
 
 private:
-	GraphicsEnvironment() = default;
-	~GraphicsEnvironment() = default;
+	//GraphicsEnvironment() = default;
+	//~GraphicsEnvironment() = default;
 
 	std::shared_ptr<Camera> m_cam;
 
@@ -31,7 +31,7 @@ public:
 
 	void ProcessInput(double elapsedSeconds) const;
 
-	void Run3D(const std::shared_ptr<SceneManager>& scene, const std::shared_ptr<Shader>& shader);
+	void Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
 };
 
 }
