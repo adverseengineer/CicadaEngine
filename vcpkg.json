@@ -1,17 +1,18 @@
 {
-  "dependencies": [
-    "fmt",
-    "glad",
-    "glfw3",
-    "glm",
-    {
-      "name": "imgui",
-      "features": [ "glfw-binding", "opengl3-binding" ]
-    },
-    "lua",
-    "rapidjson",
-    "sol2",
-    "stb",
-    "tinyobjloader"
-  ]
+    "dependencies": [
+        "entt",
+        "fmt",
+        "glad",
+        "glfw3",
+        "glm",
+        {
+            "name": "imgui",
+            "features": [ "glfw-binding", "opengl3-binding" ]
+        },
+        "lua",
+        "rapidjson",
+        "sol2",
+        "stb",
+        "tinyobjloader"
+    ]
 }

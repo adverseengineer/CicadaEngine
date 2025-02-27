@@ -1,0 +1,4 @@
+for any class that follows the singleton pattern, you can expose it to lua by pushing a global onto the stack that's just a call to the instance method
+
+replace all integer usage with the proper stdint typedef
+move all applicable inline functions into their own source file
