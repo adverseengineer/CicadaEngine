@@ -1,14 +1,14 @@
 #pragma once
 
-#include "BaseTexture.h"
+#include "Texture.h"
 
 using namespace Cicada;
 
-BaseTexture::BaseTexture() {
+Texture::Texture() {
 	glGenTextures(1, &m_texId);
 }
 
-BaseTexture::~BaseTexture() {
+Texture::~Texture() {
 	//TODO:
 }
 

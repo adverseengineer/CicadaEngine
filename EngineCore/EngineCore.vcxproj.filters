@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BaseTexture.cpp">
+    <ClCompile Include="src\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BoundingBox.cpp">
@@ -84,69 +84,69 @@
     <ClCompile Include="src\scripting\MathBindings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BaseTexture.h">
+    <ClInclude Include="src\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BoundingBox.h">
+    <ClInclude Include="src\BoundingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Camera.h">
+    <ClInclude Include="src\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Defs.h">
+    <ClInclude Include="src\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GameObject.h">
+    <ClInclude Include="src\Generate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Generate.h">
+    <ClInclude Include="src\GeometricPlane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GeometricPlane.h">
+    <ClInclude Include="src\GraphicsEnvironment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GraphicsEnvironment.h">
+    <ClInclude Include="src\GraphicsStructures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GraphicsStructures.h">
+    <ClInclude Include="src\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input.h">
+    <ClInclude Include="src\JsonUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\JsonUtils.h">
+    <ClInclude Include="src\core\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Material.h">
+    <ClInclude Include="src\core\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Mesh.h">
+    <ClInclude Include="src\ObjectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ObjectManager.h">
+    <ClInclude Include="src\Ray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Ray.h">
+    <ClInclude Include="src\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderer.h">
+    <ClInclude Include="src\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene.h">
+    <ClInclude Include="src\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Shader.h">
+    <ClInclude Include="src\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Texture2D.h">
+    <ClInclude Include="src\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Util.h">
+    <ClInclude Include="src\Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="3rdparty\glfw\include\glfw3.h">
@@ -161,37 +161,55 @@
     <ClInclude Include="3rdparty\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\EventManager.h">
+    <ClInclude Include="src\EventManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Logger.h">
+    <ClInclude Include="src\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\scripting\MathBindings.h">
+    <ClInclude Include="src\scripting\MathBindings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\scripting\LogBindings.h">
+    <ClInclude Include="src\scripting\LogBindings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\scripting\EventBindings.h">
+    <ClInclude Include="src\scripting\EventBindings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ScriptManager.h">
+    <ClInclude Include="src\ScriptManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\scripting\EntityBindings.h">
+    <ClInclude Include="src\scripting\EntityBindings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\scripting\InputBindings.h">
+    <ClInclude Include="src\scripting\InputBindings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ui\UISystem.h">
+    <ClInclude Include="src\ui\UISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GraphicsContext.h">
+    <ClInclude Include="src\GraphicsContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\FileSystem.h">
+    <ClInclude Include="src\FileSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\LightComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\ColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\RelationshipComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\MeshComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\MaterialComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -203,5 +221,8 @@
     <None Include="test_scene.json" />
     <None Include="diffuse.frag.glsl" />
     <None Include="diffuse.vert.glsl" />
+    <None Include="src\ecs\components\TransformComponent.h">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

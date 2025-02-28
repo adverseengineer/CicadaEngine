@@ -1,15 +1,14 @@
 #pragma once
 
-#include "Defs.h"
-
+#include <cstdint>
 #include <glad/glad.h>
 
 namespace Cicada {
 
-class BaseTexture {
+class Texture {
 public:
 
-	enum class WrapMode : GLint {
+	enum class WrapMode : int {
 		Repeat = GL_REPEAT,
 		MirroredRepeat = GL_MIRRORED_REPEAT,
 		ClampToEdge = GL_CLAMP_TO_EDGE,
@@ -17,7 +16,7 @@ public:
 		MirrorClampToEdge = GL_MIRROR_CLAMP_TO_EDGE
 	};
 
-	enum class FilterMode : GLint {
+	enum class FilterMode : int {
 		Nearest = GL_NEAREST,
 		Linear = GL_LINEAR,
 		NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
@@ -27,7 +26,7 @@ public:
 	};
 
 	//TODO: sort these out better
-	enum class Format : GLint {
+	enum class Format : int {
 		//color formats
 		RGB = GL_RGB,
 		RGBA = GL_RGBA,
@@ -51,7 +50,7 @@ public:
 	};
 
 protected:
-	const byte* m_textureData = nullptr;
+	const uint8_t* m_textureData = nullptr;
 	bool m_isLoadedFromFile = false;
 	bool m_isFallback = false;
 
@@ -68,8 +67,8 @@ protected:
 	WrapMode m_wrapV = WrapMode::Repeat;
 	
 public:
-	BaseTexture();
-	~BaseTexture();
+	Texture();
+	~Texture();
 
 	virtual void Upload() const = 0;
 };

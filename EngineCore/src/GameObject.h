@@ -1,8 +1,8 @@
 #pragma once
 #include "BoundingBox.h"
 #include "GraphicsStructures.h"
-#include "Material.h"
-#include "Mesh.h"
+#include "core/Material.h"
+#include "core/Mesh.h"
 #include "Ray.h"
 
 #include <glm/glm.hpp>

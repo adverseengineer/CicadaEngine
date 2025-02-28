@@ -121,16 +121,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	SetUp3DScene(diffuseScene);
 	Renderer::UploadResources(diffuseScene);
 
-	rapidjson::Document sceneSchema, sceneJson;
-	JsonUtils::ReadJson("scene_schema.json", sceneSchema);
-	JsonUtils::ReadJson("test_scene.json", sceneJson);
+	//rapidjson::Document sceneSchema, sceneJson;
+	//JsonUtils::ReadJson("scene_schema.json", sceneSchema);
+	//JsonUtils::ReadJson("test_scene.json", sceneJson);
 
-	bool ye = JsonUtils::ValidateAgainstSchema(sceneSchema, sceneJson);
+	//bool ye = JsonUtils::ValidateAgainstSchema(sceneSchema, sceneJson);
 
-	if (ye)
-		Logger::Write(LogEntry::Level::Info, "All clear!");
+	//if (ye)
+		//Logger::Write(LogEntry::Level::Info, "All clear!");
 
-	auto& objectsJson = sceneJson["gameObjects"];
+	//auto& objectsJson = sceneJson["gameObjects"];
 
 	auto diffuseShader = Shader::Get("diffuse");
 

@@ -1,5 +1,5 @@
 
-#include "Mesh.h"
+#include "core/Mesh.h"
 
 #include <glad/glad.h>
 

@@ -3,7 +3,7 @@
 	"title": "Scene",
 	"type": "object",
 	"properties": {
-		"gameObjects": {
+		"entities": {
 			"type": "array",
 			"items": {
 				"type": "object",

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "BaseTexture.h"
+#include "Texture.h"
 #include "Util.h"
 
 namespace Cicada {
 
-class Texture2D : public BaseTexture {
+class Texture2D : public Texture {
 private:
 	const static std::string s_fallbackPath;
 
@@ -16,7 +16,7 @@ private:
 	
 public:
 
-	Texture2D(const std::string& filePath);
+	Texture2D(std::string_view filePath);
 	~Texture2D();
 
 	//disallow copying a Texture, because it manages the lifetime of a resource
