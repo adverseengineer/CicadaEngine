@@ -78,7 +78,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		m_cam->Update();
 
 		auto view = glm::inverse(m_cam->GetLocalTransform());
-		Shader::DBG_ForEach([&](auto shader) {
+		Shader::ForEach([&](auto shader) {
 			shader->SetMat4("view", view);
 			shader->SetMat4("projection", m_cam->m_projection);
 		});
