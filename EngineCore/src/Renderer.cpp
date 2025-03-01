@@ -26,7 +26,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 	mesh->Bind();
 
 	if (tex != nullptr) {
-		shader->SetUint("tex", tex->GetTextureUnit());
+		shader->SetUInt("tex", tex->GetTextureUnit());
 		tex->SelectForRendering();
 	}
 
