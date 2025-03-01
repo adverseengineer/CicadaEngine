@@ -32,7 +32,6 @@ private:
 	static const std::unordered_map<LogEntry::Level, std::string> s_msgSeverityMap;
 	static const std::unordered_map<unsigned int, std::string> s_glTypeNameMap;
 
-	static void _Writefv(LogEntry::Level severity, fmt::string_view fmt, fmt::format_args args);
 public:
 	static void ToggleLog();
 	static void RenderLog();
@@ -42,6 +41,9 @@ public:
 	static void Warn(const std::string& msg);
 	static void Error(const std::string& msg);
 
+private:
+	static void _Writefv(LogEntry::Level severity, fmt::string_view fmt, fmt::format_args args);
+public:
 	template <typename... Args>
 	inline static void Writef(LogEntry::Level severity, fmt::format_string<Args...> fmt, Args&&... args) {
 		_Writefv(severity, fmt, fmt::make_format_args(args...));
