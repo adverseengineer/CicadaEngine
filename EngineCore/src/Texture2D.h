@@ -12,7 +12,7 @@ private:
 	int m_width;
 	int m_height;
 	int m_numChannels; //TODO: properly use this field with stb_load to detect source format
-	//this will require more research into stb. do this tomorrow
+	//this will require more research into stb. do this tomorrow. EDIT: this was in like december lmao
 	
 public:
 
