@@ -15,7 +15,7 @@ void Material::SetInt(std::string_view uniformName, int value) const {
 
 void Material::SetUint(std::string_view uniformName, unsigned int value) const {
 	if (m_shader != nullptr)
-		m_shader->SetUint(uniformName, value);
+		m_shader->SetUInt(uniformName, value);
 	else
 		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
 }
