@@ -1,6 +1,5 @@
 
 #include "FileSystem.h"
-#include "Logger.h"
 #include "Shader.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -10,7 +9,7 @@ using namespace Cicada;
 
 std::unordered_map<std::string, std::weak_ptr<Shader>> Shader::s_instances;
 
-Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) : m_name(shaderName) {
+Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) : ManagedObject(shaderName) {
 	
 	std::string vertSource, fragSource;
 	//TODO: make these return optionals
@@ -27,40 +26,6 @@ Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std
 Shader::~Shader() {
 	glDeleteProgram(m_shaderProg);
 	Logger::Log("Destroying shader");
-}
-
-std::shared_ptr<Shader> Shader::Create(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) {
-
-	//if we already have a shader by this name, just return it
-	auto itr = s_instances.find(shaderName.data());
-	if (itr != s_instances.end()) {
-		Logger::Writef(LogEntry::Level::Warning, "Shader {:?} already exists", shaderName);
-		return itr->second.lock();
-	}
-
-	//otherwise, create it, register it, and return it
-	auto instance = std::shared_ptr<Shader>(new Shader(shaderName, vertSourcePath, fragSourcePath));
-	s_instances.emplace(shaderName, instance);
-	return instance;
-}
-
-//return a shared pointer to the shader with the given name
-//TODO: handle failure more gracefully than returning a null
-std::shared_ptr<Shader> Shader::Get(std::string_view shaderName) {
-	if (s_instances.contains(shaderName.data()))
-		return s_instances.at(shaderName.data()).lock();
-	else {
-		Logger::Writef(LogEntry::Level::Error, "shader {:?} not found", shaderName);
-		return nullptr;
-	}
-}
-
-void Shader::Cleanup() {
-	for (auto it = s_instances.begin(); it != s_instances.end();) {
-		if (it->second.expired()) {
-			it = s_instances.erase(it); // Remove expired entries
-		}
-	}
 }
 
 //given the source code for a vertex or fragment shader, compile it and store it on the GPU
@@ -178,7 +143,7 @@ void Shader::SetInt(std::string_view uniformName, int value) const {
 		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
-void Shader::SetUint(std::string_view uniformName, unsigned int value) const {
+void Shader::SetUInt(std::string_view uniformName, unsigned int value) const {
 	std::optional<UniformInfo> temp = GetUniform(uniformName);
 	if (temp.has_value()) {
 		glUseProgram(m_shaderProg);

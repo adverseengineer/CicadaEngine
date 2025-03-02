@@ -6,6 +6,7 @@
 #include "GraphicsContext.h"
 #include "GraphicsEnvironment.h"
 #include "JsonUtils.h"
+#include "ManagedObject.h"
 #include "ScriptManager.h"
 #include "ui/UISystem.h"
 
@@ -20,7 +21,7 @@ using namespace Cicada;
 static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 
 	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
-	diffuseShader->DBG_ShowInfo();
+	//diffuseShader->DBG_ShowInfo();
 
 	auto dummyMesh = std::make_shared<Mesh>(12);
 	dummyMesh->Setup();
@@ -96,12 +97,35 @@ static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 	ObjectManager::AddObject("lightbulb", lightbulb);
 }
 
+class TestObject : public ManagedObject<TestObject> {
+	friend class ManagedObject<TestObject>;
+	private:
+		int foo;
+		float bar;
+		TestObject(std::string_view name, int foo, float bar) : ManagedObject(name), foo(foo), bar(bar) {}
+		
+	public:
+		~TestObject() {
+			Logger::Log("custom destructor!");
+		}
+		void Print() {
+			Logger::Writef(LogEntry::Level::Info, "foo: {}, bar: {}", foo, bar);
+		}
+};
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
+	
+	{
+		auto to1 = TestObject::Create("numbah one", 3, 0.222);
+		auto to2 = TestObject::Create("numbah two", 2, 0.333);
+		to1->Print();
+		to2->Print();
+	}
 
-	ScriptManager::Init();
-	ScriptManager::LoadScript("test.lua");
+	//ScriptManager::Init();
+	//ScriptManager::LoadScript("test.lua");
 
-	EventManager::TriggerEvent("OnStart");
+	//EventManager::TriggerEvent("OnStart");
 
 	auto& gc = GraphicsContext::Instance();
 	gc.CreateWindow(1200, 800, "Cicada Engine");
