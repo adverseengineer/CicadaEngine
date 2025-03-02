@@ -6,10 +6,9 @@
 
 namespace Cicada {
 
-class Material {
-
+class Material : public ManagedObject<Material> {
+friend class ManagedObject<Material>;
 private:
-	std::string m_name;
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<Texture2D> m_texture;
 
@@ -24,7 +23,7 @@ public:
 	inline void SetTexture(const std::shared_ptr<Texture2D>& texture) { m_texture = texture; }
 	
 	void SetInt(std::string_view uniformName, int value) const;
-	void SetUint(std::string_view uniformName, unsigned int value) const;
+	void SetUInt(std::string_view uniformName, unsigned int value) const;
 	void SetFloat(std::string_view uniformName, float value) const;
 	void SetVec3(std::string_view uniformName, const glm::vec3& value) const;
 	void SetMat4(std::string_view uniformName, const glm::mat4& value) const;

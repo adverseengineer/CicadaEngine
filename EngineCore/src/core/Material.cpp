@@ -3,7 +3,7 @@
 using namespace Cicada;
 
 Material::Material(std::string_view materialName, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture2D>& texture) :
-	m_name(materialName), m_shader(shader), m_texture(texture) {
+	ManagedObject(materialName), m_shader(shader), m_texture(texture) {
 }
 
 void Material::SetInt(std::string_view uniformName, int value) const {
@@ -13,7 +13,7 @@ void Material::SetInt(std::string_view uniformName, int value) const {
 		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
 }
 
-void Material::SetUint(std::string_view uniformName, unsigned int value) const {
+void Material::SetUInt(std::string_view uniformName, unsigned int value) const {
 	if (m_shader != nullptr)
 		m_shader->SetUInt(uniformName, value);
 	else
