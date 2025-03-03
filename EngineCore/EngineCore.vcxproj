@@ -163,7 +163,6 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\EventManager.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\Generate.cpp" />
     <ClCompile Include="src\GraphicsContext.cpp" />
     <ClCompile Include="src\GraphicsEnvironment.cpp" />
     <ClCompile Include="src\Input.cpp" />
@@ -200,7 +199,6 @@
     <ClInclude Include="src\EventManager.h" />
     <ClInclude Include="src\FileSystem.h" />
     <ClInclude Include="src\GameObject.h" />
-    <ClInclude Include="src\Generate.h" />
     <ClInclude Include="src\GeometricPlane.h" />
     <ClInclude Include="src\GraphicsContext.h" />
     <ClInclude Include="src\GraphicsEnvironment.h" />

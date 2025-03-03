@@ -8,7 +8,7 @@
 
 using namespace Cicada;
 
-Mesh::Mesh(unsigned int numElemsPerVert) : m_numElemsPerVert(numElemsPerVert) {
+Mesh::Mesh(std::string_view name) : ManagedObject(name) {
 	m_primitiveType = GL_TRIANGLES;
 	glGenVertexArrays(1, &m_vaoId);
 	glGenBuffers(1, &m_vboId);
@@ -104,9 +104,10 @@ void Mesh::AddVertexAttribute(const std::string& name, unsigned int index, unsig
 	};
 }
 
+//TODO: make this use templates instead
 void Mesh::AddVertexData(unsigned int count, ...) {
 	if (count != m_numElemsPerVert)
-		throw "Invalid vertex data count!";
+		throw std::runtime_error("Invalid vertex data count!");
 
 	va_list args;
 	va_start(args, count);

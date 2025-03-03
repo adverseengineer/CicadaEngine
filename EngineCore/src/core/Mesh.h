@@ -17,25 +17,27 @@ struct VertexAttribute {
 	void* m_byteOffset;
 };
 
-class Mesh {
+class Mesh : public ManagedObject<Mesh> {
+friend class ManagedObject<Mesh>;
 private:
 	unsigned int m_vaoId = 0;
 	unsigned int m_vboId = 0;
 	unsigned int m_iboId = 0;
 
-	unsigned int m_numElemsPerVert;
+	unsigned int m_numElemsPerVert = 12;
 	int m_primitiveType;
 	std::vector<float> m_vertexData;
 	std::unordered_map<std::string, VertexAttribute> attributeMap;
 
 	std::vector<unsigned short> m_indexData;
 
+	Mesh(std::string_view name);
+
 public:
-	Mesh(unsigned int numElemsPerVert = 3);
 	~Mesh();
 
-	Mesh(const Mesh&) = delete; //disallow copy constructing
-	Mesh& operator=(const Mesh&) = delete; //disallow copy assignment
+	//Mesh(const Mesh&) = delete; //disallow copy constructing
+	//Mesh& operator=(const Mesh&) = delete; //disallow copy assignment
 
 	void Bind() const;
 	void Unbind() const;

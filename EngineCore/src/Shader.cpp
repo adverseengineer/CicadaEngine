@@ -101,13 +101,6 @@ void Shader::QueryUniforms() {
 		glGetActiveUniform(m_shaderProg, (GLint)i, sizeof(name), nullptr, &size, &type, name);
 		GLint location = glGetUniformLocation(m_shaderProg, name);
 
-		//TODO: this is horrible, please forgive me
-		std::string tempName(name);
-		if (tempName.starts_with("u_material_"))
-			m_materialUniforms[name] = { type, location };
-		else if (tempName.starts_with("u_object_"))
-			m_objectUniforms[name] = { type, location };
-
 		m_UniformInfoCache[name] = { type, location };
 	}
 }

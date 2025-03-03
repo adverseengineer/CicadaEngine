@@ -7,7 +7,7 @@ using namespace Cicada;
 
 const std::string Texture2D::s_fallbackPath = "fallback.png";
 
-Texture2D::Texture2D(std::string_view filePath) : Texture() {
+Texture2D::Texture2D(std::string_view name, std::string_view filePath) : ManagedObject(name) {
 	
 	stbi_set_flip_vertically_on_load(true);
 	m_textureData = stbi_load(filePath.data(), &m_width, &m_height, &m_numChannels, 0);
@@ -25,9 +25,6 @@ Texture2D::Texture2D(std::string_view filePath) : Texture() {
 }
 
 Texture2D::~Texture2D() {
-
-	//TODO: move this into the base class destructor
-	glDeleteTextures(1, &m_texId);
 
 	if (m_textureData == nullptr)
 		return;
@@ -50,6 +47,7 @@ void Texture2D::SelectForRendering() {
 }
 
 //TODO: for tomorrow: add the optimizations to this function too, or consider removing the optimizations bc they suck
+//NOTE: what was this about?
 
 void Texture2D::Upload() const {
 	glBindTexture(GL_TEXTURE_2D, m_texId); //select the texture for modification

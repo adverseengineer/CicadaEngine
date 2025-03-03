@@ -11,9 +11,10 @@ friend class ManagedObject<Material>;
 private:
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<Texture2D> m_texture;
-
 public:
 	Material(std::string_view materialName, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture2D>& texture);
+
+public:
 	~Material() = default;
 
 	inline const std::shared_ptr<Shader>& GetShader() { return m_shader; }

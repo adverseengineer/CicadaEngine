@@ -2,7 +2,6 @@
 
 #include "EventManager.h"
 #include "FileSystem.h"
-#include "Generate.h"
 #include "GraphicsContext.h"
 #include "GraphicsEnvironment.h"
 #include "JsonUtils.h"
@@ -23,45 +22,41 @@ static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
 	//diffuseShader->DBG_ShowInfo();
 
-	auto dummyMesh = std::make_shared<Mesh>(12);
-	dummyMesh->Setup();
-	dummyMesh->LoadObj("chicken brent.obj");
+	auto crateMesh = Mesh::Create("crateMesh");
+	crateMesh->Setup();
+	crateMesh->LoadObj("temp/cube.obj");
 
-	auto crateMesh = Generate::CuboidWithNormals(10.0, 10.0, 10.0, 1.0, 1.0, { 1, 1, 1, 1 });
-	auto moverMesh = Generate::PolarSphereWithNormals(1, 4, 18);
-	auto floorMesh = Generate::PlaneXZWithNormals(100, 100, 12, 12, { 1, 1, 1, 1 });
-	auto lightbulbMesh = Generate::PlaneXYWithNormals(1, 1, 1, 1, { 1, 1, 1, 1 });
+	auto ballMesh = Mesh::Create("ballMesh");
+	ballMesh->Setup();
+	ballMesh->LoadObj("temp/uvsphere.obj");
 
-	auto dummyTex = std::make_shared<Texture2D>("br0_tex00.png");
-	auto crateTex = std::make_shared<Texture2D>("crate.png");
-	auto moverTex = std::make_shared<Texture2D>("not-a-real-texture.png");
-	auto floorTex = std::make_shared<Texture2D>("floor.png");
-	auto lightbulbTex = std::make_shared<Texture2D>("lightbulb.png");
+	auto floorMesh = Mesh::Create("floorMesh");
+	floorMesh->Setup();
+	floorMesh->LoadObj("temp/plane.obj");
 
-	auto dummyMat = std::make_shared<Material>("dummy", diffuseShader, dummyTex);
-	auto crateMat = std::make_shared<Material>("crate", diffuseShader, crateTex);
-	auto moverMat = std::make_shared<Material>("mover", diffuseShader, moverTex);
-	auto floorMat = std::make_shared<Material>("floor", diffuseShader, floorTex);
+	auto lightbulbMesh = Mesh::Create("lightbulbMesh");
+	lightbulbMesh->Setup();
+	lightbulbMesh->LoadObj("temp/plane.obj");
+
+	auto crateTex = Texture2D::Create("crateTex", "crate.png");
+	auto ballTex = Texture2D::Create("ballTex", "not-a-real-texture.png");
+	auto floorTex = Texture2D::Create("floorTex", "floor.png");
+	auto lightbulbTex = Texture2D::Create("lightbulbTex", "lightbulb.png");
+
+	auto crateMat = Material::Create("crateMat", diffuseShader, crateTex);
+	auto ballMat = Material::Create("ballMat", diffuseShader, ballTex);
+	auto floorMat = Material::Create("floorMat", diffuseShader, floorTex);
 	auto lightbulbMat = std::make_shared<Material>("lightbulb", diffuseShader, lightbulbTex);
 
-	auto dummy = std::make_shared<GameObject>(dummyMesh, dummyMat);
 	auto crate = std::make_shared<GameObject>(crateMesh, crateMat);
-	auto mover = std::make_shared<GameObject>(moverMesh, moverMat);
+	auto ball = std::make_shared<GameObject>(ballMesh, ballMat);
 	auto floor = std::make_shared<GameObject>(floorMesh, floorMat);
 	auto lightbulb = std::make_shared<GameObject>(lightbulbMesh, lightbulbMat);
 
-	auto dummyMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
 	auto crateMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
-	auto moverMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
+	auto ballMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
 	auto floorMat_old = std::make_shared<Material_OLD>(0.2f, 1.0f, 1.0f);
 	auto lightbulbMat_old = std::make_shared<Material_OLD>(0.6f, 1.0f, 1.0f);
-
-
-	dummyTex->Upload();
-	dummy->SetPosition(glm::vec3(-10.0f, 10.0f, 0.0f));
-	dummy->SetMaterial_OLD(dummyMat_old);
-	scene->AddObject(dummy);
-	ObjectManager::AddObject("dummy", dummy);
 	
 	crateTex->Upload();
 	crate->SetPosition(glm::vec3(10.0f, 10.0f, 0.0f));
@@ -69,11 +64,11 @@ static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 	scene->AddObject(crate);
 	ObjectManager::AddObject("crate", crate);
 	
-	moverTex->Upload();
-	mover->SetPosition(glm::vec3(0.0f, 15.0f, -15.0f));
-	mover->SetMaterial_OLD(moverMat_old);
-	scene->AddObject(mover);
-	ObjectManager::AddObject("mover", mover);
+	ballTex->Upload();
+	ball->SetPosition(glm::vec3(0.0f, 15.0f, -15.0f));
+	ball->SetMaterial_OLD(ballMat_old);
+	scene->AddObject(ball);
+	ObjectManager::AddObject("ball", ball);
 
 	floorTex->Upload();
 	floor->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -97,30 +92,7 @@ static void SetUp3DScene(std::shared_ptr<Scene>& scene) {
 	ObjectManager::AddObject("lightbulb", lightbulb);
 }
 
-class TestObject : public ManagedObject<TestObject> {
-	friend class ManagedObject<TestObject>;
-	private:
-		int foo;
-		float bar;
-		TestObject(std::string_view name, int foo, float bar) : ManagedObject(name), foo(foo), bar(bar) {}
-		
-	public:
-		~TestObject() {
-			Logger::Log("custom destructor!");
-		}
-		void Print() {
-			Logger::Writef(LogEntry::Level::Info, "foo: {}, bar: {}", foo, bar);
-		}
-};
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
-	
-	{
-		auto to1 = TestObject::Create("numbah one", 3, 0.222);
-		auto to2 = TestObject::Create("numbah two", 2, 0.333);
-		to1->Print();
-		to2->Print();
-	}
 
 	//ScriptManager::Init();
 	//ScriptManager::LoadScript("test.lua");
@@ -131,6 +103,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	gc.CreateWindow(1200, 800, "Cicada Engine");
 	gc.InitGlad();
 	gc.Configure();
+
+	{
+		auto mgdShad = Shader::Create("mgdShad", "basic.vert.glsl", "basic.frag.glsl");
+		auto mgdTex = Texture2D::Create("mgdTex", "gw.png");
+		auto mgdMat = Material::Create("mgdMat", mgdShad, mgdTex);
+
+		//auto mesh = Mesh::Create("managedMesh");
+	}
 
 	auto& ge = GraphicsEnvironment::Instance();
 

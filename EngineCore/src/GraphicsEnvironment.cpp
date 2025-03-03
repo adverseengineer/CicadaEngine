@@ -44,9 +44,7 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 	auto& io = ImGui::GetIO();
 	Timer timer;
 
-	auto dummy = ObjectManager::GetObject("dummy");
 	auto crate = ObjectManager::GetObject("crate");
-	auto mover = ObjectManager::GetObject("mover");
 
 	while (!glfwWindowShouldClose(handle)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();

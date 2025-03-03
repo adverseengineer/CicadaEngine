@@ -9,6 +9,5 @@ Texture::Texture() {
 }
 
 Texture::~Texture() {
-	//TODO:
+	glDeleteTextures(1, &m_texId);
 }
-
