@@ -5,7 +5,7 @@
 namespace Cicada::ECS::Components {
 
 	//TODO: for now its just aabb
-	struct ColliderComponent {
+	struct Collider {
 		glm::vec3 start;
 		glm::vec3 end;
 	};

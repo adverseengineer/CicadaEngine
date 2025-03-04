@@ -4,7 +4,7 @@
 
 namespace Cicada::ECS::Components {
 
-	struct RelationshipComponent {
+	struct Relationship {
 		entt::entity parent = entt::null;
 		//TODO: add properties to represent children and maybe siblings
 	};
