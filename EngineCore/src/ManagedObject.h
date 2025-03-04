@@ -25,7 +25,7 @@ public:
 		return (it != GetInstances().end()) ? it->second.lock() : nullptr;
 	}
 
-	~ManagedObject() {
+	virtual ~ManagedObject() {
 		Logger::Writef(LogEntry::Level::Info, "Destroying instance: {:?}", static_cast<T*>(this)->m_name);
 		GetInstances().erase(static_cast<T*>(this)->m_name);
 	}
