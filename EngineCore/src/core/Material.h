@@ -12,7 +12,7 @@ private:
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<Texture2D> m_texture;
 public:
-	Material(std::string_view materialName, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture2D>& texture);
+	Material(std::string_view, const std::shared_ptr<Shader>&, const std::shared_ptr<Texture2D>&);
 
 public:
 	~Material() = default;
@@ -23,6 +23,8 @@ public:
 	inline const std::shared_ptr<Texture2D>& GetTexture() { return m_texture; }
 	inline void SetTexture(const std::shared_ptr<Texture2D>& texture) { m_texture = texture; }
 	
+	void Bind() const;
+
 	void SetInt(std::string_view uniformName, int value) const;
 	void SetUInt(std::string_view uniformName, unsigned int value) const;
 	void SetFloat(std::string_view uniformName, float value) const;

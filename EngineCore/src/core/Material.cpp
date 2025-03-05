@@ -6,6 +6,14 @@ Material::Material(std::string_view materialName, const std::shared_ptr<Shader>&
 	ManagedObject(materialName), m_shader(shader), m_texture(texture) {
 }
 
+void Material::Bind() const {
+	assert(m_shader != nullptr);
+	assert(m_texture != nullptr);
+
+	m_shader->Bind();
+	m_texture->Bind();
+}
+
 void Material::SetInt(std::string_view uniformName, int value) const {
 	if (m_shader != nullptr)
 		m_shader->SetInt(uniformName, value);
