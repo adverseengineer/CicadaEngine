@@ -12,39 +12,30 @@ void Material::Bind() const {
 
 	m_shader->Bind();
 	m_texture->Bind();
+	m_texture->SelectForRendering(); //why do i need to do this? what is the difference from just calling Bind()?
 }
 
 void Material::SetInt(std::string_view uniformName, int value) const {
-	if (m_shader != nullptr)
-		m_shader->SetInt(uniformName, value);
-	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+	assert(m_shader != nullptr);
+	m_shader->SetInt(uniformName, value);
 }
 
 void Material::SetUInt(std::string_view uniformName, unsigned int value) const {
-	if (m_shader != nullptr)
-		m_shader->SetUInt(uniformName, value);
-	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+	assert(m_shader != nullptr);
+	m_shader->SetUInt(uniformName, value);
 }
 
 void Material::SetFloat(std::string_view uniformName, float value) const {
-	if (m_shader != nullptr)
-		m_shader->SetFloat(uniformName, value);
-	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+	assert(m_shader != nullptr);
+	m_shader->SetFloat(uniformName, value);
 }
 
 void Material::SetVec3(std::string_view uniformName, const glm::vec3& value) const {
-	if (m_shader != nullptr)
-		m_shader->SetVec3(uniformName, value);
-	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+	assert(m_shader != nullptr);
+	m_shader->SetVec3(uniformName, value);
 }
 
 void Material::SetMat4(std::string_view uniformName, const glm::mat4& value) const {
-	if (m_shader != nullptr)
-		m_shader->SetMat4(uniformName, value);
-	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: material {:?} has no associated shader", m_name);
+	assert(m_shader != nullptr);
+	m_shader->SetMat4(uniformName, value);
 }
