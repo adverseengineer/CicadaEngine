@@ -22,6 +22,9 @@ Texture2D::Texture2D(std::string_view name, std::string_view filePath) : Managed
 	m_isLoadedFromFile = true;
 	if (!m_isFallback)
 		Logger::Writef(LogEntry::Level::Info, "Texture data loaded from file: {:?}", filePath);
+
+	//TODO: is this okay to do here?
+	Upload();
 }
 
 Texture2D::~Texture2D() {
