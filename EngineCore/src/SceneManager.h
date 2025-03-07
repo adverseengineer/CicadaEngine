@@ -8,8 +8,8 @@
 
 #include <entt/entt.hpp>
 
-#include "ecs/components/MeshComponent.h"
-#include "ecs/components/MaterialComponent.h"
+//#include "ecs/components/MeshComponent.h"
+//#include "ecs/components/MaterialComponent.h"
 
 namespace Cicada {
 
@@ -30,16 +30,6 @@ public:
 	inline static SceneManager& Instance() {
 		static SceneManager instance;
 		return instance;
-	}
-
-	inline void DGB_SetupTestScene() {
-		
-		auto& names = mReg.storage<std::string>();
-
-		auto crate = mReg.create();
-		names.emplace(crate, "crate");
-		//mReg.emplace<Cicada::ECS::Components::MeshComponent>(crate);
-		//mReg.emplace<Cicada::ECS::Components::MaterialComponent>(crate);
 	}
 
 	inline const std::unordered_set<std::shared_ptr<GameObject>>& GetObjects() const { return objects; }

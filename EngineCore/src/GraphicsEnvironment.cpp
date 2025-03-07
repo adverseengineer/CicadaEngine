@@ -35,7 +35,7 @@ void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 		m_cam->MoveY(elapsedSeconds, -1);
 }
 
-void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader) {
+void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader) {
 
 	glm::vec3 clearColor = { 0.1f, 0.1f, 0.1f };
 
@@ -85,12 +85,13 @@ void GraphicsEnvironment::Run3D(const std::shared_ptr<Scene>& scene, const std::
 		auto& globalLight = scene->GetGlobalLight();
 
 		//always make the lightbulb face towards the camera
-		auto sprite = ObjectManager::GetObject("lightbulb");
-		sprite->RotateToFace(m_cam->GetPosition());
-		sprite->SetPosition(scene->GetLocalLight()->position);
+		//auto sprite = ObjectManager::GetObject("lightbulb");
+		//sprite->RotateToFace(m_cam->GetPosition());
+		//sprite->SetPosition(scene->GetLocalLight()->position);
 
 		//and finally call render
 		Renderer::RenderScene(scene, shader, m_cam);
+		Renderer::Render(reg);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

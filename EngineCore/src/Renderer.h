@@ -7,17 +7,21 @@
 #include <sstream>
 #include <vector>
 
+#include <entt/entt.hpp>
+
 namespace Cicada {
 
 class Renderer {
 private:
-	static void RenderObject(const std::shared_ptr<GameObject>& object);
+	static void RenderObject(const std::shared_ptr<GameObject>&);
+
+	Renderer() = default;
+	~Renderer() = default;
 
 public:
-	inline Renderer() = delete;
+	static void RenderScene(const std::shared_ptr<Scene>&, const std::shared_ptr<Shader>&, const std::shared_ptr<Camera>&);
 
-	static void UploadResources(const std::shared_ptr<Scene>& scene);
-	static void RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam);
+	static void Render(entt::registry& reg);
 };
 
 }

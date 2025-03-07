@@ -31,7 +31,7 @@ public:
 
 	void ProcessInput(double elapsedSeconds) const;
 
-	void Run3D(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
+	void Run3D(entt::registry& reg, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
 };
 
 }

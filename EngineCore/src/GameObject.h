@@ -76,7 +76,6 @@ public:
 	void RotateLocal(float xDeg, float yDeg, float zDeg);
 	void RotateToFace(const glm::vec3& target);
 
-	void UploadResources() const;
 	void Update(double elapsedSeconds);
 };
 

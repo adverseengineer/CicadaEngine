@@ -59,24 +59,6 @@ void GameObject::RotateToFace(const glm::vec3& target) {
 	m_localTransform[2] = glm::vec4(zAxis, 0.0f);
 }
 
-void GameObject::UploadResources() const {
-
-	//only concern ourselves with mesh and material if there is a mesh
-	if (m_mesh) {
-
-		m_mesh->Setup();
-		m_mesh->Upload();
- 
-		if (m_material) {
-			auto& tex = m_material->GetTexture();
-			if(tex) tex->Upload();
-		}
-	}
-
-	for (auto& child : m_children)
-		child->UploadResources();
-}
-
 void GameObject::Update(double elapsedSeconds) {
 	//TODO: any per-frame updates that an object may need
 }
