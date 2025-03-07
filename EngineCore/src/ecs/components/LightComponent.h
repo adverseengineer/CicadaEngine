@@ -2,9 +2,9 @@
 
 #include <glm/glm.hpp>
 
-namespace Cicada::ECS::Components {
+namespace Cicada::ECS {
 
-	struct Light {
+	struct LightComponent {
 		glm::vec3 position;
 		glm::vec3 color;
 		float intensity;
