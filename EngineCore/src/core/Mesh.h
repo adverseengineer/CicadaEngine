@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <glm/ext/matrix_float4x4.hpp>
 
 namespace Cicada {
 
@@ -31,7 +32,7 @@ private:
 
 	std::vector<unsigned short> m_indexData;
 
-	Mesh(std::string_view name);
+	Mesh(std::string_view name, std::string_view path);
 
 public:
 	~Mesh();
@@ -40,10 +41,9 @@ public:
 	//Mesh& operator=(const Mesh&) = delete; //disallow copy assignment
 
 	void Bind() const;
-	void Unbind() const;
+	void Unbind() const; //TODO: unnecessary? remove?
 
-	void Setup() const;
-	bool LoadObj(const std::string& objPath);
+	bool LoadObj(std::string_view objPath);
 	void Upload() const;
 
 	void AddVertexAttribute(const std::string& name, unsigned int index, unsigned int numberOfElements, unsigned int offsetCount);

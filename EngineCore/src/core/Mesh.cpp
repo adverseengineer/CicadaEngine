@@ -1,4 +1,4 @@
-
+ 
 #include "core/Mesh.h"
 
 #include <glad/glad.h>
@@ -8,34 +8,18 @@
 
 using namespace Cicada;
 
-Mesh::Mesh(std::string_view name) : ManagedObject(name) {
+Mesh::Mesh(std::string_view name, std::string_view path) : ManagedObject(name) {
 	m_primitiveType = GL_TRIANGLES;
 	glGenVertexArrays(1, &m_vaoId);
 	glGenBuffers(1, &m_vboId);
 	glGenBuffers(1, &m_iboId);
 
+	#pragma region setup
 	//these are the default always there implicit attributes. others can be explicitly added
 	AddVertexAttribute("position", 0, 3, 0);
 	AddVertexAttribute("vertexColor", 1, 4, 3);
 	AddVertexAttribute("vertexNormal", 2, 3, 7);
 	AddVertexAttribute("texCoord", 3, 2, 10);
-}
-
-Mesh::~Mesh() {
-	glDeleteVertexArrays(1, &m_vaoId);
-	glDeleteBuffers(1, &m_vboId);
-	glDeleteBuffers(1, &m_iboId);
-}
-
-void Mesh::Bind() const {
-	glBindVertexArray(m_vaoId);
-}
-
-void Mesh::Unbind() const {
-	glBindVertexArray(0);
-}
-
-void Mesh::Setup() const {
 
 	glBindVertexArray(m_vaoId); //select this mesh's vao for modification
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboId); //tie this mesh's vbo into the vao
@@ -57,12 +41,36 @@ void Mesh::Setup() const {
 
 	//unselect this vao for safety
 	glBindVertexArray(0);
+	#pragma endregion
+	
+	//TODO: restructure this god awful bullshit
+	#pragma region load
+	LoadObj(path);
+	#pragma endregion
+
+	#pragma region upload
+	Upload();
+	#pragma endregion
 }
 
-bool Mesh::LoadObj(const std::string& objPath) {
+Mesh::~Mesh() {
+	glDeleteVertexArrays(1, &m_vaoId);
+	glDeleteBuffers(1, &m_vboId);
+	glDeleteBuffers(1, &m_iboId);
+}
+
+void Mesh::Bind() const {
+	glBindVertexArray(m_vaoId);
+}
+
+void Mesh::Unbind() const {
+	glBindVertexArray(0);
+}
+
+bool Mesh::LoadObj(std::string_view objPath) {
 
 	objl::Loader loader;
-	if (!loader.LoadFile(objPath))
+	if (!loader.LoadFile(objPath.data()))
 		return false;
 
 	for (const auto& elem : loader.LoadedMeshes[0].Vertices) {
