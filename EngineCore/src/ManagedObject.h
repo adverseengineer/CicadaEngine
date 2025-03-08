@@ -25,6 +25,8 @@ public:
 	//takes a name for the new instance and any parameters needed for the derived class constructor
 	template <typename... Args>
 	static std::shared_ptr<T> Create(std::string_view name, Args&&... args) {
+		auto it = s_instances.find(name.data());
+		if (it != s_instances.end()) return it->second.lock();
 		auto instance = std::shared_ptr<T>(new T(name, std::forward<Args>(args)...));
 		s_instances.emplace(name.data(), instance);
 		return instance;
