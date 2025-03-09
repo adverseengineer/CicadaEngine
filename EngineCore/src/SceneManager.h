@@ -1,12 +1,10 @@
 #pragma once
 
-#include "GameObject.h"
 #include "GraphicsStructures.h"
+#include <entt/entt.hpp>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
-
-#include <entt/entt.hpp>
 
 //#include "ecs/components/MeshComponent.h"
 //#include "ecs/components/MaterialComponent.h"
@@ -18,9 +16,7 @@ private:
 	
 	std::unordered_map<std::string, Light> m_lights;
 
-	std::unordered_set<std::shared_ptr<GameObject>> objects; //TODO: keep for now while switching over
-
-	entt::registry mReg;
+	entt::registry m_reg;
 
 	SceneManager() = default;
 	~SceneManager() = default;
@@ -32,8 +28,15 @@ public:
 		return instance;
 	}
 
-	inline const std::unordered_set<std::shared_ptr<GameObject>>& GetObjects() const { return objects; }
-	inline bool AddObject(const std::shared_ptr<GameObject>& object) { return objects.insert(object).second; }
+	inline Light& GetLight(std::string_view name) {
+		assert(m_lights.contains(name.data())); //TODO: fine for now, ill use lightcomponents soon
+		return m_lights.at(name.data());
+	}
+
+	inline void SetLight(std::string_view name, const Light& light) {
+		assert(!m_lights.contains(name.data()));
+		m_lights.emplace(name.data(), light);
+	}
 };
 
 }

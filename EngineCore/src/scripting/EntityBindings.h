@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GameObject.h"
 #include <sol/sol.hpp>
 
 namespace Cicada::Scripting {

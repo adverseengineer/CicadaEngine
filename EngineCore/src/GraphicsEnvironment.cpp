@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "Shader.h"
 #include "Timer.h"
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -36,7 +37,7 @@ void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 		cam->MoveY_OLD(elapsedSeconds, -1);
 }
 
-void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader) {
+void GraphicsEnvironment::Run3D(entt::registry& reg) {
 
 	glm::vec3 clearColor = { 0.1f, 0.1f, 0.1f };
 
@@ -45,7 +46,9 @@ void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene
 	auto& io = ImGui::GetIO();
 	Timer timer;
 
-	auto crate = ObjectManager::GetObject("crate");
+	auto& sm = SceneManager::Instance();
+
+	auto shader = Shader::Get("diffuse");
 
 	while (!glfwWindowShouldClose(handle)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
@@ -80,8 +83,8 @@ void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene
 			shader->SetMat4("projection", cam->m_projection);
 		});
 
-		auto& localLight = scene->GetLocalLight();
-		auto& globalLight = scene->GetGlobalLight();
+		auto& localLight = sm.GetLight("local");
+		auto& globalLight = sm.GetLight("global");
 
 		//always make the lightbulb face towards the camera
 		//auto sprite = ObjectManager::GetObject("lightbulb");
@@ -90,7 +93,7 @@ void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene
 
 		//and finally call render
 		//Renderer::RenderScene(scene, shader, cam);
-		Renderer::Render(reg, globalLight, localLight);
+		Renderer::Render(reg);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -113,15 +116,15 @@ void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene
 
 		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));
 
-		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight->color));
-		ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight->position));
-		ImGui::SliderFloat("Local Intensity", &localLight->intensity, 0, 1);
-		ImGui::SliderFloat("Local Attenuation", &localLight->attenuationCoef, 0, 1);
+		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight.color));
+		ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight.position));
+		ImGui::SliderFloat("Local Intensity", &localLight.intensity, 0, 1);
+		ImGui::SliderFloat("Local Attenuation", &localLight.attenuationCoef, 0, 1);
 		
-		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight->color));
-		ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight->position));
-		ImGui::SliderFloat("Global Intensity", &globalLight->intensity, 0, 1);
-		ImGui::SliderFloat("Global Attenuation", &globalLight->attenuationCoef, 0, 1);
+		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight.color));
+		ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight.position));
+		ImGui::SliderFloat("Global Intensity", &globalLight.intensity, 0, 1);
+		ImGui::SliderFloat("Global Attenuation", &globalLight.attenuationCoef, 0, 1);
 
 		ImGui::End();
 

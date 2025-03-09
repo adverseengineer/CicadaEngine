@@ -76,19 +76,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	//need to initialize UI after window is made
 	auto& ui = UI::UISystem::Instance();
 
+	auto& sm = SceneManager::Instance();
+
 	auto cam = std::make_shared<Camera>(60.0f, 0.01f, 500.0f, 1200.0f / 800.0f);
 	cam->SetMainCam();
 	cam->SetPosition({ 0.0f, 15.0f, 30.0f });
 
-	auto diffuseScene = std::make_shared<Scene>();
-	auto localLightPos = glm::vec3{ 0, 10.0f, 0 };
-	auto localLightColor = glm::vec3{ 0.3f, 0.9f, 0.4f };
-	auto localLight = std::make_shared<Light>(localLightPos, localLightColor, 1.0f, 0.0f);
-	diffuseScene->SetLocalLight(localLight);
-	auto globalLightPos = glm::vec3{ 40.0f, 40.0f, 40.0f };
-	auto globalLightColor = glm::vec3{ 0.0f, 0.0f, 1.0f };
-	auto globalLight = std::make_shared<Light>(globalLightPos, globalLightColor, 1.0f, 0.5f);
-	diffuseScene->SetGlobalLight(globalLight);
+	Light local = {
+		glm::vec3{ 0, 10.0f, 0 },
+		glm::vec3{ 0.3f, 0.9f, 0.4f },
+		1.0, 0.0
+	};
+	sm.SetLight("local", local);
+
+	Light global = {
+		glm::vec3{ 40.0f, 40.0f, 40.0f },
+		glm::vec3{ 0.0f, 0.0f, 1.0f },
+		1.0, 0.5
+	};
+	sm.SetLight("global", global);
 	
 	entt::registry reg;
 	SetupRegistry(reg);
@@ -106,7 +112,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
 	
-	ge.Run3D(reg, diffuseScene, diffuseShader);
+	ge.Run3D(reg);
 
 	return 0;
 }

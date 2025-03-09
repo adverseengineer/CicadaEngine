@@ -1,7 +1,6 @@
 #pragma once
 #include "Camera.h"
 #include "GraphicsStructures.h"
-#include "ObjectManager.h"
 #include "Renderer.h"
 #include "SceneManager.h"
 #include "Util.h"
@@ -28,7 +27,7 @@ public:
 	
 	void ProcessInput(double elapsedSeconds) const;
 
-	void Run3D(entt::registry& reg, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);
+	void Run3D(entt::registry& reg);
 };
 
 }
