@@ -14,25 +14,26 @@ static bool correctGamma = true;
 void GraphicsEnvironment::ProcessInput(double elapsedSeconds) const {
 
 	auto handle = GraphicsContext::Instance().GetWindow();
+	Camera* cam = Camera::GetMainCam();
 
 	//if the user hits escape, close the window
 	if (glfwGetKey(handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(handle, true);
 
 	if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
-		m_cam->MoveZ(elapsedSeconds);
+		cam->MoveZ_OLD(elapsedSeconds);
 	else if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
-		m_cam->MoveZ(elapsedSeconds, -1);
+		cam->MoveZ_OLD(elapsedSeconds, -1);
 
 	if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS)
-		m_cam->MoveX(elapsedSeconds);
+		cam->MoveX_OLD(elapsedSeconds);
 	else if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
-		m_cam->MoveX(elapsedSeconds, -1);
+		cam->MoveX_OLD(elapsedSeconds, -1);
 
 	if (glfwGetKey(handle, GLFW_KEY_Q) == GLFW_PRESS)
-		m_cam->MoveY(elapsedSeconds);
+		cam->MoveY_OLD(elapsedSeconds);
 	else if (glfwGetKey(handle, GLFW_KEY_E) == GLFW_PRESS)
-		m_cam->MoveY(elapsedSeconds, -1);
+		cam->MoveY_OLD(elapsedSeconds, -1);
 }
 
 void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader) {
@@ -49,36 +50,34 @@ void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene
 	while (!glfwWindowShouldClose(handle)) {
 		double deltaTime = timer.GetElapsedTimeInSeconds();
 
-		EventManager::TriggerEvent("OnUpdate");
+		//EventManager::TriggerEvent("OnUpdate");
 
 		ProcessInput(deltaTime);
 
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		auto spher = context.GetMouse().spherical.ToMat4();
-		auto pos = m_cam->GetPosition();
-		m_cam->SetLocalTransform(spher);
-		m_cam->SetPosition(pos);
+		Camera* cam = Camera::GetMainCam();
 
-		if (correctGamma)
-			glEnable(GL_FRAMEBUFFER_SRGB);
-		else
-			glDisable(GL_FRAMEBUFFER_SRGB);
+		auto spher = context.GetMouse().spherical.ToMat4();
+		auto pos = cam->GetPosition();
+		cam->SetLocalTransform(spher);
+		cam->SetPosition(pos);
+
+		if (correctGamma) glEnable(GL_FRAMEBUFFER_SRGB);
+		else glDisable(GL_FRAMEBUFFER_SRGB);
 
 		int width = context.GetWidth();
 		int height = context.GetHeight();
-		if (width >= height)
-			m_cam->m_aspectRatio = width / (height * 1.0f);
-		else
-			m_cam->m_aspectRatio = height / (width * 1.0f);
+		if (width >= height) cam->m_aspectRatio = width / (height * 1.0f);
+		else cam->m_aspectRatio = height / (width * 1.0f);
 
-		m_cam->Update();
+		cam->Update();
 
-		auto view = glm::inverse(m_cam->GetLocalTransform());
+		auto view = glm::inverse(cam->GetLocalTransform());
 		Shader::ForEach([&](auto shader) {
 			shader->SetMat4("view", view);
-			shader->SetMat4("projection", m_cam->m_projection);
+			shader->SetMat4("projection", cam->m_projection);
 		});
 
 		auto& localLight = scene->GetLocalLight();
@@ -90,8 +89,8 @@ void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene
 		//sprite->SetPosition(scene->GetLocalLight()->position);
 
 		//and finally call render
-		Renderer::RenderScene(scene, shader, m_cam);
-		Renderer::Render(reg);
+		//Renderer::RenderScene(scene, shader, cam);
+		Renderer::Render(reg, globalLight, localLight);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -101,7 +100,7 @@ void GraphicsEnvironment::Run3D(entt::registry& reg, const std::shared_ptr<Scene
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		
-		auto& camTrans = m_cam->GetLocalTransform();
+		auto& camTrans = cam->GetLocalTransform();
 		ImGui::Text(
 			"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
 			camTrans[0][0], camTrans[1][0], camTrans[2][0], camTrans[3][0],

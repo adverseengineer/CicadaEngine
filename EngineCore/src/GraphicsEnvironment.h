@@ -10,15 +10,15 @@
 #include <imgui_impl_opengl3.h>
 #include <iostream>
 
+//TODO: move the game loop into main and nuke this stupid class
+
 namespace Cicada {
 
 class GraphicsEnvironment {
 
 private:
-	//GraphicsEnvironment() = default;
-	//~GraphicsEnvironment() = default;
-
-	std::shared_ptr<Camera> m_cam;
+	GraphicsEnvironment() = default;
+	~GraphicsEnvironment() = default;
 
 public:
 	inline static GraphicsEnvironment& Instance() {
@@ -26,9 +26,6 @@ public:
 		return instance;
 	}
 	
-	inline const std::shared_ptr<Camera>& GetCamera() const { return m_cam; }
-	inline void SetCamera(const std::shared_ptr<Camera>& cam) { this->m_cam = cam; }
-
 	void ProcessInput(double elapsedSeconds) const;
 
 	void Run3D(entt::registry& reg, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader);

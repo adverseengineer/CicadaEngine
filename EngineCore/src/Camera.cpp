@@ -10,14 +10,14 @@ Camera::Camera(float fov, float nearClip, float farClip, float aspectRatio) :
 	m_localTransform(1.0f) {
 	m_projection = glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
 
-	glGenBuffers(1, &m_uboId);
+	//glGenBuffers(1, &m_uboId);
 	//glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
-	glBindBufferBase(GL_UNIFORM_BUFFER, m_uboBindPoint, m_uboId); //attach the buffer to slot zero
+	//glBindBufferBase(GL_UNIFORM_BUFFER, m_uboBindPoint, m_uboId); //attach the buffer to slot zero
 	//glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 Camera::~Camera() {
-	glDeleteBuffers(1, &m_uboId);
+	//glDeleteBuffers(1, &m_uboId);
 }
 
 void Camera::Update() const {
@@ -39,15 +39,15 @@ void Camera::SetPosition(const glm::vec3& position) {
 	m_localTransform[3] = glm::vec4(position, 1.0f);
 }
 
-void Camera::MoveX(float delta, int direction) {
+void Camera::MoveX_OLD(float delta, int direction) {
 	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[0];
 }
 
-void Camera::MoveY(float delta, int direction) {
+void Camera::MoveY_OLD(float delta, int direction) {
 	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[1];
 }
 
-void Camera::MoveZ(float delta, int direction) {
+void Camera::MoveZ_OLD(float delta, int direction) {
 	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[2];
 }
 

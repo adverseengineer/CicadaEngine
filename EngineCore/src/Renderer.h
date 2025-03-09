@@ -19,9 +19,9 @@ private:
 	~Renderer() = default;
 
 public:
-	static void RenderScene(const std::shared_ptr<Scene>&, const std::shared_ptr<Shader>&, const std::shared_ptr<Camera>&);
+	static void RenderScene(const std::shared_ptr<Scene>&, const std::shared_ptr<Shader>&, const Camera*);
 
-	static void Render(entt::registry& reg);
+	static void Render(entt::registry& reg, const std::shared_ptr<Light>& globalLight, const std::shared_ptr<Light>& localLight);
 };
 
 }

@@ -15,10 +15,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 	auto& shader = material->GetShader();
 
 	auto& mesh = object->GetMesh();
-	if(!mesh) {
-		Logger::Write(LogEntry::Level::Warning, "mesh is null");
-		return;
-	}
+	assert(mesh != nullptr);
 
 	//send the model matrix to the shader
 	shader->SetMat4("world", object->GetGlobalTransform());
@@ -46,7 +43,7 @@ void Renderer::RenderObject(const std::shared_ptr<GameObject>& object) {
 }
 
 //TODO: why does this still take a shader for the whole scene?
-void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Camera>& cam) {
+void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Shader>& shader, const Camera* cam) {
 	
 	assert(shader->GetShaderProg() != 0);
 
@@ -71,8 +68,24 @@ void Renderer::RenderScene(const std::shared_ptr<Scene>& scene, const std::share
 		RenderObject(object);
 }
 
-void Renderer::Render(entt::registry& reg) {
+//TODO: these lights shouldn't be params, they should be components in the registry. do this after switching to ECS (will need UBO support)
+void Renderer::Render(entt::registry& reg, const std::shared_ptr<Light>& globalLight, const std::shared_ptr<Light>& localLight) {
 	
+	#pragma region AbysmalDogshit
+	//first, send shader uniforms that we might be missing from the old style render function
+	assert(globalLight != nullptr);
+	assert(localLight != nullptr);
+	auto shader = Shader::Get("diffuse");
+
+	shader->SetVec3("globalLightPosition", globalLight->position);
+	shader->SetVec3("globalLightColor", globalLight->color);
+	shader->SetFloat("globalLightIntensity", globalLight->intensity);
+	shader->SetVec3("localLightPosition", localLight->position);
+	shader->SetVec3("localLightColor", localLight->color);
+	shader->SetFloat("localLightIntensity", localLight->intensity);
+	shader->SetFloat("localLightAttenuationCoef", localLight->attenuationCoef);
+	#pragma endregion
+
 	std::vector<std::tuple<glm::mat4, std::shared_ptr<Mesh>, std::shared_ptr<Material>>> renderQueue;
 
 	auto view = reg.view<TransformComponent, MaterialComponent, MeshComponent>();
@@ -91,6 +104,11 @@ void Renderer::Render(entt::registry& reg) {
 
 	//actually render all the enqueued data
 	for (auto& [transform, mesh, material] : renderQueue) {
+
+		shader->SetMat4("world", transform);
+		mesh->Bind();
+
+		shader->SetUInt("tex", material->GetTexture()->GetTextureUnit());
 		material->Bind();
 		glDrawElements(mesh->GetPrimitiveType(), (GLsizei)mesh->IndexElemCount(), GL_UNSIGNED_SHORT, (void*)0);
 	}
