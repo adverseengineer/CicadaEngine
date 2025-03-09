@@ -13,7 +13,7 @@ public:
 			Logger::Writef(LogEntry::Level::Error, "Could not open file: {:?}", path);
 			return false;
 		}
-		Logger::Writef(LogEntry::Level::Error, "Successfully read file {:?}", path);
+		Logger::Writef(LogEntry::Level::Info, "Successfully read file {:?}", path);
 		content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 		file.close();
 		return true;
