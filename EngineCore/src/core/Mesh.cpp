@@ -70,8 +70,10 @@ void Mesh::Unbind() const {
 bool Mesh::LoadObj(std::string_view objPath) {
 
 	objl::Loader loader;
-	if (!loader.LoadFile(objPath.data()))
+	if (!loader.LoadFile(objPath.data())) {
+		Logger::Writef(LogEntry::Level::Warning, "Failed to load model data from file {:?}", objPath);
 		return false;
+	}
 
 	for (const auto& elem : loader.LoadedMeshes[0].Vertices) {
 		AddVertexData(
@@ -87,6 +89,7 @@ bool Mesh::LoadObj(std::string_view objPath) {
 		AddIndexData(1, elem);
 	}
 
+	Logger::Writef(LogEntry::Level::Info, "Model data loaded from file {:?}", objPath);
 	return true;
 }
 
