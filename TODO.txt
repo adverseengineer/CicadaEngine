@@ -1,3 +1,5 @@
+next up: modify the debug ui code to show all entities and view their components and modify in real time
+
 for any class that follows the singleton pattern, you can expose it to lua by pushing a global onto the stack that's just a call to the instance method
 
 replace all integer usage with the proper stdint typedef
