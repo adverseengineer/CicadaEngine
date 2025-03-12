@@ -7,19 +7,19 @@
 namespace Cicada {
 
 class Camera {
-friend class GraphicsEnvironment;
+
 private:
 	float m_fov = 60.0f;
 	float m_nearClip = 0.01f;
 	float m_farClip = 200.0f;
 
+public: //TODO: make these private again when you can
 	float m_aspectRatio;
-
 	glm::mat4 m_localTransform;
 	glm::mat4 m_projection;
-
 	float m_temp_moveSpeed = 10.0f;
 
+private:
 	inline static Camera* s_mainCam;
 	
 	//TODO: re-evaluate the need for UBO bullshit in the camera class
