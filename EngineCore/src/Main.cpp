@@ -24,7 +24,35 @@
 using namespace Cicada;
 using namespace Cicada::ECS;
 
+void DoUBOShit() {
+	
+}
+
+glm::vec3 Hsv2Rgb(glm::vec3 hsv) {
+	
+	glm::vec3 rgb { 0.0 };
+	
+	int i = hsv.x * 6;
+	int f = hsv.x * 6 - i;
+	float p = hsv.z * (1 - hsv.y);
+	float q = hsv.z * (1 - f * hsv.y);
+	float t = hsv.z * (1 - (1 - f) * hsv.y);
+
+	switch (i % 6) {
+	case 0: rgb = { hsv.z, t, p }; break;
+	case 1: rgb = { q, hsv.z, p }; break;
+	case 2: rgb = { p, hsv.z, t }; break;
+	case 3: rgb = { p, q, hsv.z }; break;
+	case 4: rgb = { t, p, hsv.z }; break;
+	case 5: rgb = { hsv.z, p, q }; break;
+	}
+
+	return rgb;
+}
+
 void SetupRegistry(entt::registry& reg) {
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
 
@@ -124,6 +152,27 @@ void ProcessInput(double elapsedSeconds) {
 		cam->MoveY_OLD(elapsedSeconds, -1);
 }
 
+static glm::mat4 GetLookFromMouse(const MouseParams& mouse) {
+	
+	float theta = glm::radians(90.0f - (180 * mouse.x / mouse.windowWidth)); //left/right
+	float phi = glm::radians(180.0f - (180 * mouse.y / mouse.windowHeight)); //up/down
+
+	float sinPhi = sin(phi);
+	glm::vec3 zAxis{};
+	zAxis.x = sin(theta) * sinPhi;
+	zAxis.y = cos(phi);
+	zAxis.z = cos(theta) * sinPhi;
+
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 xAxis = glm::normalize(glm::cross(up, zAxis));
+	glm::vec3 yAxis = glm::cross(zAxis, xAxis);
+	glm::mat4 orientation(1.0f);
+	orientation[0] = glm::vec4(xAxis, 0.0f);
+	orientation[1] = glm::vec4(yAxis, 0.0f);
+	orientation[2] = glm::vec4(zAxis, 0.0f);
+	return orientation;
+}
+
 void Run3D(entt::registry& reg) {
 
 	glm::vec3 clearColor = { 0.1f, 0.1f, 0.1f };
@@ -149,10 +198,10 @@ void Run3D(entt::registry& reg) {
 
 		Camera* cam = Camera::GetMainCam();
 
-		auto spher = context.GetMouse().spherical.ToMat4();
-		auto pos = cam->GetPosition();
-		cam->SetLocalTransform(spher);
-		cam->SetPosition(pos);
+		auto camRot = GetLookFromMouse(context.GetMouse());
+		auto camPos = cam->GetPosition();
+		cam->SetLocalTransform(camRot);
+		cam->SetPosition(camPos);
 
 		if (correctGamma) glEnable(GL_FRAMEBUFFER_SRGB);
 		else glDisable(GL_FRAMEBUFFER_SRGB);
