@@ -5,6 +5,8 @@
 
 using namespace Cicada;
 
+bool GraphicsContext::gladInitialized = false;
+
 GraphicsContext::GraphicsContext() {
 
 	glfwInit();
@@ -29,8 +31,7 @@ void GraphicsContext::CreateWindow(unsigned int width, unsigned int height, cons
 		throw std::runtime_error("failed to create GLFW window");
 	}
 
-	glfwMakeContextCurrent(m_windowHandle); //basically, designate this window to be the one we render in (i think)
-	//TODO: ^^^ make this safer, catch any errors, log them, etc.
+	glfwMakeContextCurrent(m_windowHandle); //attach the OpenGL context (state) to this window
 
 	m_mouse.windowWidth = width;
 	m_mouse.windowHeight = height;
@@ -40,9 +41,14 @@ void GraphicsContext::InitGlad() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		throw std::runtime_error("failed to initialize GLAD");
 	}
+	GraphicsContext::gladInitialized = true;
 }
 
-void GraphicsContext::Configure() { //this function must come after InitGlad, bc the function pointers would all be null
+void GraphicsContext::Configure() {
+
+	if (!gladInitialized)
+		throw std::runtime_error("must initialize GLAD first");
+
 	//set up a callback for whenever the window is resized
 	glfwSetFramebufferSizeCallback(m_windowHandle, OnWindowResize);
 	glfwSetCursorPosCallback(m_windowHandle, OnMouseMove);
@@ -87,9 +93,6 @@ void GraphicsContext::OnMouseMove(GLFWwindow* window, double mouseX, double mous
 	
 	context.m_mouse.x = mouseX;
 	context.m_mouse.y = mouseY;
-
-	context.m_mouse.spherical.theta = 90.0f - (180 * context.m_mouse.x / context.m_mouse.windowWidth); //left/right
-	context.m_mouse.spherical.phi = 180.0f - (180 * context.m_mouse.y / context.m_mouse.windowHeight); //up/down
 }
 
 void GraphicsContext::OnMouseButton(GLFWwindow* window, int button, int action, int mods) {

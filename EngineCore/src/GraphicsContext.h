@@ -12,6 +12,8 @@ private:
 	int m_windowWidth = 0, m_windowHeight = 0;
 	MouseParams m_mouse;
 
+	static bool gladInitialized;
+
 	GraphicsContext();
 	~GraphicsContext();
 	
