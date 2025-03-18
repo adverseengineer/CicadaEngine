@@ -12,7 +12,7 @@ Mesh::Mesh(std::string_view name, std::string_view path) : ManagedObject(name) {
 	m_primitiveType = GL_TRIANGLES;
 	glGenVertexArrays(1, &m_vaoId);
 	glGenBuffers(1, &m_vboId);
-	glGenBuffers(1, &m_iboId);
+	glGenBuffers(1, &m_eboId);
 
 	#pragma region setup
 	//these are the default always there implicit attributes. others can be explicitly added
@@ -23,7 +23,7 @@ Mesh::Mesh(std::string_view name, std::string_view path) : ManagedObject(name) {
 
 	glBindVertexArray(m_vaoId); //select this mesh's vao for modification
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboId); //tie this mesh's vbo into the vao
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId); //tie this mesh's ibo into the vao
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboId); //tie this mesh's ibo into the vao
 
 	//set up vertex attribute pointers
 	for (const auto& item : attributeMap) {
@@ -56,14 +56,14 @@ Mesh::Mesh(std::string_view name, std::string_view path) : ManagedObject(name) {
 Mesh::~Mesh() {
 	glDeleteVertexArrays(1, &m_vaoId);
 	glDeleteBuffers(1, &m_vboId);
-	glDeleteBuffers(1, &m_iboId);
+	glDeleteBuffers(1, &m_eboId);
 }
 
 void Mesh::Bind() const {
 	glBindVertexArray(m_vaoId);
 }
 
-void Mesh::Unbind() const {
+void Mesh::Unbind() {
 	glBindVertexArray(0);
 }
 

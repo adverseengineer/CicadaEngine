@@ -24,7 +24,7 @@
 using namespace Cicada;
 using namespace Cicada::ECS;
 
-void DoUBOShit() {
+static void DoUBOShit() {
 	
 }
 
@@ -72,13 +72,13 @@ void SetupRegistry(entt::registry& reg) {
 
 	auto crate = reg.create();
 	names.emplace(crate, "crate");
-	reg.emplace<TransformComponent>(crate, glm::vec3{ 10.0, 0.0, 10.0 });
+	reg.emplace<TransformComponent>(crate, glm::vec3{ 4.5, 0.5, 4.5 });
 	reg.emplace<MeshComponent>(crate, crateMesh);
 	reg.emplace<MaterialComponent>(crate, crateMat);
 
 	auto ball = reg.create();
 	names.emplace(ball, "ball");
-	reg.emplace<TransformComponent>(ball, glm::vec3{ -10.0, 0.0, 10.0 });
+	reg.emplace<TransformComponent>(ball, glm::vec3{ 0.0, 0.5, 0.0 });
 	reg.emplace<MeshComponent>(ball, ballMesh);
 	reg.emplace<MaterialComponent>(ball, ballMat);
 
@@ -136,6 +136,9 @@ void ProcessInput(double elapsedSeconds) {
 	if (glfwGetKey(handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(handle, true);
 
+	if (glfwGetKey(handle, GLFW_KEY_TAB) == GLFW_PRESS)
+		Logger::ToggleLog();
+
 	if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
 		cam->MoveZ_OLD(elapsedSeconds);
 	else if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
@@ -154,11 +157,13 @@ void ProcessInput(double elapsedSeconds) {
 
 static glm::mat4 GetLookFromMouse(const MouseParams& mouse) {
 	
-	float theta = glm::radians(90.0f - (180 * mouse.x / mouse.windowWidth)); //left/right
-	float phi = glm::radians(180.0f - (180 * mouse.y / mouse.windowHeight)); //up/down
+	//get a theta and phi value from the mouse position
+	float theta = glm::radians(90.0f - (180.0f * mouse.x / mouse.windowWidth)); //90 = hard left, -90 = hard right
+	float phi = glm::radians(180.0f - (180.0f * mouse.y / mouse.windowHeight)); //180 = straight up, 0 = straight down
 
+	//use the spherical coordinate formula to make a unit vector facing in the corresponding direction
 	float sinPhi = sin(phi);
-	glm::vec3 zAxis{};
+	glm::vec3 zAxis(0.0);
 	zAxis.x = sin(theta) * sinPhi;
 	zAxis.y = cos(phi);
 	zAxis.z = cos(theta) * sinPhi;
@@ -166,16 +171,18 @@ static glm::mat4 GetLookFromMouse(const MouseParams& mouse) {
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 xAxis = glm::normalize(glm::cross(up, zAxis));
 	glm::vec3 yAxis = glm::cross(zAxis, xAxis);
+	
 	glm::mat4 orientation(1.0f);
 	orientation[0] = glm::vec4(xAxis, 0.0f);
 	orientation[1] = glm::vec4(yAxis, 0.0f);
 	orientation[2] = glm::vec4(zAxis, 0.0f);
+	
 	return orientation;
 }
 
 void Run3D(entt::registry& reg) {
 
-	glm::vec3 clearColor = { 0.1f, 0.1f, 0.1f };
+	glm::vec3 clearColor = { 0.4f, 0.4f, 0.4f };
 
 	auto& context = GraphicsContext::Instance();
 	auto handle = context.GetWindow();
@@ -198,10 +205,10 @@ void Run3D(entt::registry& reg) {
 
 		Camera* cam = Camera::GetMainCam();
 
-		auto camRot = GetLookFromMouse(context.GetMouse());
-		auto camPos = cam->GetPosition();
-		cam->SetLocalTransform(camRot);
-		cam->SetPosition(camPos);
+		auto rot = GetLookFromMouse(context.GetMouse());
+		auto pos = cam->GetPosition();
+		cam->SetLocalTransform(rot);
+		cam->SetPosition(pos);
 
 		if (correctGamma) glEnable(GL_FRAMEBUFFER_SRGB);
 		else glDisable(GL_FRAMEBUFFER_SRGB);
@@ -217,7 +224,7 @@ void Run3D(entt::registry& reg) {
 		Shader::ForEach([&](auto shader) {
 			shader->SetMat4("view", view);
 			shader->SetMat4("projection", cam->m_projection);
-			});
+		});
 
 		auto& localLight = sm.GetLight("local");
 		auto& globalLight = sm.GetLight("global");

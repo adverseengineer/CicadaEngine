@@ -20,6 +20,10 @@ void Logger::ToggleLog() {
 }
 
 void Logger::RenderLog() {
+
+	if (!s_showLog)
+		return;
+
 	ImGui::Begin("Log", &s_showLog);
 
 	if (ImGui::Button("Clear")) {
