@@ -11,11 +11,14 @@
 #include "Renderer.h"
 #include "SceneManager.h"
 #include "ScriptManager.h"
-#include "Timer.h"
 #include "ui/UISystem.h"
 #include <entt/entt.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Windows.h>
+
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/ringbuffer_sink.h>
 
 #ifdef CreateWindow //fuck you microsoft, i want this function name
 #undef CreateWindow
@@ -28,26 +31,28 @@ static void DoUBOShit() {
 	
 }
 
-glm::vec3 Hsv2Rgb(glm::vec3 hsv) {
-	
-	glm::vec3 rgb { 0.0 };
-	
-	int i = hsv.x * 6;
-	int f = hsv.x * 6 - i;
-	float p = hsv.z * (1 - hsv.y);
-	float q = hsv.z * (1 - f * hsv.y);
-	float t = hsv.z * (1 - (1 - f) * hsv.y);
+static std::shared_ptr<spdlog::logger> gameLog;
+static void NewLogStuff(std::string_view logPath) {
+	try
+	{
+		// Create a file sink (logs to "game.log")
+		auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logPath.data(), true);
 
-	switch (i % 6) {
-	case 0: rgb = { hsv.z, t, p }; break;
-	case 1: rgb = { q, hsv.z, p }; break;
-	case 2: rgb = { p, hsv.z, t }; break;
-	case 3: rgb = { p, q, hsv.z }; break;
-	case 4: rgb = { t, p, hsv.z }; break;
-	case 5: rgb = { hsv.z, p, q }; break;
+		// Create a ring buffer sink (stores logs for an in-game debug window)
+		auto memSink = std::make_shared<spdlog::sinks::ringbuffer_sink_mt>(100); // Stores last 100 logs
+
+		// Combine sinks into a multi-sink logger
+		gameLog = std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list{ fileSink, memSink });
+		spdlog::register_logger(gameLog);
+
+		// Set logging level (change to spdlog::level::trace for more details)
+		gameLog->set_level(spdlog::level::info);
+		gameLog->flush_on(spdlog::level::err); // Flush logs immediately on errors
 	}
-
-	return rgb;
+	catch (const spdlog::spdlog_ex& ex)
+	{
+		std::cerr << "Log initialization failed: " << ex.what() << std::endl;
+	}
 }
 
 void SetupRegistry(entt::registry& reg) {
@@ -127,10 +132,56 @@ void inspect_entity(entt::registry& registry, entt::entity entity) {
 
 static bool correctGamma = true;
 
-void ProcessInput(double elapsedSeconds) {
+void UpdateDebugUI() {
 
-	auto handle = GraphicsContext::Instance().GetWindow();
+	auto& sm = SceneManager::Instance();
+	auto& localLight = sm.GetLight("local");
+	auto& globalLight = sm.GetLight("global");
+
 	Camera* cam = Camera::GetMainCam();
+
+	auto& io = ImGui::GetIO();
+
+	ImGui::StyleColorsClassic();
+	ImGui::NewFrame();
+	ImGui::Begin("Interactive Graphics");
+
+	//ImGui::ShowDebugLogWindow();
+
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
+	auto& camTrans = cam->GetLocalTransform();
+	ImGui::Text(
+		"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
+		camTrans[0][0], camTrans[1][0], camTrans[2][0], camTrans[3][0],
+		camTrans[0][1], camTrans[1][1], camTrans[2][1], camTrans[3][1],
+		camTrans[0][2], camTrans[1][2], camTrans[2][2], camTrans[3][2],
+		camTrans[0][3], camTrans[1][3], camTrans[2][3], camTrans[3][3]
+	);
+
+	gameLog->info("hello 'log'");
+
+	ImGui::Checkbox("Correct Gamma", &correctGamma);
+
+	ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight.color));
+	ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight.position));
+	ImGui::SliderFloat("Local Intensity", &localLight.intensity, 0, 1);
+	ImGui::SliderFloat("Local Attenuation", &localLight.attenuationCoef, 0, 1);
+
+	ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight.color));
+	ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight.position));
+	ImGui::SliderFloat("Global Intensity", &globalLight.intensity, 0, 1);
+	ImGui::SliderFloat("Global Attenuation", &globalLight.attenuationCoef, 0, 1);
+
+	ImGui::End();
+}
+
+void ProcessInput(float elapsedSeconds) {
+
+	auto& gc = GraphicsContext::Instance();
+	auto handle = gc.GetWindow();
+	Camera* cam = Camera::GetMainCam();
+	auto& mouse = gc.GetMouse();
 
 	//if the user hits escape, close the window
 	if (glfwGetKey(handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -139,24 +190,32 @@ void ProcessInput(double elapsedSeconds) {
 	if (glfwGetKey(handle, GLFW_KEY_TAB) == GLFW_PRESS)
 		Logger::ToggleLog();
 
+	//DO WASDQE
+	auto camMat = cam->GetLocalTransform();
+	float camSpeed = 10.0f;
+
 	if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
-		cam->MoveZ_OLD(elapsedSeconds);
+		camMat[3] -= camMat[2] * camSpeed * elapsedSeconds;
 	else if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
-		cam->MoveZ_OLD(elapsedSeconds, -1);
+		camMat[3] += camMat[2] * camSpeed * elapsedSeconds;
 
 	if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS)
-		cam->MoveX_OLD(elapsedSeconds);
+		camMat[3] -= camMat[0] * camSpeed * elapsedSeconds;
 	else if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
-		cam->MoveX_OLD(elapsedSeconds, -1);
+		camMat[3] += camMat[0] * camSpeed * elapsedSeconds;
 
 	if (glfwGetKey(handle, GLFW_KEY_Q) == GLFW_PRESS)
-		cam->MoveY_OLD(elapsedSeconds);
+		camMat[3] -= camMat[1] * camSpeed * elapsedSeconds;
 	else if (glfwGetKey(handle, GLFW_KEY_E) == GLFW_PRESS)
-		cam->MoveY_OLD(elapsedSeconds, -1);
-}
+		camMat[3] += camMat[1] * camSpeed * elapsedSeconds;
 
-static glm::mat4 GetLookFromMouse(const MouseParams& mouse) {
-	
+	//really cool zoom effect i found by mistake
+	if (glfwGetKey(handle, GLFW_KEY_1) == GLFW_PRESS)
+		camMat[3] /= camSpeed * elapsedSeconds + 1.0f;
+	else if (glfwGetKey(handle, GLFW_KEY_2) == GLFW_PRESS)
+		camMat[3] *= camSpeed * elapsedSeconds + 1.0f;
+
+	//DO MOUSELOOK:
 	//get a theta and phi value from the mouse position
 	float theta = glm::radians(90.0f - (180.0f * mouse.x / mouse.windowWidth)); //90 = hard left, -90 = hard right
 	float phi = glm::radians(180.0f - (180.0f * mouse.y / mouse.windowHeight)); //180 = straight up, 0 = straight down
@@ -171,13 +230,14 @@ static glm::mat4 GetLookFromMouse(const MouseParams& mouse) {
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 xAxis = glm::normalize(glm::cross(up, zAxis));
 	glm::vec3 yAxis = glm::cross(zAxis, xAxis);
-	
+
 	glm::mat4 orientation(1.0f);
 	orientation[0] = glm::vec4(xAxis, 0.0f);
 	orientation[1] = glm::vec4(yAxis, 0.0f);
 	orientation[2] = glm::vec4(zAxis, 0.0f);
-	
-	return orientation;
+
+	cam->SetLocalTransform(orientation);
+	cam->SetPosition(camMat[3]);
 }
 
 void Run3D(entt::registry& reg) {
@@ -186,98 +246,67 @@ void Run3D(entt::registry& reg) {
 
 	auto& context = GraphicsContext::Instance();
 	auto handle = context.GetWindow();
-	auto& io = ImGui::GetIO();
-	Timer timer;
-
+	Camera* cam = Camera::GetMainCam();
 	auto& sm = SceneManager::Instance();
-
 	auto shader = Shader::Get("diffuse");
+	auto& io = ImGui::GetIO();
+
+	const int targetFps = 60;
+	const double fpsLimit = 1.0 / targetFps;
+	double lastUpdateTime = 0.0;
+	double lastFrameTime = 0.0;
 
 	while (!glfwWindowShouldClose(handle)) {
-		double deltaTime = timer.GetElapsedTimeInSeconds();
+
+		double now = glfwGetTime();
+		double delta = now - lastUpdateTime;
+		
+		glfwPollEvents();
+		ProcessInput(delta);
 
 		//EventManager::TriggerEvent("OnUpdate");
 
-		ProcessInput(deltaTime);
+		//if it's not yet time for the next frame, don't do it
+		//everything inside this if is only run once per frame of the target fps
+		if((now - lastFrameTime) >= fpsLimit) {
 
-		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		Camera* cam = Camera::GetMainCam();
+			if (correctGamma) glEnable(GL_FRAMEBUFFER_SRGB);
+			else glDisable(GL_FRAMEBUFFER_SRGB);
 
-		auto rot = GetLookFromMouse(context.GetMouse());
-		auto pos = cam->GetPosition();
-		cam->SetLocalTransform(rot);
-		cam->SetPosition(pos);
+			int width = context.GetWidth();
+			int height = context.GetHeight();
+			if (width >= height) cam->m_aspectRatio = width / (height * 1.0f);
+			else cam->m_aspectRatio = height / (width * 1.0f);
 
-		if (correctGamma) glEnable(GL_FRAMEBUFFER_SRGB);
-		else glDisable(GL_FRAMEBUFFER_SRGB);
+			cam->Update();
 
-		int width = context.GetWidth();
-		int height = context.GetHeight();
-		if (width >= height) cam->m_aspectRatio = width / (height * 1.0f);
-		else cam->m_aspectRatio = height / (width * 1.0f);
+			auto view = glm::inverse(cam->GetLocalTransform());
+			Shader::ForEach([&](auto shader) {
+				shader->SetMat4("view", view);
+				shader->SetMat4("projection", cam->m_projection);
+			});
 
-		cam->Update();
+			//and finally call render
+			Renderer::Render(reg);
 
-		auto view = glm::inverse(cam->GetLocalTransform());
-		Shader::ForEach([&](auto shader) {
-			shader->SetMat4("view", view);
-			shader->SetMat4("projection", cam->m_projection);
-		});
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
 
-		auto& localLight = sm.GetLight("local");
-		auto& globalLight = sm.GetLight("global");
+			UpdateDebugUI();
+			Logger::RenderLog();
 
-		//always make the lightbulb face towards the camera
-		//auto sprite = ObjectManager::GetObject("lightbulb");
-		//sprite->RotateToFace(m_cam->GetPosition());
-		//sprite->SetPosition(scene->GetLocalLight()->position);
+			ImGui::Render();
 
-		//and finally call render
-		//Renderer::RenderScene(scene, shader, cam);
-		Renderer::Render(reg);
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::StyleColorsClassic();
-		ImGui::NewFrame();
-		ImGui::Begin("Interactive Graphics");
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-
-		auto& camTrans = cam->GetLocalTransform();
-		ImGui::Text(
-			"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
-			camTrans[0][0], camTrans[1][0], camTrans[2][0], camTrans[3][0],
-			camTrans[0][1], camTrans[1][1], camTrans[2][1], camTrans[3][1],
-			camTrans[0][2], camTrans[1][2], camTrans[2][2], camTrans[3][2],
-			camTrans[0][3], camTrans[1][3], camTrans[2][3], camTrans[3][3]
-		);
-
-		ImGui::Checkbox("Correct Gamma", &correctGamma);
-
-		ImGui::ColorEdit3("Background Color", glm::value_ptr(clearColor));
-
-		ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight.color));
-		ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight.position));
-		ImGui::SliderFloat("Local Intensity", &localLight.intensity, 0, 1);
-		ImGui::SliderFloat("Local Attenuation", &localLight.attenuationCoef, 0, 1);
-
-		ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight.color));
-		ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight.position));
-		ImGui::SliderFloat("Global Intensity", &globalLight.intensity, 0, 1);
-		ImGui::SliderFloat("Global Attenuation", &globalLight.attenuationCoef, 0, 1);
-
-		ImGui::End();
-
-		Logger::RenderLog();
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		glfwSwapBuffers(handle);
-		glfwPollEvents();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		
+			glfwSwapBuffers(handle);
+			lastFrameTime = now;
+		}
+		
+		lastUpdateTime = now;
 	}
 }
 
@@ -293,6 +322,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	gc.InitGlad();
 	gc.Configure();
 
+	NewLogStuff("log.txt");
+
 	//need to initialize UI after window is made
 	auto& ui = UI::UISystem::Instance();
 
@@ -300,7 +331,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	auto cam = std::make_shared<Camera>(60.0f, 0.01f, 500.0f, 1200.0f / 800.0f);
 	cam->SetMainCam();
-	cam->SetPosition({ 0.0f, 15.0f, 30.0f });
+	cam->SetPosition({ 0.0f, 5.0f, 15.0f });
 
 	Light local = {
 		glm::vec3{ 0, 10.0f, 0 },

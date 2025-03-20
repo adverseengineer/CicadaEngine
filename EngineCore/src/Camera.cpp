@@ -39,18 +39,6 @@ void Camera::SetPosition(const glm::vec3& position) {
 	m_localTransform[3] = glm::vec4(position, 1.0f);
 }
 
-void Camera::MoveX_OLD(float delta, int direction) {
-	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[0];
-}
-
-void Camera::MoveY_OLD(float delta, int direction) {
-	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[1];
-}
-
-void Camera::MoveZ_OLD(float delta, int direction) {
-	m_localTransform[3] -= direction * m_temp_moveSpeed * delta * m_localTransform[2];
-}
-
 Ray Camera::GetMouseRay(float screenPosX, float screenPosY) const {
 
 	Ray ray;

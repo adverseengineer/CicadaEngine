@@ -12,6 +12,7 @@
         "lua",
         "rapidjson",
         "sol2",
+        "spdlog",
         "stb",
         "tinyobjloader"
     ]

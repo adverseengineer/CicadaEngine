@@ -17,7 +17,6 @@ public: //TODO: make these private again when you can
 	float m_aspectRatio;
 	glm::mat4 m_localTransform;
 	glm::mat4 m_projection;
-	float m_temp_moveSpeed = 10.0f;
 
 private:
 	inline static Camera* s_mainCam;
@@ -45,13 +44,6 @@ public:
 	
 	inline const auto& GetLocalTransform() const { return m_localTransform; }
 	inline void SetLocalTransform(const glm::mat4& localTransform) { m_localTransform = localTransform; }
-
-	inline float GetMoveSpeed_OLD() const { return m_temp_moveSpeed; }
-	inline void SetMoveSpeed_OLD(float moveSpeed) { m_temp_moveSpeed = moveSpeed; }
-	
-	void MoveX_OLD(float delta, int direction = 1);
-	void MoveY_OLD(float delta, int direction = 1);
-	void MoveZ_OLD(float delta, int direction = 1);
 
 	Ray GetMouseRay(float screenPosX, float screenPosY) const;
 };
