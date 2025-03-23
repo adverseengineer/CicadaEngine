@@ -10,10 +10,10 @@ public:
 	inline static bool ReadFileToString(std::string_view path, std::string& content) {
 		std::ifstream file(path.data());
 		if (!file.is_open()) {
-			Logger::Writef(LogEntry::Level::Error, "Could not open file: {:?}", path);
+			Log::Error("Could not open file: {:?}", path);
 			return false;
 		}
-		Logger::Writef(LogEntry::Level::Info, "Successfully read file {:?}", path);
+		Log::Info("Successfully read file {:?}", path);
 		content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 		file.close();
 		return true;
