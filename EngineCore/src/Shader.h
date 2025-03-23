@@ -56,11 +56,10 @@ public:
 	
 	inline void DBG_ShowInfo() const {
 		for (const auto& [name, info] : m_UniformInfoCache) {
-			Logger::Writef(
-				LogEntry::Level::Info,
+			Log::Info(
 				"Uniform: {:?} (type = {:s}, location = {:d})",
 				name,
-				Logger::GLTypeToStr(info.type),
+				info.type,
 				info.location
 			);
 		}
