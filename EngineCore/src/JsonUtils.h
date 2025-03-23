@@ -45,11 +45,11 @@ public:
             // Get error message
             rapidjson::StringBuffer sb;
             validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);
-            Logger::Writef(LogEntry::Level::Error, "Invalid schema: {:s}", sb.GetString());
-            Logger::Writef(LogEntry::Level::Error, "Invalid keyword: {:s}", validator.GetInvalidSchemaKeyword());
+            Log::Error("Invalid schema: {:s}", sb.GetString());
+            Log::Error("Invalid keyword: {:s}", validator.GetInvalidSchemaKeyword());
             sb.Clear();
             validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);
-            Logger::Writef(LogEntry::Level::Error, "Invalid document: {:s}", sb.GetString());
+            Log::Error("Invalid document: {:s}", sb.GetString());
             return false;
         }
         return true;
