@@ -18,7 +18,7 @@ protected:
 	std::string m_name;
 
 	ManagedObject(std::string_view name) : m_name(name) {
-		Logger::Writef(LogEntry::Level::Info, "Creating instance: {:?}", name);
+		Log::Debug("Creating instance: {:?}", name);
 	}
 
 public:
@@ -38,7 +38,7 @@ public:
 	}
 
 	virtual ~ManagedObject() {
-		Logger::Writef(LogEntry::Level::Info, "Destroying instance: {:?}", static_cast<T*>(this)->m_name);
+		Log::Debug("Destroying instance: {:?}", static_cast<T*>(this)->m_name);
 		s_instances.erase(static_cast<T*>(this)->m_name);
 	}
 
