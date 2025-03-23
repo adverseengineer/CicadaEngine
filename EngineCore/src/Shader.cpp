@@ -25,7 +25,6 @@ Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std
 
 Shader::~Shader() {
 	glDeleteProgram(m_shaderProg);
-	Logger::Log("Destroying shader");
 }
 
 //given the source code for a vertex or fragment shader, compile it and store it on the GPU
@@ -133,7 +132,7 @@ void Shader::SetInt(std::string_view uniformName, int value) const {
 		glUniform1i(temp.value().location, value);
 	}
 	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetUInt(std::string_view uniformName, unsigned int value) const {
@@ -143,7 +142,7 @@ void Shader::SetUInt(std::string_view uniformName, unsigned int value) const {
 		glUniform1ui(temp.value().location, value);
 	}
 	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetFloat(std::string_view uniformName, float value) const {
@@ -153,7 +152,7 @@ void Shader::SetFloat(std::string_view uniformName, float value) const {
 		glUniform1f(temp.value().location, value);
 	}
 	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetVec3(std::string_view uniformName, const glm::vec3& value) const {
@@ -163,7 +162,7 @@ void Shader::SetVec3(std::string_view uniformName, const glm::vec3& value) const
 		glUniform3fv(temp.value().location, 1, glm::value_ptr(value));
 	}
 	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetMat4(std::string_view uniformName, const glm::mat4& value) const {
@@ -173,5 +172,5 @@ void Shader::SetMat4(std::string_view uniformName, const glm::mat4& value) const
 		glUniformMatrix4fv(temp.value().location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 	else
-		Logger::Writef(LogEntry::Level::Warning, "Warning: shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		Log::Warn("Shader{: ? } has no such uniform : {: ? }", m_name, uniformName);
 }
