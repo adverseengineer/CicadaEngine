@@ -23,9 +23,8 @@ public:
 
         out_result.Parse(jsonSource);
         if (out_result.HasParseError()) {
-            Logger::Writef(LogEntry::Level::Error, "file {:?} is not valid JSON", path);
-            Logger::Writef(
-                LogEntry::Level::Error,
+            Log::Error("file {:?} is not valid JSON", path);
+            Log::Error(
                 "Error(offset {:d}): {:s}",
                 out_result.GetErrorOffset(),
                 rapidjson::GetParseError_En(out_result.GetParseError())
