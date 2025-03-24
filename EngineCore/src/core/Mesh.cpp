@@ -71,7 +71,7 @@ bool Mesh::LoadObj(std::string_view objPath) {
 
 	objl::Loader loader;
 	if (!loader.LoadFile(objPath.data())) {
-		Logger::Writef(LogEntry::Level::Warning, "Failed to load model data from file {:?}", objPath);
+		Log::Warn("Failed to load model data from file {:?}", objPath);
 		return false;
 	}
 
@@ -89,7 +89,7 @@ bool Mesh::LoadObj(std::string_view objPath) {
 		AddIndexData(1, elem);
 	}
 
-	Logger::Writef(LogEntry::Level::Info, "Model data loaded from file {:?}", objPath);
+	Log::Info("Model data loaded from file {:?}", objPath);
 	return true;
 }
 

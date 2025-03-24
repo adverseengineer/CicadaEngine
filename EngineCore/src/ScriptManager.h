@@ -40,7 +40,7 @@ public:
 			s_lua.safe_script_file(path, env);
 		}
 		catch (sol::error e) {
-			Logger::Error(e.what());
+			Log::Error(e.what());
 		}
 	}
 };

@@ -57,7 +57,7 @@ public:
 	inline void DBG_ShowInfo() const {
 		for (const auto& [name, info] : m_UniformInfoCache) {
 			Log::Info(
-				"Uniform: {:?} (type = {:s}, location = {:d})",
+				"Uniform: {:?} (type = {:d}, location = {:d})",
 				name,
 				info.type,
 				info.location

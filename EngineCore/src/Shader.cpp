@@ -172,5 +172,5 @@ void Shader::SetMat4(std::string_view uniformName, const glm::mat4& value) const
 		glUniformMatrix4fv(temp.value().location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 	else
-		Log::Warn("Shader{: ? } has no such uniform : {: ? }", m_name, uniformName);
+		Log::Warn("Shader {:?} has no such uniform : {:?}", m_name, uniformName);
 }

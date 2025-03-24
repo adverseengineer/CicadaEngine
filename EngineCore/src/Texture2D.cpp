@@ -12,7 +12,7 @@ Texture2D::Texture2D(std::string_view name, std::string_view filePath) : Managed
 	stbi_set_flip_vertically_on_load(true);
 	m_textureData = stbi_load(filePath.data(), &m_width, &m_height, &m_numChannels, 0);
 	if (m_textureData == nullptr) {
-		Logger::Writef(LogEntry::Level::Error, "Unable to load texture data from file {:?}, resorting to fallback", filePath);
+		Log::Error("Unable to load texture data from file {:?}, resorting to fallback", filePath);
 		m_isFallback = true;
 		m_textureData = stbi_load(s_fallbackPath.c_str(), &m_width, &m_height, &m_numChannels, 0);
 		assert(m_textureData != nullptr);
@@ -21,7 +21,7 @@ Texture2D::Texture2D(std::string_view name, std::string_view filePath) : Managed
 	//still need to set this flag, because it is used when freeing the memory
 	m_isLoadedFromFile = true;
 	if (!m_isFallback)
-		Logger::Writef(LogEntry::Level::Info, "Texture data loaded from file: {:?}", filePath);
+		Log::Info("Texture data loaded from file: {:?}", filePath);
 
 	//TODO: is this okay to do here?
 	Upload();
