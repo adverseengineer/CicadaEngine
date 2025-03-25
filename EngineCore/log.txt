@@ -1,47 +1,47 @@
-[2025-03-25 04:50:18.240] [log] [info] Successfully read file "diffuse.vert.glsl"
-[2025-03-25 04:50:18.241] [log] [info] Successfully read file "diffuse.frag.glsl"
-[2025-03-25 04:50:18.245] [log] [info] Model data loaded from file "temp/cube.obj"
-[2025-03-25 04:50:18.350] [log] [info] Model data loaded from file "temp/uvsphere.obj"
-[2025-03-25 04:50:18.371] [log] [info] Model data loaded from file "temp/plane.obj"
-[2025-03-25 04:50:18.393] [log] [info] Texture data loaded from file: "crate.png"
-[2025-03-25 04:50:18.405] [log] [error] Unable to load texture data from file "not-a-real-texture.png", resorting to fallback
-[2025-03-25 04:50:18.454] [log] [info] Texture data loaded from file: "floor.png"
-[2025-03-25 04:50:18.476] [log] [info] Model data loaded from file "temp/plane.obj"
-[2025-03-25 04:50:18.494] [log] [info] Texture data loaded from file: "gw.png"
-[2025-03-25 04:50:18.496] [log] [warning] Failed to load model data from file "temp/chicken_brent.obj"
-[2025-03-25 04:50:18.497] [log] [error] Unable to load texture data from file "br0_tex00.png", resorting to fallback
-[2025-03-25 04:50:18.498] [log] [info] 4
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::TransformComponent
-[2025-03-25 04:50:18.498] [log] [info] Position: (5, 0, -5)
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MeshComponent
-[2025-03-25 04:50:18.498] [log] [info] Mesh: ()
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MaterialComponent
-[2025-03-25 04:50:18.498] [log] [info] Material: (Shader: 0x262fa27fed0, Texture: 0x262fa30b1a0)
-[2025-03-25 04:50:18.498] [log] [info] 3
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::TransformComponent
-[2025-03-25 04:50:18.498] [log] [info] Position: (0, 20, 0)
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MeshComponent
-[2025-03-25 04:50:18.498] [log] [info] Mesh: ()
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MaterialComponent
-[2025-03-25 04:50:18.498] [log] [info] Material: (Shader: 0x262fa27fed0, Texture: 0x262fa30b1a0)
-[2025-03-25 04:50:18.498] [log] [info] 2
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::TransformComponent
-[2025-03-25 04:50:18.498] [log] [info] Position: (0, 0, 0)
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MeshComponent
-[2025-03-25 04:50:18.498] [log] [info] Mesh: ()
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MaterialComponent
-[2025-03-25 04:50:18.498] [log] [info] Material: (Shader: 0x262fa27fed0, Texture: 0x262fa30c820)
-[2025-03-25 04:50:18.498] [log] [info] 1
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::TransformComponent
-[2025-03-25 04:50:18.498] [log] [info] Position: (0, 0.5, 0)
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MeshComponent
-[2025-03-25 04:50:18.498] [log] [info] Mesh: ()
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MaterialComponent
-[2025-03-25 04:50:18.498] [log] [info] Material: (Shader: 0x262fa27fed0, Texture: 0x262fa30ad20)
-[2025-03-25 04:50:18.498] [log] [info] 0
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::TransformComponent
-[2025-03-25 04:50:18.498] [log] [info] Position: (4.5, 0.5, 4.5)
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MeshComponent
-[2025-03-25 04:50:18.498] [log] [info] Mesh: ()
-[2025-03-25 04:50:18.498] [log] [info] struct Cicada::ECS::MaterialComponent
-[2025-03-25 04:50:18.498] [log] [info] Material: (Shader: 0x262fa27fed0, Texture: 0x262fa30baa0)
+[2025-03-25 05:00:31.821] [log] [info] Successfully read file "diffuse.vert.glsl"
+[2025-03-25 05:00:31.822] [log] [info] Successfully read file "diffuse.frag.glsl"
+[2025-03-25 05:00:31.826] [log] [info] Model data loaded from file "temp/cube.obj"
+[2025-03-25 05:00:31.928] [log] [info] Model data loaded from file "temp/uvsphere.obj"
+[2025-03-25 05:00:31.950] [log] [info] Model data loaded from file "temp/plane.obj"
+[2025-03-25 05:00:31.972] [log] [info] Texture data loaded from file: "crate.png"
+[2025-03-25 05:00:31.983] [log] [error] Unable to load texture data from file "not-a-real-texture.png", resorting to fallback
+[2025-03-25 05:00:32.036] [log] [info] Texture data loaded from file: "floor.png"
+[2025-03-25 05:00:32.059] [log] [info] Model data loaded from file "temp/plane.obj"
+[2025-03-25 05:00:32.078] [log] [info] Texture data loaded from file: "gw.png"
+[2025-03-25 05:00:32.079] [log] [warning] Failed to load model data from file "temp/chicken_brent.obj"
+[2025-03-25 05:00:32.080] [log] [error] Unable to load texture data from file "br0_tex00.png", resorting to fallback
+[2025-03-25 05:00:32.081] [log] [info] 4
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::TransformComponent
+[2025-03-25 05:00:32.081] [log] [info] Position: (5, 0, -5)
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MeshComponent
+[2025-03-25 05:00:32.081] [log] [info] Mesh: ()
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MaterialComponent
+[2025-03-25 05:00:32.081] [log] [info] Material: (Shader: 0x214b2f0f0a0, Texture: 0x214b2c8b710)
+[2025-03-25 05:00:32.081] [log] [info] 3
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::TransformComponent
+[2025-03-25 05:00:32.081] [log] [info] Position: (0, 20, 0)
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MeshComponent
+[2025-03-25 05:00:32.081] [log] [info] Mesh: ()
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MaterialComponent
+[2025-03-25 05:00:32.081] [log] [info] Material: (Shader: 0x214b2f0f0a0, Texture: 0x214b2c8b710)
+[2025-03-25 05:00:32.081] [log] [info] 2
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::TransformComponent
+[2025-03-25 05:00:32.081] [log] [info] Position: (0, 0, 0)
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MeshComponent
+[2025-03-25 05:00:32.081] [log] [info] Mesh: ()
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MaterialComponent
+[2025-03-25 05:00:32.081] [log] [info] Material: (Shader: 0x214b2f0f0a0, Texture: 0x214b2c8c790)
+[2025-03-25 05:00:32.081] [log] [info] 1
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::TransformComponent
+[2025-03-25 05:00:32.081] [log] [info] Position: (0, 0.5, 0)
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MeshComponent
+[2025-03-25 05:00:32.081] [log] [info] Mesh: ()
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MaterialComponent
+[2025-03-25 05:00:32.081] [log] [info] Material: (Shader: 0x214b2f0f0a0, Texture: 0x214b2c8ba10)
+[2025-03-25 05:00:32.081] [log] [info] 0
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::TransformComponent
+[2025-03-25 05:00:32.081] [log] [info] Position: (4.5, 0.5, 4.5)
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MeshComponent
+[2025-03-25 05:00:32.081] [log] [info] Mesh: ()
+[2025-03-25 05:00:32.081] [log] [info] struct Cicada::ECS::MaterialComponent
+[2025-03-25 05:00:32.081] [log] [info] Material: (Shader: 0x214b2f0f0a0, Texture: 0x214b2c8c310)

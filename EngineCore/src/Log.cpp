@@ -36,8 +36,9 @@ void Log::Init(std::string_view logFilePath) {
 }
 
 void Log::BuildLogWindow() {
-	static int logLevelFilter = 0; // Index of selected log level
-	static char searchBuffer[128] = ""; // Search input buffer
+
+	static int logLevelFilter = 0;
+	static char searchBuffer[128] = "";
 
 	if (!s_show) return;
 
@@ -45,14 +46,11 @@ void Log::BuildLogWindow() {
 	ImGui::NewFrame();
 	ImGui::Begin("Debug Log", &s_show);
 
-	// Dropdown for log level filtering
 	const char* logLevels[] = { "All", "Debug", "Info", "Warning", "Error", "Critical" };
 	ImGui::Combo("Log Level", &logLevelFilter, logLevels, IM_ARRAYSIZE(logLevels));
 
-	// Search bar for filtering logs
 	ImGui::InputText("Search", searchBuffer, IM_ARRAYSIZE(searchBuffer));
 
-	// Convert log level filter to spdlog level
 	spdlog::level::level_enum minLevel = spdlog::level::trace;
 	if (logLevelFilter == 1) minLevel = spdlog::level::debug;
 	if (logLevelFilter == 2) minLevel = spdlog::level::info;
@@ -60,10 +58,10 @@ void Log::BuildLogWindow() {
 	if (logLevelFilter == 4) minLevel = spdlog::level::err;
 	if (logLevelFilter == 5) minLevel = spdlog::level::critical;
 
-	// Fetch filtered logs
+	//fetch logs based on the current criteria
 	auto logs = FilterLogEntries(minLevel, searchBuffer);
 
-	// Display logs in a scrolling region
+	//and display them in a scroll box
 	ImGui::BeginChild("LogWindow", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
 	for (const auto& log : logs) {
 		assert(s_logColorMap.contains(log.level));
@@ -86,8 +84,7 @@ std::vector<InMemorySink::LogEntry> Log::FilterLogEntries(spdlog::level::level_e
 		inMemSink->logs.end(),
 		std::back_inserter(filteredLogs),
 		[&](const auto& log) {
-			if (searchText.empty()) return true;
-			else return (log.level >= min_level) && (log.message.find(searchText) != std::string::npos);
+			return (log.level >= min_level) && (log.message.find(searchText) != std::string::npos);
 		}
 	);
 
