@@ -1,99 +1,94 @@
 #pragma once
 
 #include "Logger.h"
-#include <fmt/chrono.h>
-#include <glad/glad.h>
+//#include <glad/glad.h>
 #include <imgui.h>
 
 using namespace Cicada;
 
-LogEntry::LogEntry(Level level, const std::string& content) :
-	m_severity(level), m_timeStamp(std::time(nullptr)), m_content(content) {}
+std::shared_ptr<spdlog::logger> Log::s_logger = nullptr;
+size_t Log::s_maxEntries = 1000;
+bool Log::s_autoScroll = true;
+bool Log::s_show = true;
 
-bool Logger::s_showLog = true;
-bool Logger::s_autoScroll = true;
-size_t Logger::s_maxEntries = 1000;
-std::vector<LogEntry> Logger::s_log;
+void Log::Init(std::string_view logFilePath) {
+	try {
+		auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFilePath.data(), true);
+		auto inMemSink = std::make_shared<InMemorySink>();
 
-void Logger::ToggleLog() {
-	s_showLog = !s_showLog;
+		s_logger = std::make_shared<spdlog::logger>("log", spdlog::sinks_init_list{ fileSink, inMemSink });
+		spdlog::register_logger(s_logger);
+
+		s_logger->set_level(spdlog::level::info); //NOTE: change to spdlog::level::trace for more detail
+		s_logger->flush_on(spdlog::level::err); //force log to flush to file upon error
+	}
+	catch (const spdlog::spdlog_ex& ex) {
+		//TODO: how best to handle this?
+	}
 }
 
-void Logger::RenderLog() {
+void Log::BuildLogWindow() {
+	static int logLevelFilter = 0; // Index of selected log level
+	static char searchBuffer[128] = ""; // Search input buffer
 
-	if (!s_showLog)
-		return;
+	if (!s_show) return;
 
-	ImGui::Begin("Log", &s_showLog);
+	ImGui::StyleColorsClassic();
+	ImGui::NewFrame();
+	ImGui::Begin("Debug Log", &s_show);
 
-	if (ImGui::Button("Clear")) {
-		s_log.clear();
-	}
+	// Dropdown for log level filtering
+	const char* logLevels[] = { "All", "Debug", "Info", "Warning", "Error", "Critical" };
+	ImGui::Combo("Log Level", &logLevelFilter, logLevels, IM_ARRAYSIZE(logLevels));
 
-	ImGui::InputInt("Max Entries", (int*)&s_maxEntries);
-	if (s_log.size() > s_maxEntries) {
-		auto firstErased = s_log.begin();
-		auto lastErased = firstErased + (s_log.size() - s_maxEntries);
-		s_log.erase(firstErased, lastErased);
-		//s_log.erase(s_log.begin(), s_log.begin() + (s_log.size() - s_maxEntries));
-	}
+	// Search bar for filtering logs
+	ImGui::InputText("Search", searchBuffer, IM_ARRAYSIZE(searchBuffer));
 
-	ImGui::Checkbox("Auto-scroll", &s_autoScroll);
+	// Convert log level filter to spdlog level
+	spdlog::level::level_enum minLevel = spdlog::level::trace;
+	if (logLevelFilter == 1) minLevel = spdlog::level::debug;
+	if (logLevelFilter == 2) minLevel = spdlog::level::info;
+	if (logLevelFilter == 3) minLevel = spdlog::level::warn;
+	if (logLevelFilter == 4) minLevel = spdlog::level::err;
+	if (logLevelFilter == 5) minLevel = spdlog::level::critical;
 
-	//make the child window scrollable
-	if (ImGui::BeginChild("LogScroll", ImVec2(0, 0), true)) {
-		for (const auto& entry : s_log) {
-			std::string text = fmt::format("{:%H:%M:%S} {:s} {:s}",
-				fmt::localtime(entry.m_timeStamp),
-				s_msgSeverityMap.at(entry.m_severity),
-				entry.m_content
-			);
+	// Fetch filtered logs
+	auto logs = FilterLogEntries(minLevel, searchBuffer);
 
-			ImGui::TextUnformatted(text.c_str());
-		}
-
-		//if autoscroll is enabled and we're not at the bottom, go there
-		if (s_autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
-			ImGui::SetScrollHereY(1.0f);
-		}
+	// Display logs in a scrolling region
+	ImGui::BeginChild("LogWindow", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
+	for (const auto& log : logs) {
+		ImGui::TextUnformatted(log.c_str());
 	}
 	ImGui::EndChild();
+
 	ImGui::End();
 }
 
-void Logger::Write(LogEntry::Level severity, const std::string& msg) {
-	s_log.emplace_back(severity, msg);
+std::vector<std::string> Log::FilterLogEntries(spdlog::level::level_enum min_level, const std::string& searchText) {
+
+	auto inMemSink = std::dynamic_pointer_cast<InMemorySink>(s_logger->sinks()[1]);
+	std::vector<std::string> filteredLogs;
+
+	assert(inMemSink != nullptr);
+
+	for (const auto& entry : inMemSink->logs) {
+		if (entry.level < min_level) continue;
+		if (entry.message.find(searchText) == std::string::npos) continue;
+
+		filteredLogs.push_back(entry.message);
+	}
+
+	return filteredLogs;
 }
 
-void Logger::_Writefv(LogEntry::Level severity, fmt::string_view fmt, fmt::format_args args) {
-	std::string msg = fmt::vformat(fmt, args);
-	s_log.emplace_back(severity, msg);
-}
-
-void Logger::Log(const std::string& msg) {
-	Write(LogEntry::Level::Info, msg);
-}
-
-void Logger::Warn(const std::string& msg) {
-	Write(LogEntry::Level::Warning, msg);
-}
-
-void Logger::Error(const std::string& msg) {
-	Write(LogEntry::Level::Error, msg);
-}
-
+/*
 std::string Logger::GLTypeToStr(unsigned int glType) {
 	if (s_glTypeNameMap.contains(glType))
 		return s_glTypeNameMap.at(glType);
 	else
 		return "invalid";
 }
-
-const std::unordered_map<LogEntry::Level, std::string> Logger::s_msgSeverityMap = {
-	{ LogEntry::Level::Info, "[INFO]" },
-	{ LogEntry::Level::Warning, "[WARN]" },
-	{ LogEntry::Level::Error, "[ERROR]" }
-};
 
 const std::unordered_map<unsigned int, std::string> Logger::s_glTypeNameMap = {
 	{ GL_BYTE, "byte" },
@@ -113,3 +108,4 @@ const std::unordered_map<unsigned int, std::string> Logger::s_glTypeNameMap = {
 	{ GL_VERTEX_SHADER, "vertexShader" },
 	{ GL_FRAGMENT_SHADER, "fragShader" }
 };
+*/

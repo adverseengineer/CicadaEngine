@@ -4,6 +4,10 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+#ifdef CreateWindow //fuck you microsoft, i want this function name
+#undef CreateWindow
+#endif
+
 namespace Cicada {
 
 class GraphicsContext {

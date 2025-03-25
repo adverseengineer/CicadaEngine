@@ -11,21 +11,26 @@ namespace Cicada::Scripting {
 		
 		lua["print"] = sol::nil; //un-register print, we don't want it
 
+		//TODO: expose all new logging functions
+
 		lua.set_function("log", [tostring](const sol::variadic_args& args) {
 			for (const auto& arg : args) {
-				Logger::Log(tostring(arg));
+				//Log::Log(tostring(arg));
+				//TODO: figure out how to convert this
 			}
 		});
 
 		lua.set_function("warn", [tostring](const sol::variadic_args& args) {
 			for (const auto& arg : args) {
-				Logger::Warn(tostring(arg));
+				//Log::Warn(tostring(arg));
+				//TODO: figure out how to convert this
 			}
 		});
 
 		lua.set_function("error", [tostring](const sol::variadic_args& args) {
 			for (const auto& arg : args) {
-				Logger::Error(tostring(arg));
+				//Log::Error(tostring(arg));
+				//TODO: figure out how to convert this
 			}
 		});
 	}

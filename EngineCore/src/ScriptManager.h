@@ -14,7 +14,7 @@ private:
 	static sol::state s_lua;
 
 	static int panic(lua_State*) {
-		Logger::Error("PANIC!!");
+		Log::Error("PANIC!!");
 		return 0;
 	}
 
@@ -30,7 +30,6 @@ public:
 		Scripting::CreateMathBindings(s_lua);
 		Scripting::CreateInputBindings(s_lua);
 		Scripting::CreateEntityBindings(s_lua);
-
 	};
 
 	inline static void LoadScript(const std::string& path) {
@@ -40,7 +39,8 @@ public:
 			s_lua.safe_script_file(path, env);
 		}
 		catch (sol::error e) {
-			Log::Error(e.what());
+			//Log::Error(e.what());
+			//TODO: why can't spdlog handle a cstr?
 		}
 	}
 };

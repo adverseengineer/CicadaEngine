@@ -10,52 +10,20 @@
 #include "JsonUtils.h"
 #include "Renderer.h"
 #include "SceneManager.h"
-#include "ScriptManager.h"
 #include "ui/UISystem.h"
 #include <entt/entt.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Windows.h>
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/ringbuffer_sink.h>
-
-#ifdef CreateWindow //fuck you microsoft, i want this function name
-#undef CreateWindow
-#endif
-
 using namespace Cicada;
 using namespace Cicada::ECS;
+
 
 static void DoUBOShit() {
 	
 }
 
-static std::shared_ptr<spdlog::logger> gameLog;
-static void NewLogStuff(std::string_view logPath) {
-	try
-	{
-		// Create a file sink (logs to "game.log")
-		auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logPath.data(), true);
-
-		// Create a ring buffer sink (stores logs for an in-game debug window)
-		auto memSink = std::make_shared<spdlog::sinks::ringbuffer_sink_mt>(100); // Stores last 100 logs
-
-		// Combine sinks into a multi-sink logger
-		gameLog = std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list{ fileSink, memSink });
-		spdlog::register_logger(gameLog);
-
-		// Set logging level (change to spdlog::level::trace for more details)
-		gameLog->set_level(spdlog::level::info);
-		gameLog->flush_on(spdlog::level::err); // Flush logs immediately on errors
-	}
-	catch (const spdlog::spdlog_ex& ex)
-	{
-		std::cerr << "Log initialization failed: " << ex.what() << std::endl;
-	}
-}
-
-void SetupRegistry(entt::registry& reg) {
+static void SetupRegistry(entt::registry& reg) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -72,6 +40,14 @@ void SetupRegistry(entt::registry& reg) {
 	auto crateMat = Material::Create("crateMat", diffuseShader, crateTex);
 	auto ballMat = Material::Create("ballMat", diffuseShader, ballTex);
 	auto floorMat = Material::Create("floorMat", diffuseShader, floorTex);
+
+	auto sunMesh = Mesh::Create("sunMesh", "temp/plane.obj");
+	auto sunTex = Texture2D::Create("sunTex", "gw.png");
+	auto sunMat = Material::Create("sunMat", diffuseShader, sunTex);
+
+	auto brentMesh = Mesh::Create("brentMesh", "temp/chicken_brent.obj");
+	auto brentTex = Texture2D::Create("brentTex", "br0_tex00.png");
+	auto brentMat = Material::Create("brentMat", diffuseShader, sunTex);
 
 	auto& names = reg.storage<std::string>();
 
@@ -93,46 +69,50 @@ void SetupRegistry(entt::registry& reg) {
 	reg.emplace<MeshComponent>(floor, floorMesh);
 	reg.emplace<MaterialComponent>(floor, floorMat);
 
-	auto sunMesh = Mesh::Create("sunMesh", "temp/plane.obj");
-	auto sunTex = Texture2D::Create("sunTex", "gw.png");
-	auto sunMat = Material::Create("sunMat", diffuseShader, sunTex);
-
 	auto sun = reg.create();
 	names.emplace(sun, "sun");
 	reg.emplace<TransformComponent>(sun, glm::vec3{ 0.0, 20.0, 0.0 });
 	reg.emplace<MeshComponent>(sun, sunMesh);
 	reg.emplace<MaterialComponent>(sun, sunMat);
+
+	auto brent = reg.create();
+	names.emplace(brent, "brent");
+	reg.emplace<TransformComponent>(brent, glm::vec3{ 5.0, 0.0, -5.0 });
+	reg.emplace<MeshComponent>(brent, brentMesh);
+	reg.emplace<MaterialComponent>(brent, brentMat);
 }
+
 
 template<typename... Components>
 void inspect_entity(entt::registry& registry, entt::entity entity) {
-	Logger::Writef(LogEntry::Level::Info, "{}", static_cast<uint32_t>(entity));
+	Log::Info("{}", static_cast<uint32_t>(entity));
 
 	//expand pack to check which known components are attached
 	([&] {
 		if (registry.any_of<Components>(entity)) {
 			const auto& component = registry.get<Components>(entity);
 			std::cout << "  Component: " << typeid(Components).name() << '\n';
-			Logger::Writef(LogEntry::Level::Info, "{}", typeid(Components).name());
+			Log::Info("{}", typeid(Components).name());
 
 			if constexpr (std::is_same_v<Components, TransformComponent>) {
-				Logger::Writef(LogEntry::Level::Info, "Position: ({}, {}, {})", component.localTransform[3][0], component.localTransform[3][1], component.localTransform[3][2]);
+				Log::Info("Position: ({}, {}, {})", component.localTransform[3][0], component.localTransform[3][1], component.localTransform[3][2]);
 			}
 			else if constexpr (std::is_same_v<Components, MeshComponent>) {
-				Logger::Writef(LogEntry::Level::Info, "Mesh: ()");
+				Log::Info("Mesh: ()");
 			}
 			else if constexpr (std::is_same_v<Components, MaterialComponent>) {
 				Shader* tempShad = component.ptr->GetShader().get();
 				Texture* tempTex = component.ptr->GetTexture().get();
-				Logger::Writef(LogEntry::Level::Info, "Material: (Shader: {}, Texture: {})", fmt::ptr(tempShad), fmt::ptr(tempTex));
+				Log::Info("Material: (Shader: {}, Texture: {})", fmt::ptr(tempShad), fmt::ptr(tempTex));
 			}
 		}
 	}(), ...); //expands over all component types
 }
 
 static bool correctGamma = true;
+static int targetFps = 60;
 
-void UpdateDebugUI() {
+static void UpdateDebugUI() {
 
 	auto& sm = SceneManager::Instance();
 	auto& localLight = sm.GetLight("local");
@@ -144,7 +124,7 @@ void UpdateDebugUI() {
 
 	ImGui::StyleColorsClassic();
 	ImGui::NewFrame();
-	ImGui::Begin("Interactive Graphics");
+	ImGui::Begin("Component Viewer");
 
 	//ImGui::ShowDebugLogWindow();
 
@@ -159,9 +139,9 @@ void UpdateDebugUI() {
 		camTrans[0][3], camTrans[1][3], camTrans[2][3], camTrans[3][3]
 	);
 
-	gameLog->info("hello 'log'");
-
 	ImGui::Checkbox("Correct Gamma", &correctGamma);
+
+	ImGui::SliderInt("Max FPS", &targetFps, 20, 240);
 
 	ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight.color));
 	ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight.position));
@@ -176,7 +156,8 @@ void UpdateDebugUI() {
 	ImGui::End();
 }
 
-void ProcessInput(float elapsedSeconds) {
+
+static void ProcessInput(float elapsedSeconds) {
 
 	auto& gc = GraphicsContext::Instance();
 	auto handle = gc.GetWindow();
@@ -188,10 +169,10 @@ void ProcessInput(float elapsedSeconds) {
 		glfwSetWindowShouldClose(handle, true);
 
 	if (glfwGetKey(handle, GLFW_KEY_TAB) == GLFW_PRESS)
-		Logger::ToggleLog();
+		Log::ToggleLogWindow();
 
 	//DO WASDQE
-	auto camMat = cam->GetLocalTransform();
+	glm::mat4 camMat = cam->GetLocalTransform();
 	float camSpeed = 10.0f;
 
 	if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
@@ -240,7 +221,8 @@ void ProcessInput(float elapsedSeconds) {
 	cam->SetPosition(camMat[3]);
 }
 
-void Run3D(entt::registry& reg) {
+
+static void Run3D(entt::registry& reg) {
 
 	glm::vec3 clearColor = { 0.4f, 0.4f, 0.4f };
 
@@ -251,8 +233,6 @@ void Run3D(entt::registry& reg) {
 	auto shader = Shader::Get("diffuse");
 	auto& io = ImGui::GetIO();
 
-	const int targetFps = 60;
-	const double fpsLimit = 1.0 / targetFps;
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
 
@@ -260,15 +240,15 @@ void Run3D(entt::registry& reg) {
 
 		double now = glfwGetTime();
 		double delta = now - lastUpdateTime;
-		
+	
+		double maxFrameTime = 1.0 / targetFps;
+	
 		glfwPollEvents();
 		ProcessInput(delta);
 
-		//EventManager::TriggerEvent("OnUpdate");
-
 		//if it's not yet time for the next frame, don't do it
 		//everything inside this if is only run once per frame of the target fps
-		if((now - lastFrameTime) >= fpsLimit) {
+		if((now - lastFrameTime) >= maxFrameTime) {
 
 			glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -289,17 +269,19 @@ void Run3D(entt::registry& reg) {
 				shader->SetMat4("projection", cam->m_projection);
 			});
 
-			//and finally call render
 			Renderer::Render(reg);
 
+			//and then render ui separately
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 
-			UpdateDebugUI();
-			Logger::RenderLog();
+			//ImGui::NewFrame();
+			//ImGui::End();
 
+			Log::BuildLogWindow();
+
+			
 			ImGui::Render();
-
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
 			glfwSwapBuffers(handle);
@@ -310,7 +292,10 @@ void Run3D(entt::registry& reg) {
 	}
 }
 
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
+
+	Log::Init("log.txt");
 
 	//ScriptManager::Init();
 	//ScriptManager::LoadScript("test.lua");
@@ -322,8 +307,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	gc.InitGlad();
 	gc.Configure();
 
-	NewLogStuff("log.txt");
-
 	//need to initialize UI after window is made
 	auto& ui = UI::UISystem::Instance();
 
@@ -333,19 +316,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	cam->SetMainCam();
 	cam->SetPosition({ 0.0f, 5.0f, 15.0f });
 
-	Light local = {
+	sm.SetLight("local", {
 		glm::vec3{ 0, 10.0f, 0 },
 		glm::vec3{ 0.3f, 0.9f, 0.4f },
 		1.0, 0.0
-	};
-	sm.SetLight("local", local);
-
-	Light global = {
+	});
+	sm.SetLight("global", {
 		glm::vec3{ 40.0f, 40.0f, 40.0f },
 		glm::vec3{ 0.0f, 0.0f, 1.0f },
 		1.0, 0.5
-	};
-	sm.SetLight("global", global);
+	});
 	
 	entt::registry reg;
 	SetupRegistry(reg);
