@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Logger.h"
+#include "Log.h"
 #include <sol/sol.hpp>
 
 namespace Cicada::Scripting {

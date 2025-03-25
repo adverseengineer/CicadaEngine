@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Logger.h"
-//#include <glad/glad.h>
-#include <imgui.h>
+#include "Log.h"
+//#include <glad/glad.h
 
 using namespace Cicada;
 
@@ -10,6 +9,15 @@ std::shared_ptr<spdlog::logger> Log::s_logger = nullptr;
 size_t Log::s_maxEntries = 1000;
 bool Log::s_autoScroll = true;
 bool Log::s_show = true;
+
+std::unordered_map<spdlog::level::level_enum, ImVec4> Log::s_logColorMap = {
+	{ spdlog::level::trace, ImVec4(1.0, 1.0, 1.0, 1.0) }, //white
+	{ spdlog::level::debug, ImVec4(1.0, 0.0, 1.0, 1.0) }, //magenta
+	{ spdlog::level::info, ImVec4(0.5, 0.8, 1.0, 1.00) }, //baby blue
+	{ spdlog::level::warn, ImVec4(1.0, 1.0, 0.0, 1.0) }, //yellow
+	{ spdlog::level::err, ImVec4(1.0, 0.5, 0.0, 1.0) }, //orange
+	{ spdlog::level::critical, ImVec4(1.0, 0.0, 0.0, 1.0) } //red
+};
 
 void Log::Init(std::string_view logFilePath) {
 	try {
@@ -58,26 +66,30 @@ void Log::BuildLogWindow() {
 	// Display logs in a scrolling region
 	ImGui::BeginChild("LogWindow", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
 	for (const auto& log : logs) {
-		ImGui::TextUnformatted(log.c_str());
+		assert(s_logColorMap.contains(log.level));
+		ImGui::TextColored(s_logColorMap.at(log.level), log.message.c_str());
 	}
 	ImGui::EndChild();
 
 	ImGui::End();
 }
 
-std::vector<std::string> Log::FilterLogEntries(spdlog::level::level_enum min_level, const std::string& searchText) {
+std::vector<InMemorySink::LogEntry> Log::FilterLogEntries(spdlog::level::level_enum min_level, const std::string& searchText) {
 
 	auto inMemSink = std::dynamic_pointer_cast<InMemorySink>(s_logger->sinks()[1]);
-	std::vector<std::string> filteredLogs;
+	std::vector<InMemorySink::LogEntry> filteredLogs;
 
 	assert(inMemSink != nullptr);
 
-	for (const auto& entry : inMemSink->logs) {
-		if (entry.level < min_level) continue;
-		if (entry.message.find(searchText) == std::string::npos) continue;
-
-		filteredLogs.push_back(entry.message);
-	}
+	std::copy_if(
+		inMemSink->logs.begin(),
+		inMemSink->logs.end(),
+		std::back_inserter(filteredLogs),
+		[&](const auto& log) {
+			if (searchText.empty()) return true;
+			else return (log.level >= min_level) && (log.message.find(searchText) != std::string::npos);
+		}
+	);
 
 	return filteredLogs;
 }

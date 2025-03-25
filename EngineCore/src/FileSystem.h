@@ -1,5 +1,5 @@
 #pragma once
-#include "Logger.h"
+#include "Log.h"
 #include <fstream>
 
 namespace Cicada {
