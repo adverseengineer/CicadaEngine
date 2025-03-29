@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Log.h"
-//#include <glad/glad.h
 
 using namespace Cicada;
 
@@ -13,7 +12,7 @@ bool Log::s_show = true;
 std::unordered_map<spdlog::level::level_enum, ImVec4> Log::s_logColorMap = {
 	{ spdlog::level::trace, ImVec4(1.0, 1.0, 1.0, 1.0) }, //white
 	{ spdlog::level::debug, ImVec4(1.0, 0.0, 1.0, 1.0) }, //magenta
-	{ spdlog::level::info, ImVec4(0.5, 0.8, 1.0, 1.00) }, //baby blue
+	{ spdlog::level::info, ImVec4(0.7, 0.9, 1.0, 1.00) }, //baby blue
 	{ spdlog::level::warn, ImVec4(1.0, 1.0, 0.0, 1.0) }, //yellow
 	{ spdlog::level::err, ImVec4(1.0, 0.5, 0.0, 1.0) }, //orange
 	{ spdlog::level::critical, ImVec4(1.0, 0.0, 0.0, 1.0) } //red
@@ -91,30 +90,21 @@ std::vector<InMemorySink::LogEntry> Log::FilterLogEntries(spdlog::level::level_e
 	return filteredLogs;
 }
 
-/*
-std::string Logger::GLTypeToStr(unsigned int glType) {
-	if (s_glTypeNameMap.contains(glType))
-		return s_glTypeNameMap.at(glType);
-	else
-		return "invalid";
-}
-
-const std::unordered_map<unsigned int, std::string> Logger::s_glTypeNameMap = {
-	{ GL_BYTE, "byte" },
-	{ GL_UNSIGNED_BYTE, "ubyte" },
-	{ GL_SHORT, "short"},
-	{ GL_UNSIGNED_SHORT, "ushort" },
-	{ GL_INT, "int" },
-	{ GL_UNSIGNED_INT, "uint" },
-	{ GL_FLOAT, "float" },
-	{ GL_DOUBLE, "double" },
-	{ GL_FLOAT_VEC2, "vec2f" },
-	{ GL_FLOAT_VEC3, "vec3f" },
-	{ GL_FLOAT_VEC4, "vec4f" },
-	{ GL_FLOAT_MAT3, "mat3f" },
-	{ GL_FLOAT_MAT4, "mat4f" },
-	{ GL_SAMPLER_2D, "sampler2D"},
-	{ GL_VERTEX_SHADER, "vertexShader" },
-	{ GL_FRAGMENT_SHADER, "fragShader" }
-};
-*/
+//const std::unordered_map<GLint, std::string> Log::s_glTypeNameMap = {
+//	{ GL_BYTE, "byte" },
+//	{ GL_UNSIGNED_BYTE, "ubyte" },
+//	{ GL_SHORT, "short"},
+//	{ GL_UNSIGNED_SHORT, "ushort" },
+//	{ GL_INT, "int" },
+//	{ GL_UNSIGNED_INT, "uint" },
+//	{ GL_FLOAT, "float" },
+//	{ GL_DOUBLE, "double" },
+//	{ GL_FLOAT_VEC2, "vec2f" },
+//	{ GL_FLOAT_VEC3, "vec3f" },
+//	{ GL_FLOAT_VEC4, "vec4f" },
+//	{ GL_FLOAT_MAT3, "mat3f" },
+//	{ GL_FLOAT_MAT4, "mat4f" },
+//	{ GL_SAMPLER_2D, "sampler2D"},
+//	{ GL_VERTEX_SHADER, "vertexShader" },
+//	{ GL_FRAGMENT_SHADER, "fragShader" }
+//};

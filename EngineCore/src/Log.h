@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
+//#include <glad/glad.h>
+
 #define LOG_TRACE(...) SPDLOG_LOGGER_TRACE(Log::GetLogger(), __VA_ARGS__)
 #define LOG_DEBUG(...) SPDLOG_LOGGER_DEBUG(Log::GetLogger(), __VA_ARGS__)
 #define LOG_INFO(...)  SPDLOG_LOGGER_INFO(Log::GetLogger(), __VA_ARGS__)
@@ -49,15 +51,15 @@ private:
 
 	static std::unordered_map<spdlog::level::level_enum, ImVec4> s_logColorMap;
 
-	//static const std::unordered_map<unsigned int, std::string> s_glTypeNameMap;
-	//static std::string GLTypeToStr(unsigned int glType);
+	//static const std::unordered_map<GLint, std::string> s_glTypeNameMap;
 
 	Log() = default;
 	
-	inline static std::shared_ptr<spdlog::logger>& GetLogger() { return s_logger; }
 	static std::vector<InMemorySink::LogEntry> FilterLogEntries(spdlog::level::level_enum min_level, const std::string& searchText);
 
 public:
+	inline static std::shared_ptr<spdlog::logger>& GetLogger() { return s_logger; }
+	
 	static void Init(std::string_view logFilePath);
 	static void BuildLogWindow();
 	
