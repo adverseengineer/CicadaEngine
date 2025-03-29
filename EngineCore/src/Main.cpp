@@ -1,4 +1,5 @@
 #define NOMINMAX //this is needed so that rapidjson doesn't shit the bed, idk why
+//#define GLFW_INCLUDE_NONE //this is needed so GLFW doesn't try to load the already loaded GLAD
 
 #include "Camera.h"
 #include "ecs/components/MaterialComponent.h"
@@ -11,6 +12,7 @@
 #include "Renderer.h"
 #include "SceneManager.h"
 #include "ui/UISystem.h"
+
 #include <entt/entt.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Windows.h>
@@ -18,6 +20,20 @@
 using namespace Cicada;
 using namespace Cicada::ECS;
 
+//TODO: why the fuck does this not work?
+//#include <fmt/format.h>
+//template <>
+//struct fmt::formatter<glm::vec3> {
+//	template <typename ParseContext>
+//	constexpr auto parse(ParseContext& ctx) {
+//		return ctx.begin();
+//	}
+//
+//	template <typename FormatContext>
+//	auto format(const glm::vec3& vec, FormatContext& ctx) {
+//		return format_to(ctx.out(), "({}, {}, {})", vec.x, vec.y, vec.z);
+//	}
+//};
 
 static void DoUBOShit() {
 	
@@ -25,37 +41,34 @@ static void DoUBOShit() {
 
 static void SetupRegistry(entt::registry& reg) {
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
+	auto toonShader = Shader::Create("toon", "toon.vert.glsl", "toon.frag.glsl");
 
-	auto crateMesh = Mesh::Create("crateMesh", "temp/cube.obj");
-	auto ballMesh = Mesh::Create("ballMesh", "temp/uvsphere.obj");
+	auto boxMesh = Mesh::Create("boxMesh", "temp/cube.obj");
+	auto ballMesh = Mesh::Create("ballMesh", "temp/quadsphere.obj");
 	auto floorMesh = Mesh::Create("floorMesh", "temp/plane.obj");
 
-	auto crateTex = Texture2D::Create("crateTex", "crate.png");
+	auto boxTex = Texture2D::Create("boxTex", "crate.png");
 	auto ballTex = Texture2D::Create("ballTex", "not-a-real-texture.png");
 	auto floorTex = Texture2D::Create("floorTex", "floor.png");
 
-	auto crateMat = Material::Create("crateMat", diffuseShader, crateTex);
-	auto ballMat = Material::Create("ballMat", diffuseShader, ballTex);
+	auto boxMat = Material::Create("boxMat", diffuseShader, boxTex);
+	auto ballMat = Material::Create("ballMat", toonShader, boxTex);
 	auto floorMat = Material::Create("floorMat", diffuseShader, floorTex);
 
-	auto sunMesh = Mesh::Create("sunMesh", "temp/plane.obj");
-	auto sunTex = Texture2D::Create("sunTex", "gw.png");
-	auto sunMat = Material::Create("sunMat", diffuseShader, sunTex);
-
-	auto brentMesh = Mesh::Create("brentMesh", "temp/chicken_brent.obj");
-	auto brentTex = Texture2D::Create("brentTex", "br0_tex00.png");
-	auto brentMat = Material::Create("brentMat", diffuseShader, sunTex);
+	auto brentMesh = Mesh::Create("brentMesh", "temp/brent.obj");
+	auto brentTex = Texture2D::Create("brentTex", "temp/br0_tex00.png");
+	auto brentMat = Material::Create("brentMat", diffuseShader, brentTex);
 
 	auto& names = reg.storage<std::string>();
 
-	auto crate = reg.create();
-	names.emplace(crate, "crate");
-	reg.emplace<TransformComponent>(crate, glm::vec3{ 4.5, 0.5, 4.5 });
-	reg.emplace<MeshComponent>(crate, crateMesh);
-	reg.emplace<MaterialComponent>(crate, crateMat);
+	auto box = reg.create();
+	names.emplace(box, "box");
+	reg.emplace<TransformComponent>(box, glm::vec3{ 4.5, 0.5, 4.5 });
+	reg.emplace<MeshComponent>(box, boxMesh);
+	reg.emplace<MaterialComponent>(box, boxMat);
 
 	auto ball = reg.create();
 	names.emplace(ball, "ball");
@@ -68,12 +81,6 @@ static void SetupRegistry(entt::registry& reg) {
 	reg.emplace<TransformComponent>(floor, glm::vec3{ 0.0, 0.0, 0.0 });
 	reg.emplace<MeshComponent>(floor, floorMesh);
 	reg.emplace<MaterialComponent>(floor, floorMat);
-
-	auto sun = reg.create();
-	names.emplace(sun, "sun");
-	reg.emplace<TransformComponent>(sun, glm::vec3{ 0.0, 20.0, 0.0 });
-	reg.emplace<MeshComponent>(sun, sunMesh);
-	reg.emplace<MaterialComponent>(sun, sunMat);
 
 	auto brent = reg.create();
 	names.emplace(brent, "brent");
@@ -126,8 +133,6 @@ static void UpdateDebugUI() {
 	ImGui::NewFrame();
 	ImGui::Begin("Component Viewer");
 
-	//ImGui::ShowDebugLogWindow();
-
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
 	auto& camTrans = cam->GetLocalTransform();
@@ -151,7 +156,6 @@ static void UpdateDebugUI() {
 	ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight.color));
 	ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight.position));
 	ImGui::SliderFloat("Global Intensity", &globalLight.intensity, 0, 1);
-	ImGui::SliderFloat("Global Attenuation", &globalLight.attenuationCoef, 0, 1);
 
 	ImGui::End();
 }
@@ -168,7 +172,7 @@ static void ProcessInput(float elapsedSeconds) {
 	if (glfwGetKey(handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(handle, true);
 
-	if (glfwGetKey(handle, GLFW_KEY_TAB) == GLFW_PRESS)
+	if (glfwGetKey(handle, GLFW_KEY_3) == GLFW_PRESS)
 		Log::ToggleLogWindow();
 
 	//DO WASDQE
@@ -230,8 +234,6 @@ static void Run3D(entt::registry& reg) {
 	auto handle = context.GetWindow();
 	Camera* cam = Camera::GetMainCam();
 	auto& sm = SceneManager::Instance();
-	auto shader = Shader::Get("diffuse");
-	auto& io = ImGui::GetIO();
 
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
@@ -262,7 +264,7 @@ static void Run3D(entt::registry& reg) {
 			else cam->m_aspectRatio = height / (width * 1.0f);
 
 			cam->Update();
-
+			
 			auto view = glm::inverse(cam->GetLocalTransform());
 			Shader::ForEach([&](auto shader) {
 				shader->SetMat4("view", view);
@@ -278,8 +280,8 @@ static void Run3D(entt::registry& reg) {
 			//ImGui::NewFrame();
 			//ImGui::End();
 
-			Log::BuildLogWindow();
-
+			//Log::BuildLogWindow();
+			UpdateDebugUI();
 			
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -318,12 +320,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	sm.SetLight("local", {
 		glm::vec3{ 0, 10.0f, 0 },
-		glm::vec3{ 0.3f, 0.9f, 0.4f },
+		glm::vec3{ 0.7f, 1.0f, 0.8f },
 		1.0, 0.0
 	});
 	sm.SetLight("global", {
 		glm::vec3{ 40.0f, 40.0f, 40.0f },
-		glm::vec3{ 0.0f, 0.0f, 1.0f },
+		glm::vec3{ 1.0f, 1.0f, 1.0f },
 		1.0, 0.5
 	});
 	
@@ -341,8 +343,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	//auto& objectsJson = sceneJson["gameObjects"];
 
-	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
-	
 	for (auto entity : reg.storage<entt::entity>()) {
 		inspect_entity<TransformComponent, MeshComponent, MaterialComponent>(reg, entity);
 	}
