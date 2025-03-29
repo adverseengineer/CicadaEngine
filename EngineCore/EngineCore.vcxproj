@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -51,6 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -120,6 +122,9 @@
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <ShowIncludes>false</ShowIncludes>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,6 +150,9 @@
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <ShowIncludes>false</ShowIncludes>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -226,6 +234,13 @@
     <None Include="test.lua" />
     <None Include="test_input.json" />
     <None Include="test_scene.json" />
+    <None Include="toon.frag.glsl" />
+    <None Include="toon.vert.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="fallback.png" />
+    <Image Include="floor.png" />
+    <Image Include="gw.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -197,5 +197,18 @@
     <None Include="src\ecs\components\TransformComponent.h">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="toon.frag.glsl" />
+    <None Include="toon.vert.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="fallback.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="floor.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="gw.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
