@@ -9,14 +9,14 @@
 
 namespace Cicada {
 
-struct UniformInfo {
-	unsigned int type;
-	int location;
-};
-
 class Shader : public ManagedObject<Shader> {
 friend class ManagedObject<Shader>;
 private:
+
+	struct UniformInfo {
+		unsigned int type;
+		int location;
+	};
 
 	static std::unordered_map<std::string, std::weak_ptr<Shader>> s_instances;
 

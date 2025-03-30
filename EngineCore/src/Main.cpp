@@ -37,6 +37,33 @@ using namespace Cicada::ECS;
 
 static void DoUBOShit() {
 	
+	GLuint uboMatrices;
+	glGenBuffers(1, &uboMatrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	// Bind the UBO to the binding point
+	auto normShad = Shader::Get("norm");
+	assert(normShad != nullptr);
+	auto shadProg = normShad->GetShaderProg();
+
+	GLuint blockIndex = glGetUniformBlockIndex(shadProg, "Matrices");
+	glUniformBlockBinding(shadProg, blockIndex, 0);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
+}
+
+static void UpdateUBOShit(GLuint uboMatrices) {
+
+	glm::mat4 viewMatrix = ...; // Your view matrix
+	glm::mat4 projectionMatrix = ...; // Your projection matrix
+
+	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+	GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+	memcpy(p, &viewMatrix, sizeof(glm::mat4));
+	memcpy((char*)p + sizeof(glm::mat4), &projectionMatrix, sizeof(glm::mat4));
+	glUnmapBuffer(GL_UNIFORM_BUFFER);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 static void SetupRegistry(entt::registry& reg) {
@@ -45,6 +72,7 @@ static void SetupRegistry(entt::registry& reg) {
 
 	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
 	auto toonShader = Shader::Create("toon", "toon.vert.glsl", "toon.frag.glsl");
+	auto normShader = Shader::Create("norm", "norm.vert.glsl", "norm.frag.glsl");
 
 	auto boxMesh = Mesh::Create("boxMesh", "temp/cube.obj");
 	auto ballMesh = Mesh::Create("ballMesh", "temp/quadsphere.obj");
@@ -60,7 +88,7 @@ static void SetupRegistry(entt::registry& reg) {
 
 	auto brentMesh = Mesh::Create("brentMesh", "temp/brent.obj");
 	auto brentTex = Texture2D::Create("brentTex", "temp/br0_tex00.png");
-	auto brentMat = Material::Create("brentMat", diffuseShader, brentTex);
+	auto brentMat = Material::Create("brentMat", normShader, brentTex);
 
 	auto& names = reg.storage<std::string>();
 
@@ -84,7 +112,7 @@ static void SetupRegistry(entt::registry& reg) {
 
 	auto brent = reg.create();
 	names.emplace(brent, "brent");
-	reg.emplace<TransformComponent>(brent, glm::vec3{ 5.0, 0.0, -5.0 });
+	reg.emplace<TransformComponent>(brent, glm::vec3{ -5.0, 0.0, 5.0 });
 	reg.emplace<MeshComponent>(brent, brentMesh);
 	reg.emplace<MaterialComponent>(brent, brentMat);
 }
