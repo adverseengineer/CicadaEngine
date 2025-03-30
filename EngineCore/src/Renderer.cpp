@@ -10,6 +10,8 @@
 using namespace Cicada;
 using namespace Cicada::ECS;
 
+bool Renderer::s_wireframeEnabled = false;
+
 void Renderer::Render(entt::registry& reg) {
 	
 	static auto& sm = SceneManager::Instance();
@@ -55,4 +57,12 @@ void Renderer::Render(entt::registry& reg) {
 		material->Bind();
 		glDrawElements(mesh->GetPrimitiveType(), (GLsizei)mesh->IndexElemCount(), GL_UNSIGNED_SHORT, (void*)0);
 	}
+}
+
+void Renderer::ToggleWireframe() {
+	s_wireframeEnabled = !s_wireframeEnabled;
+	if (s_wireframeEnabled)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

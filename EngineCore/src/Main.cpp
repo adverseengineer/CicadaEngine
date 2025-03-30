@@ -35,40 +35,38 @@ using namespace Cicada::ECS;
 //	}
 //};
 
-static void DoUBOShit() {
-	
-	GLuint uboMatrices;
-	glGenBuffers(1, &uboMatrices);
-	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	// Bind the UBO to the binding point
-	auto normShad = Shader::Get("norm");
-	assert(normShad != nullptr);
-	auto shadProg = normShad->GetShaderProg();
-
-	GLuint blockIndex = glGetUniformBlockIndex(shadProg, "Matrices");
-	glUniformBlockBinding(shadProg, blockIndex, 0);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
-}
-
-static void UpdateUBOShit(GLuint uboMatrices) {
-
-	glm::mat4 viewMatrix = ...; // Your view matrix
-	glm::mat4 projectionMatrix = ...; // Your projection matrix
-
-	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-	GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
-	memcpy(p, &viewMatrix, sizeof(glm::mat4));
-	memcpy((char*)p + sizeof(glm::mat4), &projectionMatrix, sizeof(glm::mat4));
-	glUnmapBuffer(GL_UNIFORM_BUFFER);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-}
+//static void DoUBOShit() {
+//	
+//	GLuint uboMatrices;
+//	glGenBuffers(1, &uboMatrices);
+//	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+//	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_STATIC_DRAW);
+//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+//
+//	// Bind the UBO to the binding point
+//	auto normShad = Shader::Get("norm");
+//	assert(normShad != nullptr);
+//	auto shadProg = normShad->GetShaderProg();
+//
+//	GLuint blockIndex = glGetUniformBlockIndex(shadProg, "Matrices");
+//	glUniformBlockBinding(shadProg, blockIndex, 0);
+//	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
+//}
+//
+//static void UpdateUBOShit(GLuint uboMatrices) {
+//
+//	glm::mat4 viewMatrix = ...; // Your view matrix
+//	glm::mat4 projectionMatrix = ...; // Your projection matrix
+//
+//	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+//	GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+//	memcpy(p, &viewMatrix, sizeof(glm::mat4));
+//	memcpy((char*)p + sizeof(glm::mat4), &projectionMatrix, sizeof(glm::mat4));
+//	glUnmapBuffer(GL_UNIFORM_BUFFER);
+//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+//}
 
 static void SetupRegistry(entt::registry& reg) {
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
 	auto toonShader = Shader::Create("toon", "toon.vert.glsl", "toon.frag.glsl");
@@ -152,10 +150,10 @@ static void UpdateDebugUI() {
 	auto& sm = SceneManager::Instance();
 	auto& localLight = sm.GetLight("local");
 	auto& globalLight = sm.GetLight("global");
+	auto& io = ImGui::GetIO();
 
 	Camera* cam = Camera::GetMainCam();
-
-	auto& io = ImGui::GetIO();
+	auto& camTrans = cam->GetLocalTransform();
 
 	ImGui::StyleColorsClassic();
 	ImGui::NewFrame();
@@ -163,7 +161,6 @@ static void UpdateDebugUI() {
 
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
-	auto& camTrans = cam->GetLocalTransform();
 	ImGui::Text(
 		"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
 		camTrans[0][0], camTrans[1][0], camTrans[2][0], camTrans[3][0],
@@ -199,6 +196,10 @@ static void ProcessInput(float elapsedSeconds) {
 	//if the user hits escape, close the window
 	if (glfwGetKey(handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(handle, true);
+
+	//if the user hits escape, close the window
+	if (glfwGetKey(handle, GLFW_KEY_4) == GLFW_PRESS)
+		Renderer::ToggleWireframe();
 
 	if (glfwGetKey(handle, GLFW_KEY_3) == GLFW_PRESS)
 		Log::ToggleLogWindow();
