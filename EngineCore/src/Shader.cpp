@@ -100,14 +100,14 @@ void Shader::QueryUniforms() {
 		glGetActiveUniform(m_shaderProg, (GLint)i, sizeof(name), nullptr, &size, &type, name);
 		GLint location = glGetUniformLocation(m_shaderProg, name);
 
-		m_UniformInfoCache[name] = { type, location };
+		m_uniformInfoCache[name] = { type, location };
 	}
 }
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
-std::optional<UniformInfo> Shader::GetUniform(std::string_view uniformName) const {
-	if (m_UniformInfoCache.contains(uniformName.data()))
-		return m_UniformInfoCache.at(uniformName.data());
+std::optional<Shader::UniformInfo> Shader::GetUniform(std::string_view uniformName) const {
+	if (m_uniformInfoCache.contains(uniformName.data()))
+		return m_uniformInfoCache.at(uniformName.data());
 	else
 		return std::nullopt;
 }
@@ -116,7 +116,7 @@ void Shader::Bind() const {
 	glUseProgram(m_shaderProg);
 };
 
-void Shader::Unbind() const {
+void Shader::Unbind() {
 	glUseProgram(0);
 }
 

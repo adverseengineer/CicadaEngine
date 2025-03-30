@@ -20,7 +20,7 @@ private:
 
 	static std::unordered_map<std::string, std::weak_ptr<Shader>> s_instances;
 
-	std::unordered_map<std::string, UniformInfo> m_UniformInfoCache;
+	std::unordered_map<std::string, UniformInfo> m_uniformInfoCache;
 
 	unsigned int m_shaderProg = 0;
 
@@ -43,7 +43,7 @@ private:
 
 public:
 	void Bind() const;
-	void Unbind() const;
+	static void Unbind();
 	inline unsigned int GetShaderProg() const { return m_shaderProg; }
 
 	//void AttachUniformBlock(std::string_view blockName, unsigned int bindingPoint) const;
@@ -55,7 +55,7 @@ public:
 	void SetMat4(std::string_view uniformName, const glm::mat4& value) const;
 	
 	inline void DBG_ShowInfo() const {
-		for (const auto& [name, info] : m_UniformInfoCache) {
+		for (const auto& [name, info] : m_uniformInfoCache) {
 			Log::Info(
 				"Uniform: {:?} (type = {:d}, location = {:d})",
 				name,
