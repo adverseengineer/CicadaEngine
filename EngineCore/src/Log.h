@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
+//TODO: include this when you know how to not make it cause a #define error
 //#include <glad/glad.h>
 
 #define LOG_TRACE(...) SPDLOG_LOGGER_TRACE(Log::GetLogger(), __VA_ARGS__)

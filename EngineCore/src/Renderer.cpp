@@ -1,11 +1,11 @@
 
+#include "ecs/components/MaterialComponent.h"
+#include "ecs/components/MeshComponent.h"
+#include "ecs/components/TransformComponent.h"
+#include "GraphicsStructures.h"
 #include "Renderer.h"
 #include "SceneManager.h"
 #include "Shader.h"
-#include "ecs/components/MeshComponent.h"
-#include "ecs/components/MaterialComponent.h"
-#include "ecs/components/TransformComponent.h"
-#include "GraphicsStructures.h"
 
 using namespace Cicada;
 using namespace Cicada::ECS;

@@ -192,6 +192,7 @@
     <ClInclude Include="3rdparty\OBJ_Loader.h" />
     <ClInclude Include="3rdparty\stb_image.h" />
     <ClInclude Include="src\ManagedObject.h" />
+    <ClInclude Include="src\ShaderDataBuffer.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\BoundingBox.h" />
     <ClInclude Include="src\Camera.h" />
