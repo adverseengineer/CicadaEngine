@@ -27,7 +27,8 @@ private:
 		std::string message;
 	};
 
-	std::vector<LogEntry> logs;
+	std::vector<LogEntry> m_logs;
+	static int s_maxEntries;
 
 protected:
 	void sink_it_(const spdlog::details::log_msg& msg) override {
@@ -36,17 +37,25 @@ protected:
 		spdlog::memory_buf_t formatted;
 		spdlog::sinks::base_sink<std::mutex>::formatter_->format(msg, formatted);
 
-		logs.push_back({ msg.level, fmt::to_string(formatted) });
+		m_logs.push_back({ msg.level, fmt::to_string(formatted) });
+
+		//enforce max entries constraint by erasing stuff off the back till we are within proper size
+		if (m_logs.size() > static_cast<size_t>(s_maxEntries)) {
+			m_logs.erase(m_logs.begin(), m_logs.begin() + (m_logs.size() - s_maxEntries));
+		}
 	}
 
-	void flush_() override {} //never actually needs to flush, since msgs are being appended immediately
+	void flush_() override {} //doesn't need to actually do anything, since msgs are being appended immediately
+
+	void clear() {
+		m_logs.clear();
+	}
 };
 
 class Log {
 private:
 	
 	static std::shared_ptr<spdlog::logger> s_logger;
-	static size_t s_maxEntries;
 	static bool s_autoScroll;
 	static bool s_show;
 

@@ -4,8 +4,9 @@
 
 using namespace Cicada;
 
+int InMemorySink::s_maxEntries = 1000;
+
 std::shared_ptr<spdlog::logger> Log::s_logger = nullptr;
-size_t Log::s_maxEntries = 1000;
 bool Log::s_autoScroll = true;
 bool Log::s_show = true;
 
@@ -45,6 +46,13 @@ void Log::BuildLogWindow() {
 	ImGui::NewFrame();
 	ImGui::Begin("Debug Log", &s_show);
 
+	ImGui::InputInt("Max Entries", &InMemorySink::s_maxEntries);
+
+	ImGui::SameLine();
+	if (ImGui::Button("Clear Log")) {
+		std::dynamic_pointer_cast<InMemorySink>(Log::s_logger->sinks()[1])->clear(); //clear the in-memory log entries
+	}
+
 	const char* logLevels[] = { "All", "Debug", "Info", "Warning", "Error", "Critical" };
 	ImGui::Combo("Log Level", &logLevelFilter, logLevels, IM_ARRAYSIZE(logLevels));
 
@@ -79,8 +87,8 @@ std::vector<InMemorySink::LogEntry> Log::FilterLogEntries(spdlog::level::level_e
 	assert(inMemSink != nullptr);
 
 	std::copy_if(
-		inMemSink->logs.begin(),
-		inMemSink->logs.end(),
+		inMemSink->m_logs.begin(),
+		inMemSink->m_logs.end(),
 		std::back_inserter(filteredLogs),
 		[&](const auto& log) {
 			return (log.level >= min_level) && (log.message.find(searchText) != std::string::npos);
