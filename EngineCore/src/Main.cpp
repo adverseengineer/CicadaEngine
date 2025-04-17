@@ -17,6 +17,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <Windows.h>
 
+#include "ShaderDataBuffer.h"
+
 using namespace Cicada;
 using namespace Cicada::ECS;
 
@@ -34,37 +36,6 @@ using namespace Cicada::ECS;
 //		return format_to(ctx.out(), "({}, {}, {})", vec.x, vec.y, vec.z);
 //	}
 //};
-
-//static void DoUBOShit() {
-//	
-//	GLuint uboMatrices;
-//	glGenBuffers(1, &uboMatrices);
-//	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-//	glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_STATIC_DRAW);
-//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-//
-//	// Bind the UBO to the binding point
-//	auto normShad = Shader::Get("norm");
-//	assert(normShad != nullptr);
-//	auto shadProg = normShad->GetShaderProg();
-//
-//	GLuint blockIndex = glGetUniformBlockIndex(shadProg, "Matrices");
-//	glUniformBlockBinding(shadProg, blockIndex, 0);
-//	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
-//}
-//
-//static void UpdateUBOShit(GLuint uboMatrices) {
-//
-//	glm::mat4 viewMatrix = ...; // Your view matrix
-//	glm::mat4 projectionMatrix = ...; // Your projection matrix
-//
-//	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-//	GLvoid* p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
-//	memcpy(p, &viewMatrix, sizeof(glm::mat4));
-//	memcpy((char*)p + sizeof(glm::mat4), &projectionMatrix, sizeof(glm::mat4));
-//	glUnmapBuffer(GL_UNIFORM_BUFFER);
-//	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-//}
 
 static void SetupRegistry(entt::registry& reg) {
 
@@ -145,7 +116,7 @@ void inspect_entity(entt::registry& registry, entt::entity entity) {
 static bool correctGamma = true;
 static int targetFps = 60;
 
-static void UpdateDebugUI() {
+static void BuildDebugUI() {
 
 	auto& sm = SceneManager::Instance();
 	auto& localLight = sm.GetLight("local");
@@ -254,6 +225,25 @@ static void ProcessInput(float elapsedSeconds) {
 	cam->SetPosition(camMat[3]);
 }
 
+inline void TEMP_BlockBind(unsigned int shaderProg, unsigned int bindingPoint, unsigned int RENAME_indexOfTheBlockInTheShader) {
+	glUniformBlockBinding(shaderProg, RENAME_indexOfTheBlockInTheShader, bindingPoint);
+}
+
+static glm::vec3 skinchData;
+inline void TEMP_SkinchMod() {
+	static int counter = 0;
+	static int direction = 1;
+	
+	if (counter <= 0)
+		direction = 1;
+	else if (counter >= 100)
+		direction = -1;
+
+	counter += direction;
+
+	skinchData.x = skinchData.y = skinchData.z = counter / 100.0f;
+	Log::Critical("counter: {:d}", counter);
+}
 
 static void Run3D(entt::registry& reg) {
 
@@ -264,6 +254,28 @@ static void Run3D(entt::registry& reg) {
 	Camera* cam = Camera::GetMainCam();
 	auto& sm = SceneManager::Instance();
 
+	auto& globalLight = sm.GetLight("global");
+	auto& localLight= sm.GetLight("local");
+
+	//ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
+	//ShaderDataBuffer lights(sizeof(Light) * 2);
+
+	ShaderDataBuffer skinch(sizeof(glm::vec3));
+
+	//bind the UBOs to the binding points
+	//camMats.Bind(0);
+	//lights.Bind(1);
+
+	skinch.Bind(0);
+
+	//bind each shader's cameraData block to the same binding point as the camera UBO
+	//Shader::ForEach([&](auto shader) { TEMP_BlockBind(shader->GetShaderProg(), 0, 0); });
+	//do the same for the lights
+	//TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 1, 1);
+	//TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), 1, 1);
+
+	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 0, 0);
+	
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
 
@@ -295,6 +307,16 @@ static void Run3D(entt::registry& reg) {
 			cam->Update();
 			
 			auto view = glm::inverse(cam->GetLocalTransform());
+
+			//camMats.Write(glm::value_ptr(view), 0, sizeof(view));
+			//camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));
+
+			//lights.Write(&globalLight, 0, sizeof(globalLight));
+			//lights.Write(&localLight, sizeof(globalLight), sizeof(localLight));
+
+			TEMP_SkinchMod();
+			skinch.Fill(glm::value_ptr(skinchData), sizeof(skinchData));
+
 			Shader::ForEach([&](auto shader) {
 				shader->SetMat4("view", view);
 				shader->SetMat4("projection", cam->m_projection);
@@ -309,8 +331,8 @@ static void Run3D(entt::registry& reg) {
 			//ImGui::NewFrame();
 			//ImGui::End();
 
-			//Log::BuildLogWindow();
-			UpdateDebugUI();
+			Log::BuildLogWindow();
+			//BuildDebugUI();
 			
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

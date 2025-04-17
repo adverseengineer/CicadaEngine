@@ -10,28 +10,15 @@ out vec3 fragPosition;
 out vec2 fragTexCoord;
 
 uniform mat4 world;
-uniform mat4 view;
-uniform mat4 projection;
 
-layout(std140) uniform CameraData {
-	//float _;
-	float foo;
-	vec2 bar;
-	mat4 baz;
-	//mat4 view;
-	//mat4 projection;
-}; 
-
-//function that superfluously uses the uniform block members to ensure they are not optimized out
-vec4 glog() {
-	return foo * baz * vec4(bar,bar);
-}
+//layout(std140, binding = 0) uniform CameraData {
+	uniform mat4 view;
+	uniform mat4 projection;
+//}; 
 
 void main() {
 	
-	//use the function in a way that doesnt matter here. hopefully this isnt optimized out
-	vec4 worldPosition = glog();
-	worldPosition = world * vec4(position, 1.0);
+	vec4 worldPosition = world * vec4(position, 1.0);
 	
 	gl_Position = projection * view * worldPosition;
 

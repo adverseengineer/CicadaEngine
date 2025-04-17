@@ -10,6 +10,7 @@ out vec3 fragPosition;
 out vec2 fragTexCoord;
 
 uniform mat4 world;
+
 uniform mat4 view;
 uniform mat4 projection;
 

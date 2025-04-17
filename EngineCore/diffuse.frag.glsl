@@ -10,25 +10,37 @@ uniform float materialAmbientIntensity;
 uniform float materialSpecularIntensity;
 uniform float materialShininess;
 
-uniform vec3 globalLightPosition;
-uniform vec3 globalLightColor;
-uniform float globalLightIntensity;
+//layout(std140, binding = 1) uniform LightData {
+	uniform vec3 globalLightPosition;
+	uniform vec3 globalLightColor;
+	uniform float globalLightIntensity;
+	uniform float globalLightAttenuationCoef;
 
-uniform vec3 localLightPosition;
-uniform vec3 localLightColor;
-uniform float localLightIntensity;
-uniform float localLightAttenuationCoef;
+	uniform vec3 localLightPosition;
+	uniform vec3 localLightColor;
+	uniform float localLightIntensity;
+	uniform float localLightAttenuationCoef;
+//};
+
+layout(std140) uniform Skinch {
+	uniform vec3 gurt;
+};
 
 uniform vec3 viewPosition;
 
 uniform sampler2D tex;
 
-vec4 calculateDiffuse(vec3 lightDir, vec3 unitNormal, float lightIntensity, vec3 lightColor);
+vec4 calculateDiffuse(vec3 lightDir, vec3 unitNormal, float lightIntensity, vec3 lightColor) {
+	float cosAngIncidence = dot(unitNormal, lightDir);
+	cosAngIncidence = clamp(cosAngIncidence, 0.0f, 1.0f);
+	vec3 diffuse = cosAngIncidence * lightIntensity * lightColor;
+	return vec4(diffuse, 1.0f);
+}
 
 void main() {
 
 	vec3 toGlobalLightDir = normalize(globalLightPosition - fragPosition);
-	vec4 globalDiffuse = calculateDiffuse(toGlobalLightDir, fragNormal, globalLightIntensity, globalLightColor);
+	vec4 globalDiffuse = calculateDiffuse(toGlobalLightDir, fragNormal, globalLightIntensity, gurt);
 
 	vec3 viewDir = normalize(viewPosition - fragPosition);
 	vec4 specular;
@@ -54,12 +66,4 @@ void main() {
 	vec4 ambientColor = materialAmbientIntensity * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientColor.a = 1.0f;
 	color = (ambientColor + globalDiffuse + localDiffuse + specular) * texFragColor;
-}
-
-vec4 calculateDiffuse(vec3 lightDir, vec3 unitNormal, float lightIntensity, vec3 lightColor)
-{
-	float cosAngIncidence = dot(unitNormal, lightDir);
-	cosAngIncidence = clamp(cosAngIncidence, 0.0f, 1.0f);
-	vec3 diffuse = cosAngIncidence * lightIntensity * lightColor;
-	return vec4(diffuse, 1.0f);
 }

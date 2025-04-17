@@ -10,14 +10,17 @@ uniform float materialAmbientIntensity;
 //uniform float materialSpecularIntensity;
 //uniform float materialShininess;
 
-uniform vec3 globalLightPosition;
-uniform vec3 globalLightColor;
-uniform float globalLightIntensity;
+//layout(std140, binding = 1) uniform LightData {
+	uniform vec3 globalLightPosition;
+	uniform vec3 globalLightColor;
+	uniform float globalLightIntensity;
+	uniform float globalLightAttenuationCoef;
 
-uniform vec3 localLightPosition;
-uniform vec3 localLightColor;
-uniform float localLightIntensity;
-uniform float localLightAttenuationCoef;
+	uniform vec3 localLightPosition;
+	uniform vec3 localLightColor;
+	uniform float localLightIntensity;
+	uniform float localLightAttenuationCoef;
+//};
 
 uniform vec3 viewPosition;
 
