@@ -18,9 +18,8 @@ private:
 		int location;
 	};
 
-	static std::unordered_map<std::string, std::weak_ptr<Shader>> s_instances;
-
 	std::unordered_map<std::string, UniformInfo> m_uniformInfoCache;
+
 
 	unsigned int m_shaderProg = 0;
 

@@ -7,8 +7,6 @@
 
 using namespace Cicada;
 
-std::unordered_map<std::string, std::weak_ptr<Shader>> Shader::s_instances;
-
 Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) : ManagedObject(shaderName) {
 	
 	std::string vertSource, fragSource;
