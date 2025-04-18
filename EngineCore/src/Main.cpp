@@ -257,24 +257,13 @@ static void Run3D(entt::registry& reg) {
 	auto& globalLight = sm.GetLight("global");
 	auto& localLight= sm.GetLight("local");
 
-	//ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
-	//ShaderDataBuffer lights(sizeof(Light) * 2);
-
-	ShaderDataBuffer skinch(sizeof(glm::vec3));
-
-	//bind the UBOs to the binding points
-	//camMats.Bind(0);
-	//lights.Bind(1);
-
-	skinch.Bind(0);
-
-	//bind each shader's cameraData block to the same binding point as the camera UBO
-	//Shader::ForEach([&](auto shader) { TEMP_BlockBind(shader->GetShaderProg(), 0, 0); });
-	//do the same for the lights
-	//TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 1, 1);
-	//TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), 1, 1);
-
-	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 0, 0);
+	ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
+	
+	camMats.Bind(0); //bind camera data UBO to 0
+	
+	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 0, 0); //bind the cameraData block to 1
+	TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), 0, 0); //bind the cameraData block to 1
+	TEMP_BlockBind(Shader::Get("norm")->GetShaderProg(), 0, 0); //bind the cameraData block to 1
 	
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
@@ -308,20 +297,16 @@ static void Run3D(entt::registry& reg) {
 			
 			auto view = glm::inverse(cam->GetLocalTransform());
 
-			//camMats.Write(glm::value_ptr(view), 0, sizeof(view));
-			//camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));
+			//write to both UBOs
+			//TEMP_SkinchMod();
+			//skinch.Fill(glm::value_ptr(skinchData), sizeof(skinchData));
 
-			//lights.Write(&globalLight, 0, sizeof(globalLight));
-			//lights.Write(&localLight, sizeof(globalLight), sizeof(localLight));
+			//Shader::Get("diffuse")->SetMat4("view", view);
+			//Shader::Get("diffuse")->SetMat4("projection", cam->m_projection);
 
-			TEMP_SkinchMod();
-			skinch.Fill(glm::value_ptr(skinchData), sizeof(skinchData));
-
-			Shader::ForEach([&](auto shader) {
-				shader->SetMat4("view", view);
-				shader->SetMat4("projection", cam->m_projection);
-			});
-
+			camMats.Write(glm::value_ptr(view), 0, sizeof(view));
+			camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));
+			
 			Renderer::Render(reg);
 
 			//and then render ui separately

@@ -23,7 +23,7 @@ uniform float materialShininess;
 //};
 
 layout(std140) uniform Skinch {
-	uniform vec3 gurt;
+	vec3 gurt;
 };
 
 uniform vec3 viewPosition;
@@ -40,7 +40,7 @@ vec4 calculateDiffuse(vec3 lightDir, vec3 unitNormal, float lightIntensity, vec3
 void main() {
 
 	vec3 toGlobalLightDir = normalize(globalLightPosition - fragPosition);
-	vec4 globalDiffuse = calculateDiffuse(toGlobalLightDir, fragNormal, globalLightIntensity, gurt);
+	vec4 globalDiffuse = calculateDiffuse(toGlobalLightDir, fragNormal, globalLightIntensity, globalLightColor);
 
 	vec3 viewDir = normalize(viewPosition - fragPosition);
 	vec4 specular;

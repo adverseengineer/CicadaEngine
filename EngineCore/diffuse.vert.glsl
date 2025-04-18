@@ -11,10 +11,10 @@ out vec2 fragTexCoord;
 
 uniform mat4 world;
 
-//layout(std140, binding = 0) uniform CameraData {
-	uniform mat4 view;
-	uniform mat4 projection;
-//}; 
+layout(std140) uniform CameraData {
+	mat4 view;
+	mat4 projection;
+};
 
 void main() {
 	

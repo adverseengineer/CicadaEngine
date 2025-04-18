@@ -10,8 +10,11 @@ out vec3 fragPosition;
 out vec2 fragTexCoord;
 
 uniform mat4 world;
-uniform mat4 view;
-uniform mat4 projection;
+
+layout(std140) uniform CameraData {
+	mat4 view;
+	mat4 projection;
+};
 
 void main() {
 	vec4 worldPosition = world * vec4(position, 1.0);
