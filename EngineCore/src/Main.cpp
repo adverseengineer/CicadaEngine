@@ -258,13 +258,17 @@ static void Run3D(entt::registry& reg) {
 	auto& localLight= sm.GetLight("local");
 
 	ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
+	ShaderDataBuffer skinch(sizeof(glm::vec3));
+
+	camMats.Bind(0); //bind camera data UBO to bp0
+	//skinch.Bind(1); //bind skinch to bp1
+
+	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 0, 0); //bind the cameraData block of diffuse to bp0
+	TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), 0, 0); //bind the cameraData block of toon to bp0
+	TEMP_BlockBind(Shader::Get("norm")->GetShaderProg(), 0, 0); //bind the cameraData block of norm to bp0
 	
-	camMats.Bind(0); //bind camera data UBO to 0
-	
-	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 0, 0); //bind the cameraData block to 1
-	TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), 0, 0); //bind the cameraData block to 1
-	TEMP_BlockBind(Shader::Get("norm")->GetShaderProg(), 0, 0); //bind the cameraData block to 1
-	
+	//TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 1, 1); //bind skinch block of diffuse to bp1
+
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
 
@@ -300,9 +304,6 @@ static void Run3D(entt::registry& reg) {
 			//write to both UBOs
 			//TEMP_SkinchMod();
 			//skinch.Fill(glm::value_ptr(skinchData), sizeof(skinchData));
-
-			//Shader::Get("diffuse")->SetMat4("view", view);
-			//Shader::Get("diffuse")->SetMat4("projection", cam->m_projection);
 
 			camMats.Write(glm::value_ptr(view), 0, sizeof(view));
 			camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));

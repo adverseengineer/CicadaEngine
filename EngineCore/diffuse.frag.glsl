@@ -65,5 +65,6 @@ void main() {
 	vec4 texFragColor = texture(tex, fragTexCoord) * fragColor;
 	vec4 ambientColor = materialAmbientIntensity * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientColor.a = 1.0f;
-	color = (ambientColor + globalDiffuse + localDiffuse + specular) * texFragColor;
+	color = vec4(gurt, 1.0f);
+	//color = (ambientColor + globalDiffuse + localDiffuse + specular) * texFragColor;
 }
