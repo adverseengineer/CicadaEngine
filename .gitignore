@@ -367,3 +367,4 @@ FodyWeavers.xsd
 
 #ignore local copies of dependencies
 vcpkg_installed/*
+/EngineCore/log.txt
