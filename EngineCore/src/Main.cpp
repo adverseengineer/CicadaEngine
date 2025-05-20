@@ -81,7 +81,7 @@ static void SetupRegistry(entt::registry& reg) {
 
 	auto brent = reg.create();
 	names.emplace(brent, "brent");
-	reg.emplace<TransformComponent>(brent, glm::vec3{ -5.0, 0.0, 5.0 });
+	reg.emplace<TransformComponent>(brent, glm::vec3{ 0.0, 5.0, 15.0 });
 	reg.emplace<MeshComponent>(brent, brentMesh);
 	reg.emplace<MaterialComponent>(brent, brentMat);
 }
@@ -257,17 +257,27 @@ static void Run3D(entt::registry& reg) {
 	auto& globalLight = sm.GetLight("global");
 	auto& localLight= sm.GetLight("local");
 
-	ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
 	ShaderDataBuffer skinch(sizeof(glm::vec3));
+	ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
 
-	camMats.Bind(0); //bind camera data UBO to bp0
-	//skinch.Bind(1); //bind skinch to bp1
+	unsigned int camBP = 2;
 
-	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 0, 0); //bind the cameraData block of diffuse to bp0
-	TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), 0, 0); //bind the cameraData block of toon to bp0
-	TEMP_BlockBind(Shader::Get("norm")->GetShaderProg(), 0, 0); //bind the cameraData block of norm to bp0
+	camMats.Bind(camBP); //bind camera data UBO to bp0
+	skinch.Bind(30); //bind skinch to bp1
+
+	assert(glGetError() == GL_NO_ERROR);
+
+	GLuint index = glGetUniformBlockIndex(Shader::Get("diffuse")->GetShaderProg(), "CameraData");
+	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), camBP, index);
+
+	index = glGetUniformBlockIndex(Shader::Get("toon")->GetShaderProg(), "CameraData");
+	TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), camBP, index);
+
+	index = glGetUniformBlockIndex(Shader::Get("norm")->GetShaderProg(), "CameraData");
+	TEMP_BlockBind(Shader::Get("norm")->GetShaderProg(), camBP, index);
 	
-	//TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 1, 1); //bind skinch block of diffuse to bp1
+	index = glGetUniformBlockIndex(Shader::Get("diffuse")->GetShaderProg(), "Skinch");
+	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 30, index);
 
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
@@ -302,8 +312,8 @@ static void Run3D(entt::registry& reg) {
 			auto view = glm::inverse(cam->GetLocalTransform());
 
 			//write to both UBOs
-			//TEMP_SkinchMod();
-			//skinch.Fill(glm::value_ptr(skinchData), sizeof(skinchData));
+			TEMP_SkinchMod();
+			skinch.Fill(glm::value_ptr(skinchData), sizeof(skinchData));
 
 			camMats.Write(glm::value_ptr(view), 0, sizeof(view));
 			camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));
@@ -317,8 +327,8 @@ static void Run3D(entt::registry& reg) {
 			//ImGui::NewFrame();
 			//ImGui::End();
 
-			Log::BuildLogWindow();
-			//BuildDebugUI();
+			//Log::BuildLogWindow();
+			BuildDebugUI();
 			
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

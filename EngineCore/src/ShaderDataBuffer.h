@@ -24,12 +24,14 @@ public:
 	//copies the entire data to main ram and GPU ram
 	inline void Fill(const void* data, size_t length) { //TODO: give this a more appropriate name
 		std::memcpy(m_data.data(), data, length);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
 		glBufferData(GL_UNIFORM_BUFFER, length, data, GL_STATIC_DRAW);
 	}
 
 	//copies a portion of the data to main ram and GPU ram
 	inline void Write(const void* data, size_t offset, size_t size) {
 		std::memcpy(m_data.data() + offset, (std::byte*) data, size);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_uboId);
 		glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
 	}
 
