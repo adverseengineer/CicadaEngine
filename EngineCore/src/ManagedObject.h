@@ -22,11 +22,13 @@ protected:
 	}
 
 public:
-	//takes a name for the new instance and any parameters needed for the derived class constructor
 	template <typename... Args>
 	static std::shared_ptr<T> Create(std::string_view name, Args&&... args) {
 		auto it = s_instances.find(name.data());
-		if (it != s_instances.end()) return it->second.lock();
+		if (it != s_instances.end()) {
+			Log::Info("Instance already exists: {:?}", name);
+			return it->second.lock();
+		}
 		auto instance = std::shared_ptr<T>(new T(name, std::forward<Args>(args)...));
 		s_instances.emplace(name.data(), instance);
 		return instance;
@@ -34,11 +36,17 @@ public:
 
 	static std::shared_ptr<T> Get(std::string_view name) {
 		auto it = s_instances.find(name.data());
-		return (it != s_instances.end()) ? it->second.lock() : nullptr;
+		if (it == s_instances.end()) {
+			Log::Info("No such instance: {:?}", name);
+			return nullptr;
+		}
+		else
+			return it->second.lock();
 	}
 
 	virtual ~ManagedObject() {
 		Log::Debug("Destroying instance: {:?}", static_cast<T*>(this)->m_name);
+		assert(s_instances.contains(static_cast<T*>(this)->m_name));
 		s_instances.erase(static_cast<T*>(this)->m_name);
 	}
 
