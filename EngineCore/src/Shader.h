@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ManagedObject.h"
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <memory>
 #include <optional>
@@ -14,14 +15,14 @@ friend class ManagedObject<Shader>;
 private:
 
 	struct UniformInfo {
-		unsigned int type;
-		int location;
+		GLenum type;
+		GLint location;
 	};
 
-	std::unordered_map<std::string, UniformInfo> m_uniformInfoCache;
+	std::unordered_map<std::string, UniformInfo> m_singleUniformCache;
+	std::unordered_map<std::string, GLuint> m_uniformBlockIndexCache;
 
-
-	unsigned int m_shaderProg = 0;
+	GLuint m_shaderProg = 0;
 
 	Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath);
 public:
@@ -34,16 +35,17 @@ public:
 	//TODO: consider whether i need a move constructor
 
 private:
-	static unsigned int CompileStage(unsigned int type, const std::string& shaderSource);
-	static unsigned int Link(unsigned int vertProg, unsigned int fragProg);
+	static unsigned int CompileStage(GLenum type, const std::string& shaderSource);
+	static unsigned int Link(GLuint vertProg, GLuint fragProg);
 
-	void QueryUniforms();
+	void CacheSingleUniforms();
+	void CacheUniformBlockIndices();
 	std::optional<UniformInfo> GetUniform(std::string_view name) const;
 
 public:
 	void Bind() const;
 	static void Unbind();
-	inline unsigned int GetShaderProg() const { return m_shaderProg; }
+	inline GLuint GetShaderProg() const { return m_shaderProg; }
 
 	//void AttachUniformBlock(std::string_view blockName, unsigned int bindingPoint) const;
 
@@ -54,7 +56,7 @@ public:
 	void SetMat4(std::string_view uniformName, const glm::mat4& value) const;
 	
 	inline void DBG_ShowInfo() const {
-		for (const auto& [name, info] : m_uniformInfoCache) {
+		for (const auto& [name, info] : m_singleUniformCache) {
 			Log::Info(
 				"Uniform: {:?} (type = {:d}, location = {:d})",
 				name,

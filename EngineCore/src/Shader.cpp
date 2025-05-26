@@ -9,6 +9,8 @@ using namespace Cicada;
 
 Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) : ManagedObject(shaderName) {
 	
+	static_assert(std::is_same<GLchar, char>::value, "GLchar must be char for this to work safely");
+
 	std::string vertSource, fragSource;
 	//TODO: make these return optionals
 	FileSystem::ReadFileToString(vertSourcePath, vertSource);
@@ -18,7 +20,8 @@ Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std
 	unsigned int fragProg = CompileStage(GL_FRAGMENT_SHADER, fragSource);
 	m_shaderProg = Link(vertProg, fragProg);
 
-	QueryUniforms();
+	CacheSingleUniforms();
+	CacheUniformBlockIndices();
 }
 
 Shader::~Shader() {
@@ -26,28 +29,28 @@ Shader::~Shader() {
 }
 
 //given the source code for a vertex or fragment shader, compile it and store it on the GPU
-unsigned int Shader::CompileStage(unsigned int type, const std::string& shaderSource) {
+GLuint Shader::CompileStage(GLenum type, const std::string& shaderSource) {
 
-	unsigned int shaderId = glCreateShader(type);
+	GLuint shaderId = glCreateShader(type);
 
 	//send the vertex shader source code to the graphics card and compile it
-	const char* temp = shaderSource.c_str();
+	const GLchar* temp = static_cast<const GLchar*>(shaderSource.c_str());
 	glShaderSource(shaderId, 1, &temp, nullptr);
 	glCompileShader(shaderId);
 
 	//check if the shader successfully compiled
-	int isCompiled;
+	GLint isCompiled;
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &isCompiled);
 	if (isCompiled == GL_TRUE)
 		return shaderId;
 
 	//edge case: it didn't
-	int maxLength;
+	GLsizei maxLength;
 	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
 	//copy GL's log into an appropriately sized std::string filled with null
 	std::string errorMsg(maxLength, '\0');
-	glGetShaderInfoLog(shaderId, maxLength, &maxLength, errorMsg.data());
+	glGetShaderInfoLog(shaderId, maxLength, &maxLength, static_cast<GLchar*>(errorMsg.data()));
 
 	//we don't need the shader anymore
 	glDeleteShader(shaderId);
@@ -56,14 +59,14 @@ unsigned int Shader::CompileStage(unsigned int type, const std::string& shaderSo
 }
 
 //given the source for a vertex shader and fragment shader, link them into a shader program
-unsigned int Shader::Link(unsigned int vertProg, unsigned int fragProg) {
+GLuint Shader::Link(GLuint vertProg, GLuint fragProg) {
 
-	unsigned int shaderProg = glCreateProgram();
+	GLuint shaderProg = glCreateProgram();
 	glAttachShader(shaderProg, vertProg);
 	glAttachShader(shaderProg, fragProg);
 	glLinkProgram(shaderProg);
 
-	int isLinked;
+	GLint isLinked;
 	glGetProgramiv(shaderProg, GL_LINK_STATUS, &isLinked);
 	if (isLinked == GL_TRUE) {
 		glDetachShader(shaderProg, vertProg);
@@ -74,38 +77,66 @@ unsigned int Shader::Link(unsigned int vertProg, unsigned int fragProg) {
 		return shaderProg;
 	}
 
-	int maxLength = 0;
+	GLsizei maxLength = 0;
 	glGetProgramiv(shaderProg, GL_INFO_LOG_LENGTH, &maxLength);
 
 	std::string errorMsg(maxLength, '\0');
-	glGetProgramInfoLog(shaderProg, maxLength, &maxLength, errorMsg.data());
+	glGetProgramInfoLog(shaderProg, maxLength, &maxLength, static_cast<GLchar*>(errorMsg.data()));
 	glDeleteProgram(shaderProg); //delete the bad program
 	throw std::runtime_error(errorMsg);
 }
 
 //queries openGL to tell us all the uniforms for a compiled and linked shader program, and stores the info
-void Shader::QueryUniforms() {
+void Shader::CacheSingleUniforms() {
 
-	constexpr size_t uniformNameMaxChars = 256;
-
-	GLint numUniforms = 0;
+	//fetch the number of uniforms and the length of the longest uniform name
+	GLint numUniforms, uniformNameMaxChars;
 	glGetProgramiv(m_shaderProg, GL_ACTIVE_UNIFORMS, &numUniforms);
-
-	char name[uniformNameMaxChars];
+	glGetProgramInterfaceiv(m_shaderProg, GL_UNIFORM, GL_MAX_NAME_LENGTH, &uniformNameMaxChars);
+		
+	//TODO: i'm tired of fucking with this, so i'm leaving it like this for now.
+	//i wanted to make it use a std::string, but that doesn't seem to want to work.
+	std::unique_ptr<GLchar> nameBuf = std::unique_ptr<GLchar>(new GLchar[uniformNameMaxChars]);
 	for (GLint i = 0; i < numUniforms; i++) {
 		GLint size;
 		GLenum type;
-		glGetActiveUniform(m_shaderProg, (GLint)i, sizeof(name), nullptr, &size, &type, name);
-		GLint location = glGetUniformLocation(m_shaderProg, name);
+		GLsizei nameLen;
+		std::memset(nameBuf.get(), '\0', uniformNameMaxChars);
+		glGetActiveUniform(m_shaderProg, i, uniformNameMaxChars, &nameLen, &size, &type, nameBuf.get());
+		GLint location = glGetUniformLocation(m_shaderProg, nameBuf.get());
 
-		m_uniformInfoCache[name] = { type, location };
+		if (location != -1) { //exclude all with location zero, they are part of a uniform block and get handled separately
+			std::string name(nameBuf.get(), nameLen);
+			m_singleUniformCache.emplace(name, UniformInfo{ type, location });
+		}
+	}
+}
+
+void Shader::CacheUniformBlockIndices() {
+	
+	//fetch the number of uniform blocks and the length of the longest uniform block name
+	GLint numUniformBlocks, uniformBlockNameMaxChars;
+	glGetProgramiv(m_shaderProg, GL_ACTIVE_UNIFORM_BLOCKS, &numUniformBlocks);
+	glGetProgramInterfaceiv(m_shaderProg, GL_UNIFORM_BLOCK, GL_MAX_NAME_LENGTH, &uniformBlockNameMaxChars);
+
+	std::unique_ptr<GLchar> nameBuf = std::unique_ptr<GLchar>(new GLchar[uniformBlockNameMaxChars]);
+	for (GLint i = 0; i < numUniformBlocks; i++) {
+		
+		//fetch the name and name length of the uniform block at this index
+		GLsizei nameLen = 0;
+		glGetActiveUniformBlockName(m_shaderProg, i, uniformBlockNameMaxChars, &nameLen, nameBuf.get());
+
+		//get the index of the uniform block by that name and cache both
+		GLuint index = glGetUniformBlockIndex(m_shaderProg, nameBuf.get());
+		std::string name(nameBuf.get(), nameLen);
+		m_uniformBlockIndexCache.emplace(name, index);
 	}
 }
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
 std::optional<Shader::UniformInfo> Shader::GetUniform(std::string_view uniformName) const {
-	if (m_uniformInfoCache.contains(uniformName.data()))
-		return m_uniformInfoCache.at(uniformName.data());
+	if (m_singleUniformCache.contains(uniformName.data()))
+		return m_singleUniformCache.at(uniformName.data());
 	else
 		return std::nullopt;
 }
@@ -127,7 +158,7 @@ void Shader::SetInt(std::string_view uniformName, int value) const {
 	std::optional<UniformInfo> temp = GetUniform(uniformName);
 	if (temp.has_value()) {
 		glUseProgram(m_shaderProg);
-		glUniform1i(temp.value().location, value);
+		glUniform1i(temp.value().location, static_cast<GLint>(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
@@ -137,7 +168,7 @@ void Shader::SetUInt(std::string_view uniformName, unsigned int value) const {
 	std::optional<UniformInfo> temp = GetUniform(uniformName);
 	if (temp.has_value()) {
 		glUseProgram(m_shaderProg);
-		glUniform1ui(temp.value().location, value);
+		glUniform1ui(temp.value().location, static_cast<GLuint>(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
@@ -147,7 +178,7 @@ void Shader::SetFloat(std::string_view uniformName, float value) const {
 	std::optional<UniformInfo> temp = GetUniform(uniformName);
 	if (temp.has_value()) {
 		glUseProgram(m_shaderProg);
-		glUniform1f(temp.value().location, value);
+		glUniform1f(temp.value().location, static_cast<GLfloat>(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
