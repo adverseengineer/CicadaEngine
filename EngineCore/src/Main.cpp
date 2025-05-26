@@ -228,7 +228,7 @@ static void ProcessInput(float elapsedSeconds) {
 inline void TEMP_BlockBind(unsigned int shaderProg, unsigned int bindingPoint, unsigned int RENAME_indexOfTheBlockInTheShader) {
 	glUniformBlockBinding(shaderProg, RENAME_indexOfTheBlockInTheShader, bindingPoint);
 }
-
+ 
 static glm::vec3 skinchData;
 inline void TEMP_SkinchMod() {
 	static int counter = 0;
@@ -267,17 +267,10 @@ static void Run3D(entt::registry& reg) {
 
 	assert(glGetError() == GL_NO_ERROR);
 
-	GLuint index = glGetUniformBlockIndex(Shader::Get("diffuse")->GetShaderProg(), "CameraData");
-	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), camBP, index);
-
-	index = glGetUniformBlockIndex(Shader::Get("toon")->GetShaderProg(), "CameraData");
-	TEMP_BlockBind(Shader::Get("toon")->GetShaderProg(), camBP, index);
-
-	index = glGetUniformBlockIndex(Shader::Get("norm")->GetShaderProg(), "CameraData");
-	TEMP_BlockBind(Shader::Get("norm")->GetShaderProg(), camBP, index);
-	
-	index = glGetUniformBlockIndex(Shader::Get("diffuse")->GetShaderProg(), "Skinch");
-	TEMP_BlockBind(Shader::Get("diffuse")->GetShaderProg(), 30, index);
+	Shader::Get("diffuse")->AttachUniformBlock("CameraData", camBP);
+	Shader::Get("toon")->AttachUniformBlock("CameraData", camBP);
+	Shader::Get("norm")->AttachUniformBlock("CameraData", camBP);
+	Shader::Get("diffuse")->AttachUniformBlock("Skinch", 30);
 
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;

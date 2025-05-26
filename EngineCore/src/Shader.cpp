@@ -149,10 +149,16 @@ void Shader::Unbind() {
 	glUseProgram(0);
 }
 
-//void Shader::AttachUniformBlock(const std::string& blockName, unsigned int bindingPoint) const {
-//	GLuint blockIndex = glGetUniformBlockIndex(m_shaderProg, blockName.c_str());
-//	glUniformBlockBinding(m_shaderProg, blockIndex, bindingPoint);
-//}
+void Shader::AttachUniformBlock(const std::string_view blockName, unsigned int bindingPoint) const {
+	
+	auto it = m_uniformBlockIndexCache.find(blockName.data());
+	if (it == m_uniformBlockIndexCache.end()) {
+		Log::Error("No such uniform block: {:?}", blockName);
+		return;
+	}
+	else
+		glUniformBlockBinding(m_shaderProg, it->second, bindingPoint);
+}
 
 void Shader::SetInt(std::string_view uniformName, int value) const {
 	std::optional<UniformInfo> temp = GetUniform(uniformName);
