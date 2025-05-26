@@ -26,7 +26,7 @@ public:
 	static std::shared_ptr<T> Create(std::string_view name, Args&&... args) {
 		auto it = s_instances.find(name.data());
 		if (it != s_instances.end()) {
-			Log::Info("Instance already exists: {:?}", name);
+			Log::Warn("Instance already exists: {:?}", name);
 			return it->second.lock();
 		}
 		auto instance = std::shared_ptr<T>(new T(name, std::forward<Args>(args)...));
@@ -37,7 +37,7 @@ public:
 	static std::shared_ptr<T> Get(std::string_view name) {
 		auto it = s_instances.find(name.data());
 		if (it == s_instances.end()) {
-			Log::Info("No such instance: {:?}", name);
+			Log::Error("No such instance: {:?}", name);
 			return nullptr;
 		}
 		else
