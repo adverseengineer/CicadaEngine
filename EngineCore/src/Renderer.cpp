@@ -19,13 +19,13 @@ void Renderer::Render(entt::registry& reg) {
 	static auto& globalLight = sm.GetLight("global");
 	
 	Shader::ForEach([&](auto shader) {
-		shader->SetVec3("localLightPosition", localLight.position);
-		shader->SetVec3("localLightColor", localLight.color);
-		shader->SetFloat("localLightIntensity", localLight.intensity);
-		shader->SetFloat("localLightAttenuationCoef", localLight.attenuationCoef);
-		shader->SetVec3("globalLightPosition", globalLight.position);
-		shader->SetVec3("globalLightColor", globalLight.color);
-		shader->SetFloat("globalLightIntensity", globalLight.intensity);
+		//shader->SetVec3("localLightPosition", localLight.position);
+		//shader->SetVec3("localLightColor", localLight.color);
+		//shader->SetFloat("localLightIntensity", localLight.intensity);
+		//shader->SetFloat("localLightAttenuationCoef", localLight.attenuationCoef);
+		//shader->SetVec3("globalLightPosition", globalLight.position);
+		//shader->SetVec3("globalLightColor", globalLight.color);
+		//shader->SetFloat("globalLightIntensity", globalLight.intensity);
 	});
 		
 	std::vector<std::tuple<glm::mat4, std::shared_ptr<Mesh>, std::shared_ptr<Material>>> renderQueue;

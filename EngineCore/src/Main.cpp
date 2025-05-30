@@ -126,12 +126,8 @@ static void BuildDebugUI() {
 	Camera* cam = Camera::GetMainCam();
 	auto& camTrans = cam->GetLocalTransform();
 
-	ImGui::StyleColorsClassic();
-	ImGui::NewFrame();
 	ImGui::Begin("Component Viewer");
-
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-
 	ImGui::Text(
 		"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
 		camTrans[0][0], camTrans[1][0], camTrans[2][0], camTrans[3][0],
@@ -139,20 +135,15 @@ static void BuildDebugUI() {
 		camTrans[0][2], camTrans[1][2], camTrans[2][2], camTrans[3][2],
 		camTrans[0][3], camTrans[1][3], camTrans[2][3], camTrans[3][3]
 	);
-
 	ImGui::Checkbox("Correct Gamma", &correctGamma);
-
 	ImGui::SliderInt("Max FPS", &targetFps, 20, 240);
-
 	ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight.color));
 	ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight.position));
 	ImGui::SliderFloat("Local Intensity", &localLight.intensity, 0, 1);
 	ImGui::SliderFloat("Local Attenuation", &localLight.attenuationCoef, 0, 1);
-
 	ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight.color));
 	ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight.position));
 	ImGui::SliderFloat("Global Intensity", &globalLight.intensity, 0, 1);
-
 	ImGui::End();
 }
 
@@ -224,10 +215,6 @@ static void ProcessInput(float elapsedSeconds) {
 	cam->SetLocalTransform(orientation);
 	cam->SetPosition(camMat[3]);
 }
-
-inline void TEMP_BlockBind(unsigned int shaderProg, unsigned int bindingPoint, unsigned int RENAME_indexOfTheBlockInTheShader) {
-	glUniformBlockBinding(shaderProg, RENAME_indexOfTheBlockInTheShader, bindingPoint);
-}
  
 static glm::vec3 skinchData;
 inline void TEMP_SkinchMod() {
@@ -242,7 +229,7 @@ inline void TEMP_SkinchMod() {
 	counter += direction;
 
 	skinchData.x = skinchData.y = skinchData.z = counter / 100.0f;
-	Log::Critical("counter: {:d}", counter);
+	Log::Debug("counter: {:d}", counter);
 }
 
 static void Run3D(entt::registry& reg) {
@@ -260,17 +247,23 @@ static void Run3D(entt::registry& reg) {
 	ShaderDataBuffer skinch(sizeof(glm::vec3));
 	ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
 
+	ShaderDataBuffer localLightSDB(sizeof(localLight));
+	ShaderDataBuffer globalLightSDB(sizeof(globalLight));
+
 	unsigned int camBP = 2;
 
 	camMats.Bind(camBP); //bind camera data UBO to bp0
 	skinch.Bind(30); //bind skinch to bp1
+	localLightSDB.Bind(31);
+	globalLightSDB.Bind(32);
 
-	assert(glGetError() == GL_NO_ERROR);
-
-	Shader::Get("diffuse")->AttachUniformBlock("CameraData", camBP);
+	auto diffuse = Shader::Get("diffuse");
+	diffuse->AttachUniformBlock("CameraData", camBP);
 	Shader::Get("toon")->AttachUniformBlock("CameraData", camBP);
 	Shader::Get("norm")->AttachUniformBlock("CameraData", camBP);
-	Shader::Get("diffuse")->AttachUniformBlock("Skinch", 30);
+	diffuse->AttachUniformBlock("Skinch", 30);
+	diffuse->AttachUniformBlock("LocalLight", 31);
+	diffuse->AttachUniformBlock("GlobalLight", 32);
 
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
@@ -311,18 +304,23 @@ static void Run3D(entt::registry& reg) {
 			camMats.Write(glm::value_ptr(view), 0, sizeof(view));
 			camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));
 			
+			localLightSDB.Write(glm::value_ptr(localLight.position), 0, 4 * sizeof(float));
+			localLightSDB.Write(glm::value_ptr(localLight.position), 0, 4 * sizeof(float));
+			
+			localLightSDB.Fill(glm::value_ptr(localLight.position), sizeof(localLight));
+			globalLightSDB.Fill(glm::value_ptr(globalLight.position), sizeof(globalLight));
+			
 			Renderer::Render(reg);
 
 			//and then render ui separately
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
 
-			//ImGui::NewFrame();
-			//ImGui::End();
-
-			//Log::BuildLogWindow();
 			BuildDebugUI();
+			Log::BuildLogWindow();
 			
+			ImGui::EndFrame(); //not strictly necessary, because render calls this too, but i want to remember what its for
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		

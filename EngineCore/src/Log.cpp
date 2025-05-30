@@ -4,7 +4,7 @@
 
 using namespace Cicada;
 
-int InMemorySink::s_maxEntries = 10; //TODO: set back to 1000 after UBO testing
+int InMemorySink::s_maxEntries = 1000;
 
 std::shared_ptr<spdlog::logger> Log::s_logger = nullptr;
 bool Log::s_autoScroll = true;
@@ -42,12 +42,8 @@ void Log::BuildLogWindow() {
 
 	if (!s_show) return;
 
-	ImGui::StyleColorsClassic();
-	ImGui::NewFrame();
 	ImGui::Begin("Debug Log", &s_show);
-
 	ImGui::InputInt("Max Entries", &InMemorySink::s_maxEntries);
-
 	ImGui::SameLine();
 	if (ImGui::Button("Clear Log")) {
 		std::dynamic_pointer_cast<InMemorySink>(Log::s_logger->sinks()[1])->clear(); //clear the in-memory log entries
