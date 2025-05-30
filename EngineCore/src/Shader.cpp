@@ -55,7 +55,7 @@ GLuint Shader::CompileStage(GLenum type, const std::string& shaderSource) {
 	//we don't need the shader anymore
 	glDeleteShader(shaderId);
 
-	throw std::runtime_error(errorMsg);
+	Log::Error("{:s}", errorMsg);
 }
 
 //given the source for a vertex shader and fragment shader, link them into a shader program
@@ -83,7 +83,8 @@ GLuint Shader::Link(GLuint vertProg, GLuint fragProg) {
 	std::string errorMsg(maxLength, '\0');
 	glGetProgramInfoLog(shaderProg, maxLength, &maxLength, static_cast<GLchar*>(errorMsg.data()));
 	glDeleteProgram(shaderProg); //delete the bad program
-	throw std::runtime_error(errorMsg);
+	
+	Log::Error("{:s}", errorMsg);
 }
 
 //queries openGL to tell us all the uniforms for a compiled and linked shader program, and stores the info
