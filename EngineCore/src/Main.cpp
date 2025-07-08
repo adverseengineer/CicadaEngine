@@ -18,6 +18,7 @@
 #include <Windows.h>
 
 #include "ShaderDataBuffer.h"
+#include "ShaderDataBufferNew.h"
 
 using namespace Cicada;
 using namespace Cicada::ECS;
@@ -126,7 +127,11 @@ static void BuildDebugUI() {
 	Camera* cam = Camera::GetMainCam();
 	auto& camTrans = cam->GetLocalTransform();
 
-	ImGui::Begin("Component Viewer");
+	if (!ImGui::Begin("Component Viewer")) { //early out if the frame is collapsed or off-screen
+		ImGui::End();
+		return;
+	}
+	
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	ImGui::Text(
 		"[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]\n[%.3f %.3f %.3f %.3f]",
@@ -228,7 +233,7 @@ inline void TEMP_SkinchMod() {
 
 	counter += direction;
 
-	skinchData.x = skinchData.y = skinchData.z = counter / 100.0f;
+	skinchData.z = counter / 100.0f;
 	Log::Debug("counter: {:d}", counter);
 }
 
@@ -244,24 +249,34 @@ static void Run3D(entt::registry& reg) {
 	auto& globalLight = sm.GetLight("global");
 	auto& localLight= sm.GetLight("local");
 
-	ShaderDataBuffer skinch(sizeof(glm::vec3));
-	ShaderDataBuffer camMats(sizeof(glm::mat4) * 2);
+	UniformBuffer skinch(28);
+	UniformBuffer camMats(sizeof(glm::mat4) * 2);
 
-	ShaderDataBuffer localLightSDB(sizeof(localLight));
-	ShaderDataBuffer globalLightSDB(sizeof(globalLight));
+	UniformBuffer localLightSDB(48);
+	UniformBuffer globalLightSDB(48);
 
 	unsigned int camBP = 2;
+	unsigned int skinchBP = 1;
 
-	camMats.Bind(camBP); //bind camera data UBO to bp0
-	skinch.Bind(30); //bind skinch to bp1
+	camMats.Bind(camBP);
+	skinch.Bind(skinchBP);
 	localLightSDB.Bind(31);
 	globalLightSDB.Bind(32);
+
+	Element elem = Element::NewStruct({
+		Element::NewVec(3), //color
+		Element::NewVec(3), //position
+		Element::NewScalar(), //intensity
+		Element::NewScalar() //attentuation
+	});
+
+	Log::Critical("SIZE: {:d}", elem.CalculateSize());
 
 	auto diffuse = Shader::Get("diffuse");
 	diffuse->AttachUniformBlock("CameraData", camBP);
 	Shader::Get("toon")->AttachUniformBlock("CameraData", camBP);
 	Shader::Get("norm")->AttachUniformBlock("CameraData", camBP);
-	diffuse->AttachUniformBlock("Skinch", 30);
+	diffuse->AttachUniformBlock("Skinch", skinchBP);
 	diffuse->AttachUniformBlock("LocalLight", 31);
 	diffuse->AttachUniformBlock("GlobalLight", 32);
 
@@ -299,16 +314,20 @@ static void Run3D(entt::registry& reg) {
 
 			//write to both UBOs
 			TEMP_SkinchMod();
-			skinch.Fill(glm::value_ptr(skinchData), sizeof(skinchData));
-
+			skinch.Write(&skinchData, 16, 12);
+			
 			camMats.Write(glm::value_ptr(view), 0, sizeof(view));
 			camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));
 			
-			localLightSDB.Write(glm::value_ptr(localLight.position), 0, 4 * sizeof(float));
-			localLightSDB.Write(glm::value_ptr(localLight.position), 0, 4 * sizeof(float));
-			
-			localLightSDB.Fill(glm::value_ptr(localLight.position), sizeof(localLight));
-			globalLightSDB.Fill(glm::value_ptr(globalLight.position), sizeof(globalLight));
+			localLightSDB.Write(glm::value_ptr(localLight.position), 0, 12);
+			localLightSDB.Write(glm::value_ptr(localLight.color), 16, 12);
+			localLightSDB.Write(&localLight.intensity, 32, 4);
+			localLightSDB.Write(&localLight.attenuationCoef, 40, 4);
+
+			globalLightSDB.Write(glm::value_ptr(globalLight.position), 0, 12);
+			globalLightSDB.Write(glm::value_ptr(globalLight.color), 16, 12);
+			globalLightSDB.Write(&globalLight.intensity, 32, 4);
+			globalLightSDB.Write(&globalLight.attenuationCoef, 40, 4);
 			
 			Renderer::Render(reg);
 

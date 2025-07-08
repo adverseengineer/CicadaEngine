@@ -10,20 +10,25 @@ uniform float materialAmbientIntensity;
 uniform float materialSpecularIntensity;
 uniform float materialShininess;
 
-//layout(std140, binding = 1) uniform LightData {
-	uniform vec3 globalLightPosition;
-	uniform vec3 globalLightColor;
-	uniform float globalLightIntensity;
-	uniform float globalLightAttenuationCoef;
+layout(std140) uniform GlobalLight {
+	vec3 globalLightColor;
+	vec3 globalLightPosition;
+	float globalLightIntensity;
+	float globalLightAttenuationCoef;
+};
 
-	uniform vec3 localLightPosition;
-	uniform vec3 localLightColor;
-	uniform float localLightIntensity;
-	uniform float localLightAttenuationCoef;
-//};
+layout(std140) uniform LocalLight {
+	vec3 localLightColor;
+	vec3 localLightPosition;
+	float localLightIntensity;
+	float localLightAttenuationCoef;
+};
 
 layout(std140) uniform Skinch {
+	float foo;
+	vec2 bar;
 	vec3 gurt;
+
 };
 
 uniform vec3 viewPosition;
@@ -65,6 +70,8 @@ void main() {
 	vec4 texFragColor = texture(tex, fragTexCoord) * fragColor;
 	vec4 ambientColor = materialAmbientIntensity * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientColor.a = 1.0f;
-	color = vec4(gurt, 1.0f);
+
+	float squrt = 1.0f - gurt.z * gurt.z;
+	color = vec4(squrt, squrt, squrt, 1.0f);
 	//color = (ambientColor + globalDiffuse + localDiffuse + specular) * texFragColor;
 }
