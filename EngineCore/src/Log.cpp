@@ -40,9 +40,11 @@ void Log::BuildLogWindow() {
 	static int logLevelFilter = 0;
 	static char searchBuffer[128] = "";
 
-	if (!s_show) return;
-
-	ImGui::Begin("Debug Log", &s_show);
+	if (!ImGui::Begin("Debug Log", &s_show)) {
+		ImGui::End();
+		return;
+	}
+		
 	ImGui::InputInt("Max Entries", &InMemorySink::s_maxEntries);
 	ImGui::SameLine();
 	if (ImGui::Button("Clear Log")) {
