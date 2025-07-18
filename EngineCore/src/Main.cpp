@@ -17,26 +17,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <Windows.h>
 
-#include "ShaderDataBuffer.h"
-#include "ShaderDataBufferNew.h"
-
 using namespace Cicada;
 using namespace Cicada::ECS;
-
-//TODO: why the fuck does this not work?
-//#include <fmt/format.h>
-//template <>
-//struct fmt::formatter<glm::vec3> {
-//	template <typename ParseContext>
-//	constexpr auto parse(ParseContext& ctx) {
-//		return ctx.begin();
-//	}
-//
-//	template <typename FormatContext>
-//	auto format(const glm::vec3& vec, FormatContext& ctx) {
-//		return format_to(ctx.out(), "({}, {}, {})", vec.x, vec.y, vec.z);
-//	}
-//};
 
 static void SetupRegistry(entt::registry& reg) {
 
@@ -165,11 +147,8 @@ static void ProcessInput(float elapsedSeconds) {
 		glfwSetWindowShouldClose(handle, true);
 
 	//if the user hits escape, close the window
-	if (glfwGetKey(handle, GLFW_KEY_4) == GLFW_PRESS)
+	if (glfwGetKey(handle, GLFW_KEY_R) == GLFW_PRESS)
 		Renderer::ToggleWireframe();
-
-	if (glfwGetKey(handle, GLFW_KEY_3) == GLFW_PRESS)
-		Log::ToggleLogWindow();
 
 	//DO WASDQE
 	glm::mat4 camMat = cam->GetLocalTransform();
@@ -191,9 +170,9 @@ static void ProcessInput(float elapsedSeconds) {
 		camMat[3] += camMat[1] * camSpeed * elapsedSeconds;
 
 	//really cool zoom effect i found by mistake
-	if (glfwGetKey(handle, GLFW_KEY_1) == GLFW_PRESS)
+	if (glfwGetKey(handle, GLFW_KEY_T) == GLFW_PRESS)
 		camMat[3] /= camSpeed * elapsedSeconds + 1.0f;
-	else if (glfwGetKey(handle, GLFW_KEY_2) == GLFW_PRESS)
+	else if (glfwGetKey(handle, GLFW_KEY_Y) == GLFW_PRESS)
 		camMat[3] *= camSpeed * elapsedSeconds + 1.0f;
 
 	//DO MOUSELOOK:
@@ -220,22 +199,6 @@ static void ProcessInput(float elapsedSeconds) {
 	cam->SetLocalTransform(orientation);
 	cam->SetPosition(camMat[3]);
 }
- 
-static glm::vec3 skinchData;
-inline void TEMP_SkinchMod() {
-	static int counter = 0;
-	static int direction = 1;
-	
-	if (counter <= 0)
-		direction = 1;
-	else if (counter >= 100)
-		direction = -1;
-
-	counter += direction;
-
-	skinchData.z = counter / 100.0f;
-	Log::Debug("counter: {:d}", counter);
-}
 
 static void Run3D(entt::registry& reg) {
 
@@ -248,37 +211,16 @@ static void Run3D(entt::registry& reg) {
 
 	auto& globalLight = sm.GetLight("global");
 	auto& localLight= sm.GetLight("local");
-
-	UniformBuffer skinch(28);
-	UniformBuffer camMats(sizeof(glm::mat4) * 2);
-
-	UniformBuffer localLightSDB(48);
-	UniformBuffer globalLightSDB(48);
-
-	unsigned int camBP = 2;
-	unsigned int skinchBP = 1;
-
-	camMats.Bind(camBP);
-	skinch.Bind(skinchBP);
-	localLightSDB.Bind(31);
-	globalLightSDB.Bind(32);
-
-	Element elem = Element::NewStruct({
-		Element::NewVec(3), //color
-		Element::NewVec(3), //position
-		Element::NewScalar(), //intensity
-		Element::NewScalar() //attentuation
-	});
-
-	Log::Critical("SIZE: {:d}", elem.CalculateSize());
-
-	auto diffuse = Shader::Get("diffuse");
-	diffuse->AttachUniformBlock("CameraData", camBP);
-	Shader::Get("toon")->AttachUniformBlock("CameraData", camBP);
-	Shader::Get("norm")->AttachUniformBlock("CameraData", camBP);
-	diffuse->AttachUniformBlock("Skinch", skinchBP);
-	diffuse->AttachUniformBlock("LocalLight", 31);
-	diffuse->AttachUniformBlock("GlobalLight", 32);
+	
+	UniformBufferObject camMats(2 * sizeof(glm::mat4), 2);
+	UniformBufferObject localLightSDB(48, 31);
+	UniformBufferObject globalLightSDB(48, 32);
+	
+	Shader::Get("toon")->AttachUBO("CameraData", camMats);
+	Shader::Get("norm")->AttachUBO("CameraData", camMats);
+	Shader::Get("diffuse")->AttachUBO("CameraData", camMats);
+	Shader::Get("diffuse")->AttachUBO("LocalLight", localLightSDB);
+	Shader::Get("diffuse")->AttachUBO("GlobalLight", globalLightSDB);
 
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
@@ -312,22 +254,18 @@ static void Run3D(entt::registry& reg) {
 			
 			auto view = glm::inverse(cam->GetLocalTransform());
 
-			//write to both UBOs
-			TEMP_SkinchMod();
-			skinch.Write(&skinchData, 16, 12);
+			camMats.Write(0, sizeof(glm::mat4), glm::value_ptr(view));
+			camMats.Write(64, sizeof(glm::mat4), glm::value_ptr(cam->m_projection));
 			
-			camMats.Write(glm::value_ptr(view), 0, sizeof(view));
-			camMats.Write(glm::value_ptr(cam->m_projection), sizeof(view), sizeof(cam->m_projection));
-			
-			localLightSDB.Write(glm::value_ptr(localLight.position), 0, 12);
-			localLightSDB.Write(glm::value_ptr(localLight.color), 16, 12);
-			localLightSDB.Write(&localLight.intensity, 32, 4);
-			localLightSDB.Write(&localLight.attenuationCoef, 40, 4);
+			localLightSDB.Write(0, sizeof(glm::vec3), glm::value_ptr(localLight.position));
+			localLightSDB.Write(16, sizeof(glm::vec3), glm::value_ptr(localLight.color));
+			localLightSDB.Write(32, sizeof(GLfloat), &localLight.intensity);
+			localLightSDB.Write(36, sizeof(GLfloat), &localLight.attenuationCoef);
 
-			globalLightSDB.Write(glm::value_ptr(globalLight.position), 0, 12);
-			globalLightSDB.Write(glm::value_ptr(globalLight.color), 16, 12);
-			globalLightSDB.Write(&globalLight.intensity, 32, 4);
-			globalLightSDB.Write(&globalLight.attenuationCoef, 40, 4);
+			globalLightSDB.Write(0, sizeof(glm::vec3), glm::value_ptr(globalLight.position));
+			globalLightSDB.Write(16, sizeof(glm::vec3), glm::value_ptr(globalLight.color));
+			globalLightSDB.Write(32, sizeof(GLfloat), &globalLight.intensity);
+			globalLightSDB.Write(36, sizeof(GLfloat), &globalLight.attenuationCoef);
 			
 			Renderer::Render(reg);
 

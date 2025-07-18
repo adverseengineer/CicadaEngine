@@ -73,8 +73,6 @@ public:
 	static void Init(std::string_view logFilePath);
 	static void BuildLogWindow();
 	
-	inline static void ToggleLogWindow() { s_show = !s_show; }
-
 	template<typename... Args>
 	inline static void Trace(spdlog::format_string_t<Args...> fmt, Args &&... args) { s_logger->trace(fmt, std::forward<Args>(args)...); }
 	template<typename... Args>

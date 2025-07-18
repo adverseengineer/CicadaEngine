@@ -150,15 +150,18 @@ void Shader::Unbind() {
 	glUseProgram(0);
 }
 
-void Shader::AttachUniformBlock(const std::string_view blockName, unsigned int bindingPoint) const {
+void Shader::AttachUBO(const std::string_view blockName, const UniformBufferObject& ubo, GLintptr offset) const {
 	
 	auto it = m_uniformBlockIndexCache.find(blockName.data());
 	if (it == m_uniformBlockIndexCache.end()) {
-		Log::Error("No such uniform block: {:?}", blockName);
+		Log::Error("Error attaching UBO, no such uniform block: {:?}", blockName);
 		return;
 	}
-	else
-		glUniformBlockBinding(m_shaderProg, it->second, bindingPoint);
+	
+	//bind the uniform block to the binding point, and then bind the UBO to the same block
+	//NOTE: if offset is non-zero, we bind less memory, so subtract it from size
+	glUniformBlockBinding(m_shaderProg, it->second, ubo.m_bindingPoint);
+	glBindBufferRange(GL_UNIFORM_BUFFER, ubo.m_bindingPoint, ubo.m_handle, offset, ubo.m_size - offset);
 }
 
 void Shader::SetInt(std::string_view uniformName, int value) const {

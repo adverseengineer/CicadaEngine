@@ -1,12 +1,15 @@
 #pragma once
 
 #include "ManagedObject.h"
+#include "UniformBufferObject.h"
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+
 
 namespace Cicada {
 
@@ -47,7 +50,7 @@ public:
 	static void Unbind();
 	inline GLuint GetShaderProg() const { return m_shaderProg; }
 
-	void AttachUniformBlock(std::string_view blockName, unsigned int bindingPoint) const;
+	void AttachUBO(std::string_view blockName, const UniformBufferObject& ubo, GLintptr offset = 0) const;
 
 	void SetInt(std::string_view uniformName, int value) const;
 	void SetUInt(std::string_view uniformName, unsigned int value) const;

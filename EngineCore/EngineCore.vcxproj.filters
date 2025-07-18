@@ -185,6 +185,12 @@
     <ClInclude Include="src\ManagedObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\UniformBufferObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BufferObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="script.lua" />
