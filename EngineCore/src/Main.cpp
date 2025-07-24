@@ -40,7 +40,7 @@ static void SetupRegistry(entt::registry& reg) {
 
 	auto brentMesh = Mesh::Create("brentMesh", "temp/brent.obj");
 	auto brentTex = Texture2D::Create("brentTex", "temp/br0_tex00.png");
-	auto brentMat = Material::Create("brentMat", normShader, brentTex);
+	auto brentMat = Material::Create("brentMat", normShader, nullptr/*brentTex*/);
 
 	auto& names = reg.storage<std::string>();
 
@@ -123,13 +123,13 @@ static void BuildDebugUI() {
 		camTrans[0][3], camTrans[1][3], camTrans[2][3], camTrans[3][3]
 	);
 	ImGui::Checkbox("Correct Gamma", &correctGamma);
-	ImGui::SliderInt("Max FPS", &targetFps, 20, 240);
-	ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight.color));
+	ImGui::SliderInt("Max FPS", &targetFps, 15, 240);
 	ImGui::DragFloat3("Local Light Position", glm::value_ptr(localLight.position));
+	ImGui::ColorEdit3("Local Light Color", glm::value_ptr(localLight.color));
 	ImGui::SliderFloat("Local Intensity", &localLight.intensity, 0, 1);
 	ImGui::SliderFloat("Local Attenuation", &localLight.attenuationCoef, 0, 1);
-	ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight.color));
 	ImGui::DragFloat3("Global Light Position", glm::value_ptr(globalLight.position));
+	ImGui::ColorEdit3("Global Light Color", glm::value_ptr(globalLight.color));
 	ImGui::SliderFloat("Global Intensity", &globalLight.intensity, 0, 1);
 	ImGui::End();
 }
@@ -212,15 +212,13 @@ static void Run3D(entt::registry& reg) {
 	auto& globalLight = sm.GetLight("global");
 	auto& localLight= sm.GetLight("local");
 	
-	UniformBufferObject camMats(2 * sizeof(glm::mat4), 2);
-	UniformBufferObject localLightSDB(48, 31);
-	UniformBufferObject globalLightSDB(48, 32);
+	UniformBufferObject cameraUBO(2 * sizeof(glm::mat4), 2);
+	UniformBufferObject lightUBO(96, 3);
 	
-	Shader::Get("toon")->AttachUBO("CameraData", camMats);
-	Shader::Get("norm")->AttachUBO("CameraData", camMats);
-	Shader::Get("diffuse")->AttachUBO("CameraData", camMats);
-	Shader::Get("diffuse")->AttachUBO("LocalLight", localLightSDB);
-	Shader::Get("diffuse")->AttachUBO("GlobalLight", globalLightSDB);
+	Shader::Get("toon")->AttachUBO("CameraData", cameraUBO);
+	Shader::Get("norm")->AttachUBO("CameraData", cameraUBO);
+	Shader::Get("diffuse")->AttachUBO("CameraData", cameraUBO);
+	Shader::Get("diffuse")->AttachUBO("Lights", lightUBO);
 
 	double lastUpdateTime = 0.0;
 	double lastFrameTime = 0.0;
@@ -237,7 +235,7 @@ static void Run3D(entt::registry& reg) {
 
 		//if it's not yet time for the next frame, don't do it
 		//everything inside this if is only run once per frame of the target fps
-		if((now - lastFrameTime) >= maxFrameTime) {
+		if(now - lastFrameTime >= maxFrameTime) {
 
 			glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -254,18 +252,17 @@ static void Run3D(entt::registry& reg) {
 			
 			auto view = glm::inverse(cam->GetLocalTransform());
 
-			camMats.Write(0, sizeof(glm::mat4), glm::value_ptr(view));
-			camMats.Write(64, sizeof(glm::mat4), glm::value_ptr(cam->m_projection));
+			cameraUBO.Write(0, sizeof(glm::mat4), glm::value_ptr(view));
+			cameraUBO.Write(64, sizeof(glm::mat4), glm::value_ptr(cam->m_projection));
 			
-			localLightSDB.Write(0, sizeof(glm::vec3), glm::value_ptr(localLight.position));
-			localLightSDB.Write(16, sizeof(glm::vec3), glm::value_ptr(localLight.color));
-			localLightSDB.Write(32, sizeof(GLfloat), &localLight.intensity);
-			localLightSDB.Write(36, sizeof(GLfloat), &localLight.attenuationCoef);
-
-			globalLightSDB.Write(0, sizeof(glm::vec3), glm::value_ptr(globalLight.position));
-			globalLightSDB.Write(16, sizeof(glm::vec3), glm::value_ptr(globalLight.color));
-			globalLightSDB.Write(32, sizeof(GLfloat), &globalLight.intensity);
-			globalLightSDB.Write(36, sizeof(GLfloat), &globalLight.attenuationCoef);
+			lightUBO.Write(0, sizeof(glm::vec3), glm::value_ptr(localLight.position));
+			lightUBO.Write(16, sizeof(glm::vec3), glm::value_ptr(localLight.color));
+			lightUBO.Write(28, sizeof(GLfloat), &localLight.intensity);
+			lightUBO.Write(32, sizeof(GLfloat), &localLight.attenuationCoef);
+			lightUBO.Write(48, sizeof(glm::vec3), glm::value_ptr(globalLight.position));
+			lightUBO.Write(64, sizeof(glm::vec3), glm::value_ptr(globalLight.color));
+			lightUBO.Write(76, sizeof(GLfloat), &globalLight.intensity);
+			lightUBO.Write(80, sizeof(GLfloat), &globalLight.attenuationCoef);
 			
 			Renderer::Render(reg);
 

@@ -27,7 +27,7 @@ void Renderer::Render(entt::registry& reg) {
 		//shader->SetVec3("globalLightColor", globalLight.color);
 		//shader->SetFloat("globalLightIntensity", globalLight.intensity);
 	});
-		
+	
 	std::vector<std::tuple<glm::mat4, std::shared_ptr<Mesh>, std::shared_ptr<Material>>> renderQueue;
 
 	auto view = reg.view<TransformComponent, MaterialComponent, MeshComponent>();
@@ -50,10 +50,15 @@ void Renderer::Render(entt::registry& reg) {
 		auto& shader = material->GetShader();
 		auto& texture = material->GetTexture();
 
+		if (shader == nullptr)
+			continue;
+
 		shader->SetMat4("world", transform);
 		mesh->Bind();
 
-		shader->SetUInt("tex", texture->GetTextureUnit());
+		if (texture != nullptr)
+			shader->SetUInt("tex", texture->GetTextureUnit());
+	
 		material->Bind();
 		glDrawElements(mesh->GetPrimitiveType(), (GLsizei)mesh->IndexElemCount(), GL_UNSIGNED_SHORT, (void*)0);
 	}
