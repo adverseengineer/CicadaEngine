@@ -58,17 +58,6 @@ public:
 	void SetFloat(std::string_view uniformName, float value) const;
 	void SetVec3(std::string_view uniformName, const glm::vec3& value) const;
 	void SetMat4(std::string_view uniformName, const glm::mat4& value) const;
-	
-	inline void DBG_ShowInfo() const {
-		for (const auto& [name, info] : m_uniformCache) {
-			Log::Info(
-				"Uniform: {:?} (type = {:d}, location = {:d})",
-				name,
-				info.type,
-				info.location
-			);
-		}
-	}
 };
 
 }
