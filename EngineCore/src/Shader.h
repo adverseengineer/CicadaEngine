@@ -15,6 +15,7 @@ namespace Cicada {
 
 class Shader : public ManagedObject<Shader> {
 friend class ManagedObject<Shader>;
+friend class Material;
 private:
 
 	struct UniformInfo {
@@ -22,7 +23,7 @@ private:
 		GLint location;
 	};
 
-	std::unordered_map<std::string, UniformInfo> m_singleUniformCache;
+	std::unordered_map<std::string, UniformInfo> m_uniformCache;
 	std::unordered_map<std::string, GLuint> m_uniformBlockIndexCache;
 
 	GLuint m_shaderProg = 0;
@@ -53,13 +54,13 @@ public:
 	void AttachUBO(std::string_view blockName, const UniformBufferObject& ubo, GLintptr offset = 0) const;
 
 	void SetInt(std::string_view uniformName, int value) const;
-	void SetUInt(std::string_view uniformName, unsigned int value) const;
+	void SetUint(std::string_view uniformName, unsigned int value) const;
 	void SetFloat(std::string_view uniformName, float value) const;
 	void SetVec3(std::string_view uniformName, const glm::vec3& value) const;
 	void SetMat4(std::string_view uniformName, const glm::mat4& value) const;
 	
 	inline void DBG_ShowInfo() const {
-		for (const auto& [name, info] : m_singleUniformCache) {
+		for (const auto& [name, info] : m_uniformCache) {
 			Log::Info(
 				"Uniform: {:?} (type = {:d}, location = {:d})",
 				name,

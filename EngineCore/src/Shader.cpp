@@ -108,7 +108,7 @@ void Shader::CacheSingleUniforms() {
 
 		if (location != -1) { //exclude all with location zero, they are part of a uniform block and get handled separately
 			std::string name(nameBuf.get(), nameLen);
-			m_singleUniformCache.emplace(name, UniformInfo{ type, location });
+			m_uniformCache.emplace(name, UniformInfo{ type, location });
 		}
 	}
 }
@@ -136,8 +136,8 @@ void Shader::CacheUniformBlockIndices() {
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
 std::optional<Shader::UniformInfo> Shader::GetUniform(std::string_view uniformName) const {
-	if (m_singleUniformCache.contains(uniformName.data()))
-		return m_singleUniformCache.at(uniformName.data());
+	if (m_uniformCache.contains(uniformName.data()))
+		return m_uniformCache.at(uniformName.data());
 	else
 		return std::nullopt;
 }
@@ -174,7 +174,7 @@ void Shader::SetInt(std::string_view uniformName, int value) const {
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
-void Shader::SetUInt(std::string_view uniformName, unsigned int value) const {
+void Shader::SetUint(std::string_view uniformName, unsigned int value) const {
 	std::optional<UniformInfo> temp = GetUniform(uniformName);
 	if (temp.has_value()) {
 		glUseProgram(m_shaderProg);

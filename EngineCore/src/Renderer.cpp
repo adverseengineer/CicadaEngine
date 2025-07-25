@@ -57,7 +57,7 @@ void Renderer::Render(entt::registry& reg) {
 		mesh->Bind();
 
 		if (texture != nullptr)
-			shader->SetUInt("tex", texture->GetTextureUnit());
+			shader->SetUint("tex", texture->GetTextureUnit());
 	
 		material->Bind();
 		glDrawElements(mesh->GetPrimitiveType(), (GLsizei)mesh->IndexElemCount(), GL_UNSIGNED_SHORT, (void*)0);

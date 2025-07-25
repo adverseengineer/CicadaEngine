@@ -4,6 +4,7 @@ using namespace Cicada;
 
 Material::Material(std::string_view materialName, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture2D>& texture) :
 	ManagedObject(materialName), m_shader(shader), m_texture(texture) {
+	assert(shader != nullptr);
 }
 
 void Material::Bind() const {
@@ -13,7 +14,7 @@ void Material::Bind() const {
 
 	if (m_texture != nullptr) {
 		m_texture->Bind();
-		m_texture->SelectForRendering(); //why do i need to do this? what is the difference from just calling Bind()?
+		//m_texture->SelectForRendering(); //why do i need to do this? what is the difference from just calling Bind()?
 	}
 }
 
@@ -22,9 +23,9 @@ void Material::SetInt(std::string_view uniformName, int value) const {
 	m_shader->SetInt(uniformName, value);
 }
 
-void Material::SetUInt(std::string_view uniformName, unsigned int value) const {
+void Material::SetUint(std::string_view uniformName, unsigned int value) const {
 	if (m_shader == nullptr) return;
-	m_shader->SetUInt(uniformName, value);
+	m_shader->SetUint(uniformName, value);
 }
 
 void Material::SetFloat(std::string_view uniformName, float value) const {
