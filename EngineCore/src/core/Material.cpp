@@ -13,8 +13,7 @@ void Material::Bind() const {
 	m_shader->Bind();
 
 	if (m_texture != nullptr) {
-		m_texture->Bind();
-		//m_texture->SelectForRendering(); //why do i need to do this? what is the difference from just calling Bind()?
+		m_texture->AttachTexUnit(0);
 	}
 }
 

@@ -43,14 +43,10 @@ void Texture2D::Bind() {
 	glBindTexture(GL_TEXTURE_2D, m_texId);
 }
 
-//call this in order to render the texture
-void Texture2D::SelectForRendering() {
-	glActiveTexture(GL_TEXTURE0 + m_texUnit);
+void Texture2D::AttachTexUnit(GLenum texUnit) const {
+	glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(GL_TEXTURE_2D, m_texId);
 }
-
-//TODO: for tomorrow: add the optimizations to this function too, or consider removing the optimizations bc they suck
-//NOTE: what was this about?
 
 void Texture2D::Upload() const {
 	glBindTexture(GL_TEXTURE_2D, m_texId); //select the texture for modification

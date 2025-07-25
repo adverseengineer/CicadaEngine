@@ -56,7 +56,6 @@ protected:
 	bool m_isFallback = false;
 
 	unsigned int m_texId;
-	unsigned int m_texUnit = 0;
 
 	Format m_internalFormat = Format::RGBA;
 	Format m_sourceFormat = Format::RGBA;

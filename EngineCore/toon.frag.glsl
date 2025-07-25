@@ -6,10 +6,6 @@ in vec2 fragTexCoord;
 
 out vec4 color;
 
-uniform float materialAmbientIntensity;
-//uniform float materialSpecularIntensity;
-//uniform float materialShininess;
-
 struct Light {
 	vec3 position;
 	vec3 color;
@@ -22,12 +18,20 @@ layout(std140) uniform Lights{
 	Light globalLight;
 };
 
+uniform float materialAmbientIntensity;
 uniform vec3 viewPosition;
-
 uniform sampler2D tex;
 
 float quant(float value, int steps) {
 	return floor(value * steps) / steps;
+}
+
+float edge(vec3 normal, vec3 viewDir, float threshold) {
+	float edge = dot(normalize(normal), normalize(viewDir));
+	if (edge < threshold)
+		return 0.0; //black outline
+	else
+		return 1.0; //no outline
 }
 
 vec4 diffuse(vec3 lightDir, vec3 unitNormal, float lightIntensity, vec3 lightColor) {
@@ -35,15 +39,6 @@ vec4 diffuse(vec3 lightDir, vec3 unitNormal, float lightIntensity, vec3 lightCol
 	cosAngIncidence = quant(cosAngIncidence, 6);
 	vec3 diffuse = cosAngIncidence * lightIntensity * lightColor;
 	return vec4(diffuse, 1.0f);
-}
-
-vec3 edgeDetect(vec3 normal, vec3 viewDir, float threshold) {
-	float edge = dot(normalize(normal), normalize(viewDir));
-	if (edge < threshold) {
-		return vec3(0.0); //black outline
-	} else {
-		return vec3(1.0); //no outline
-	}
 }
 
 void main() {
@@ -67,5 +62,6 @@ void main() {
 	vec4 texFragColor = texture(tex, fragTexCoord) * fragColor;
 	vec4 ambientColor = vec4(mai * vec3(1.0f, 1.0f, 1.0f), 1.0f);
 	color = (ambientColor + globalDiffuse + localDiffuse) * texFragColor;
-	//color *= vec4(edgeDetect(fragNormal, viewDir, 0.0f), 1.0f);
+	color *= edge(fragNormal, viewDir, 0.5f);
+	color.a = 1.0f;
 }

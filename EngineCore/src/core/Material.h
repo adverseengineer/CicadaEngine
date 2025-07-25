@@ -19,6 +19,7 @@ private:
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<Texture2D> m_texture;
 
+	std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
 	std::unordered_map<std::string, UniformValue> values;
 
 public:

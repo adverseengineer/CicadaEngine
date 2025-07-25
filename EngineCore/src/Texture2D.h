@@ -26,12 +26,9 @@ public:
 	//Texture2D& operator=(const Texture2D&) = delete;
 	//TODO: add back the copy constructor and assignment operator = delete statements
 	
-	inline unsigned int GetTextureUnit() const { return m_texUnit; }
-	inline void SetTextureUnit(unsigned int textureUnit) { m_texUnit = textureUnit; }
-
 	void Bind();
+	void AttachTexUnit(GLenum texUnit) const;
 
-	void SelectForRendering();
 	void Upload() const override;
 
 	void SetInternalFormat(Format format);
