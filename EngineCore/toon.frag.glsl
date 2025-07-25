@@ -10,17 +10,17 @@ uniform float materialAmbientIntensity;
 //uniform float materialSpecularIntensity;
 //uniform float materialShininess;
 
-//layout(std140, binding = 1) uniform LightData {
-	uniform vec3 globalLightPosition;
-	uniform vec3 globalLightColor;
-	uniform float globalLightIntensity;
-	uniform float globalLightAttenuationCoef;
+struct Light {
+	vec3 position;
+	vec3 color;
+	float intensity;
+	float attenuation;
+};
 
-	uniform vec3 localLightPosition;
-	uniform vec3 localLightColor;
-	uniform float localLightIntensity;
-	uniform float localLightAttenuationCoef;
-//};
+layout(std140) uniform Lights{
+	Light localLight;
+	Light globalLight;
+};
 
 uniform vec3 viewPosition;
 
@@ -51,14 +51,14 @@ void main() {
 	vec3 viewDir = normalize(viewPosition - fragPosition);
 
 	//difference between global and local light is that local has attenuation falloff
-	vec3 toGlobalLightDir = normalize(globalLightPosition - fragPosition);
-	vec4 globalDiffuse = diffuse(toGlobalLightDir, fragNormal, globalLightIntensity, globalLightColor);
+	vec3 toGlobalLightDir = normalize(globalLight.position - fragPosition);
+	vec4 globalDiffuse = diffuse(toGlobalLightDir, fragNormal, globalLight.intensity, globalLight.color);
 
-	vec3 toLocalLightDir = normalize(localLightPosition - fragPosition);
-	vec4 localDiffuse = diffuse(toLocalLightDir, fragNormal, localLightIntensity, localLightColor);
+	vec3 toLocalLightDir = normalize(localLight.position - fragPosition);
+	vec4 localDiffuse = diffuse(toLocalLightDir, fragNormal, localLight.intensity, localLight.color);
 	
-	float distanceToLight = length(localLightPosition - fragPosition);
-	float attenuation = 1.0 / (1.0 + localLightAttenuationCoef * pow(distanceToLight, 2));
+	float distanceToLight = length(localLight.position - fragPosition);
+	float attenuation = 1.0 / (1.0 + localLight.attenuation * pow(distanceToLight, 2));
 	localDiffuse *= attenuation;
 
 	//for now for visibility, keep the ambient above a minimum
