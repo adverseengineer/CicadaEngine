@@ -22,24 +22,24 @@ using namespace Cicada::ECS;
 
 static void SetupRegistry(entt::registry& reg) {
 
-	auto diffuseShader = Shader::Create("diffuse", "diffuse.vert.glsl", "diffuse.frag.glsl");
-	auto toonShader = Shader::Create("toon", "toon.vert.glsl", "toon.frag.glsl");
-	auto normShader = Shader::Create("norm", "norm.vert.glsl", "norm.frag.glsl");
+	auto diffuseShader = Shader::Create("diffuse", "res/shader/diffuse.vert", "res/shader/diffuse.frag");
+	auto toonShader = Shader::Create("toon", "res/shader/toon.vert", "res/shader/toon.frag");
+	auto normShader = Shader::Create("norm", "res/shader/norm.vert", "res/shader/norm.frag");
 
-	auto boxMesh = Mesh::Create("boxMesh", "temp/cube.obj");
-	auto ballMesh = Mesh::Create("ballMesh", "temp/quadsphere.obj");
-	auto floorMesh = Mesh::Create("floorMesh", "temp/plane.obj");
+	auto boxMesh = Mesh::Create("boxMesh", "res/geom/cube.obj");
+	auto ballMesh = Mesh::Create("ballMesh", "res/geom/quadsphere.obj");
+	auto floorMesh = Mesh::Create("floorMesh", "res/geom/plane.obj");
 
-	auto boxTex = Texture2D::Create("boxTex", "crate.png");
-	auto ballTex = Texture2D::Create("ballTex", "not-a-real-texture.png");
-	auto floorTex = Texture2D::Create("floorTex", "floor.png");
+	auto boxTex = Texture2D::Create("boxTex", "res/tex/crate.png");
+	auto ballTex = Texture2D::Create("ballTex", "res/tex/not-a-real-texture.png");
+	auto floorTex = Texture2D::Create("floorTex", "res/tex/floor.png");
 
 	auto boxMat = Material::Create("boxMat", diffuseShader, boxTex);
 	auto ballMat = Material::Create("ballMat", toonShader, boxTex);
 	auto floorMat = Material::Create("floorMat", diffuseShader, floorTex);
 
-	auto brentMesh = Mesh::Create("brentMesh", "temp/brent.obj");
-	auto brentTex = Texture2D::Create("brentTex", "temp/br0_tex00.png");
+	auto brentMesh = Mesh::Create("brentMesh", "res/geom/brent.obj");
+	auto brentTex = Texture2D::Create("brentTex", "res/tex/br0_tex00.png");
 	auto brentMat = Material::Create("brentMat", normShader, nullptr/*brentTex*/);
 
 	auto& names = reg.storage<std::string>();
@@ -306,7 +306,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 
 	auto& sm = SceneManager::Instance();
 
-	auto cam = std::make_shared<Camera>(60.0f, 0.01f, 500.0f, 1200.0f / 800.0f);
+	auto cam = std::make_shared<Camera>(60.0f, 0.05f, 100.0f, 1200.0f / 800.0f);
 	cam->SetMainCam();
 	cam->SetPosition({ 0.0f, 5.0f, 15.0f });
 
@@ -316,8 +316,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 		1.0, 0.0
 	});
 	sm.SetLight("global", {
-		glm::vec3{ 40.0f, 40.0f, 40.0f },
-		glm::vec3{ 1.0f, 1.0f, 1.0f },
+		glm::vec3{ 0.0f, 1.0f, 10.0f },
+		glm::vec3{ 1.0f, 0.0f, 1.0f },
 		1.0, 0.5
 	});
 	

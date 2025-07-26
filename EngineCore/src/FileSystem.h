@@ -6,14 +6,22 @@ namespace Cicada {
 
 class FileSystem {
 public:
+
+	inline static std::string ReadEntireFile(std::string_view path) {
+		std::ifstream file(path.data());
+		std::stringstream buffer;
+		buffer << file.rdbuf();
+		return buffer.str();
+	}
+
 	//TODO: consider making return an optional
 	inline static bool ReadFileToString(std::string_view path, std::string& content) {
 		std::ifstream file(path.data());
 		if (!file.is_open()) {
-			Log::Error("Could not open file: {:?}", path);
+			LOG_ERROR("Could not open file: {:?}", path);
 			return false;
 		}
-		Log::Info("Successfully read file {:?}", path);
+		LOG_INFO("Successfully read file {:?}", path);
 		content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 		file.close();
 		return true;

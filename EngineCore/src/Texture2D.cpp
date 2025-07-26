@@ -5,7 +5,7 @@
 
 using namespace Cicada;
 
-const std::string Texture2D::s_fallbackPath = "fallback.png";
+const std::string Texture2D::s_fallbackPath = "res/tex/fallback.png";
 
 Texture2D::Texture2D(std::string_view name, std::string_view filePath) : ManagedObject(name) {
 	

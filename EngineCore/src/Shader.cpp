@@ -85,6 +85,7 @@ GLuint Shader::Link(GLuint vertProg, GLuint fragProg) {
 	glDeleteProgram(shaderProg); //delete the bad program
 	
 	Log::Error("{:s}", errorMsg);
+
 }
 
 //queries openGL to tell us all the uniforms for a compiled and linked shader program, and stores the info
