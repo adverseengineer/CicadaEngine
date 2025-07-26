@@ -5,11 +5,6 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-
 
 namespace Cicada {
 
@@ -44,7 +39,7 @@ private:
 
 	void CacheSingleUniforms();
 	void CacheUniformBlockIndices();
-	std::optional<UniformInfo> GetUniform(std::string_view name) const;
+	bool GetUniform(std::string_view name, UniformInfo& uniform) const;
 
 public:
 	void Bind() const;

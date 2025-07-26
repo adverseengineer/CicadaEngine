@@ -136,11 +136,13 @@ void Shader::CacheUniformBlockIndices() {
 }
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
-std::optional<Shader::UniformInfo> Shader::GetUniform(std::string_view uniformName) const {
-	if (m_uniformCache.contains(uniformName.data()))
-		return m_uniformCache.at(uniformName.data());
+bool Shader::GetUniform(std::string_view uniformName, UniformInfo& uniform) const {
+	if (m_uniformCache.contains(uniformName.data())) {
+		uniform = m_uniformCache.at(uniformName.data());
+		return true;
+	}
 	else
-		return std::nullopt;
+		return false;
 }
 
 void Shader::Bind() const {
@@ -166,50 +168,50 @@ void Shader::AttachUBO(const std::string_view blockName, const UniformBufferObje
 }
 
 void Shader::SetInt(std::string_view uniformName, int value) const {
-	std::optional<UniformInfo> temp = GetUniform(uniformName);
-	if (temp.has_value()) {
+	UniformInfo temp;
+	if (GetUniform(uniformName, temp)) {
 		glUseProgram(m_shaderProg);
-		glUniform1i(temp.value().location, static_cast<GLint>(value));
+		glUniform1i(temp.location, static_cast<GLint>(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetUint(std::string_view uniformName, unsigned int value) const {
-	std::optional<UniformInfo> temp = GetUniform(uniformName);
-	if (temp.has_value()) {
+	UniformInfo temp;
+	if (GetUniform(uniformName, temp)) {
 		glUseProgram(m_shaderProg);
-		glUniform1ui(temp.value().location, static_cast<GLuint>(value));
+		glUniform1ui(temp.location, static_cast<GLuint>(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetFloat(std::string_view uniformName, float value) const {
-	std::optional<UniformInfo> temp = GetUniform(uniformName);
-	if (temp.has_value()) {
+	UniformInfo temp;
+	if (GetUniform(uniformName, temp)) {
 		glUseProgram(m_shaderProg);
-		glUniform1f(temp.value().location, static_cast<GLfloat>(value));
+		glUniform1f(temp.location, static_cast<GLfloat>(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetVec3(std::string_view uniformName, const glm::vec3& value) const {
-	std::optional<UniformInfo> temp = GetUniform(uniformName);
-	if (temp.has_value()) {
+	UniformInfo temp;
+	if (GetUniform(uniformName, temp)) {
 		glUseProgram(m_shaderProg);
-		glUniform3fv(temp.value().location, 1, glm::value_ptr(value));
+		glUniform3fv(temp.location, 1, glm::value_ptr(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetMat4(std::string_view uniformName, const glm::mat4& value) const {
-	std::optional<UniformInfo> temp = GetUniform(uniformName);
-	if (temp.has_value()) {
+	UniformInfo temp;
+	if (GetUniform(uniformName, temp)) {
 		glUseProgram(m_shaderProg);
-		glUniformMatrix4fv(temp.value().location, 1, GL_FALSE, glm::value_ptr(value));
+		glUniformMatrix4fv(temp.location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 	else
 		Log::Warn("Shader {:?} has no such uniform : {:?}", m_name, uniformName);

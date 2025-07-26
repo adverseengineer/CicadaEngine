@@ -27,7 +27,7 @@ static void SetupRegistry(entt::registry& reg) {
 	auto normShader = Shader::Create("norm", "res/shader/norm.vert", "res/shader/norm.frag");
 
 	auto boxMesh = Mesh::Create("boxMesh", "res/geom/cube.obj");
-	auto ballMesh = Mesh::Create("ballMesh", "res/geom/quadsphere.obj");
+	auto ballMesh = Mesh::Create("ballMesh", "res/geom/uvsphere.obj");
 	auto floorMesh = Mesh::Create("floorMesh", "res/geom/plane.obj");
 
 	auto boxTex = Texture2D::Create("boxTex", "res/tex/crate.png");

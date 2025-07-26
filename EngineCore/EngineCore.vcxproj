@@ -228,21 +228,22 @@
     <ClInclude Include="src\Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="diffuse.frag.glsl" />
-    <None Include="diffuse.vert.glsl" />
+    <None Include="res\scene_schema.json" />
+    <None Include="res\script.lua" />
+    <None Include="res\shader\basic.frag" />
+    <None Include="res\shader\basic.vert" />
+    <None Include="res\shader\diffuse.frag" />
+    <None Include="res\shader\diffuse.vert" />
+    <None Include="res\shader\norm.frag" />
+    <None Include="res\shader\norm.vert" />
+    <None Include="res\shader\texture.frag" />
+    <None Include="res\shader\texture.vert" />
+    <None Include="res\shader\toon.frag" />
+    <None Include="res\shader\toon.vert" />
+    <None Include="res\test.lua" />
+    <None Include="res\test_input.json" />
+    <None Include="res\test_scene.json" />
     <None Include="src\ecs\components\TransformComponent.h" />
-    <None Include="scene_schema.json" />
-    <None Include="script.lua" />
-    <None Include="test.lua" />
-    <None Include="test_input.json" />
-    <None Include="test_scene.json" />
-    <None Include="toon.frag.glsl" />
-    <None Include="toon.vert.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="fallback.png" />
-    <Image Include="floor.png" />
-    <Image Include="gw.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

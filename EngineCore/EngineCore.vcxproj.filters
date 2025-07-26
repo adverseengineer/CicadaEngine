@@ -193,28 +193,53 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="script.lua" />
-    <None Include="test.lua" />
-    <None Include="test_input.json" />
-    <None Include="scene_schema.json" />
-    <None Include="test_scene.json" />
-    <None Include="diffuse.frag.glsl" />
-    <None Include="diffuse.vert.glsl" />
     <None Include="src\ecs\components\TransformComponent.h">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="toon.frag.glsl" />
-    <None Include="toon.vert.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="fallback.png">
+    <None Include="res\scene_schema.json">
       <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="floor.png">
+    </None>
+    <None Include="res\script.lua">
       <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="gw.png">
+    </None>
+    <None Include="res\test.lua">
       <Filter>Resource Files</Filter>
-    </Image>
+    </None>
+    <None Include="res\test_input.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\test_scene.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\basic.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\basic.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\diffuse.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\diffuse.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\norm.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\norm.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\texture.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\texture.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\toon.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shader\toon.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
