@@ -34,11 +34,15 @@ public:
 	//TODO: consider whether i need a move constructor
 
 private:
-	static unsigned int CompileStage(GLenum type, const std::string& shaderSource);
-	static unsigned int Link(GLuint vertProg, GLuint fragProg);
+	[[nodiscard]]
+	static GLuint CompileShaderStage(GLenum type, const std::string& shaderSource);
+	[[nodiscard]]
+	static GLuint Link(GLuint vertProg, GLuint fragProg);
 
 	void CacheSingleUniforms();
 	void CacheUniformBlockIndices();
+
+	[[nodiscard]]
 	bool GetUniform(std::string_view name, UniformInfo& uniform) const;
 
 public:

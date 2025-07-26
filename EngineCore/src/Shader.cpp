@@ -16,8 +16,8 @@ Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std
 	FileSystem::ReadFileToString(vertSourcePath, vertSource);
 	FileSystem::ReadFileToString(fragSourcePath, fragSource);
 	
-	unsigned int vertProg = CompileStage(GL_VERTEX_SHADER, vertSource);
-	unsigned int fragProg = CompileStage(GL_FRAGMENT_SHADER, fragSource);
+	GLuint vertProg = CompileShaderStage(GL_VERTEX_SHADER, vertSource);
+	GLuint fragProg = CompileShaderStage(GL_FRAGMENT_SHADER, fragSource);
 	m_shaderProg = Link(vertProg, fragProg);
 
 	CacheSingleUniforms();
@@ -29,33 +29,32 @@ Shader::~Shader() {
 }
 
 //given the source code for a vertex or fragment shader, compile it and store it on the GPU
-GLuint Shader::CompileStage(GLenum type, const std::string& shaderSource) {
+GLuint Shader::CompileShaderStage(GLenum type, const std::string& shaderSource) {
 
-	GLuint shaderId = glCreateShader(type);
+	GLuint shader = glCreateShader(type);
 
 	//send the vertex shader source code to the graphics card and compile it
 	const GLchar* temp = static_cast<const GLchar*>(shaderSource.c_str());
-	glShaderSource(shaderId, 1, &temp, nullptr);
-	glCompileShader(shaderId);
+	glShaderSource(shader, 1, &temp, nullptr);
+	glCompileShader(shader);
 
 	//check if the shader successfully compiled
 	GLint isCompiled;
-	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &isCompiled);
-	if (isCompiled == GL_TRUE)
-		return shaderId;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+	if (isCompiled == GL_FALSE) {
+		
+		GLsizei maxLength;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
-	//edge case: it didn't
-	GLsizei maxLength;
-	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
+		//copy openGL's log into an appropriately sized std::string filled with nulls
+		std::string errorMsg(maxLength, '\0');
+		glGetShaderInfoLog(shader, maxLength, &maxLength, static_cast<GLchar*>(errorMsg.data()));
+		LOG_ERROR("{:s}", errorMsg);
 
-	//copy GL's log into an appropriately sized std::string filled with null
-	std::string errorMsg(maxLength, '\0');
-	glGetShaderInfoLog(shaderId, maxLength, &maxLength, static_cast<GLchar*>(errorMsg.data()));
+		glDeleteShader(shader);
+	}
 
-	//we don't need the shader anymore
-	glDeleteShader(shaderId);
-
-	Log::Error("{:s}", errorMsg);
+	return shader; //will be zero if there's an issue
 }
 
 //given the source for a vertex shader and fragment shader, link them into a shader program
@@ -68,24 +67,25 @@ GLuint Shader::Link(GLuint vertProg, GLuint fragProg) {
 
 	GLint isLinked;
 	glGetProgramiv(shaderProg, GL_LINK_STATUS, &isLinked);
-	if (isLinked == GL_TRUE) {
-		glDetachShader(shaderProg, vertProg);
-		glDetachShader(shaderProg, fragProg);
-		glDeleteShader(vertProg);
-		glDeleteShader(fragProg);
+	if (isLinked == GL_FALSE) {
+		
+		GLsizei maxLength = 0;
+		glGetProgramiv(shaderProg, GL_INFO_LOG_LENGTH, &maxLength);
 
-		return shaderProg;
+		std::string errorMsg(maxLength, '\0');
+		glGetProgramInfoLog(shaderProg, maxLength, &maxLength, static_cast<GLchar*>(errorMsg.data()));
+		LOG_ERROR("{:s}", errorMsg);
+
+		glDeleteProgram(shaderProg);
 	}
 
-	GLsizei maxLength = 0;
-	glGetProgramiv(shaderProg, GL_INFO_LOG_LENGTH, &maxLength);
+	//we don't need these anymore
+	glDetachShader(shaderProg, vertProg);
+	glDetachShader(shaderProg, fragProg);
+	glDeleteShader(vertProg);
+	glDeleteShader(fragProg);
 
-	std::string errorMsg(maxLength, '\0');
-	glGetProgramInfoLog(shaderProg, maxLength, &maxLength, static_cast<GLchar*>(errorMsg.data()));
-	glDeleteProgram(shaderProg); //delete the bad program
-	
-	Log::Error("{:s}", errorMsg);
-
+	return shaderProg; //will be zero if there's an issue
 }
 
 //queries openGL to tell us all the uniforms for a compiled and linked shader program, and stores the info
@@ -106,11 +106,10 @@ void Shader::CacheSingleUniforms() {
 		std::memset(nameBuf.get(), '\0', uniformNameMaxChars);
 		glGetActiveUniform(m_shaderProg, i, uniformNameMaxChars, &nameLen, &size, &type, nameBuf.get());
 		GLint location = glGetUniformLocation(m_shaderProg, nameBuf.get());
+		if (location == -1) continue; //exclude all with loc zero, they're part of a uniform block and are handled separately
 
-		if (location != -1) { //exclude all with location zero, they are part of a uniform block and get handled separately
-			std::string name(nameBuf.get(), nameLen);
-			m_uniformCache.emplace(name, UniformInfo{ type, location });
-		}
+		std::string name(nameBuf.get(), nameLen);
+		m_uniformCache.emplace(name, UniformInfo{ type, location });
 	}
 }
 
@@ -137,12 +136,10 @@ void Shader::CacheUniformBlockIndices() {
 
 //fetches info about a shader uniform into a UniformInfo struct and returns whether or not the uniform was found
 bool Shader::GetUniform(std::string_view uniformName, UniformInfo& uniform) const {
-	if (m_uniformCache.contains(uniformName.data())) {
+	bool found = m_uniformCache.contains(uniformName.data());
+	if (found)
 		uniform = m_uniformCache.at(uniformName.data());
-		return true;
-	}
-	else
-		return false;
+	return found;
 }
 
 void Shader::Bind() const {
@@ -157,7 +154,7 @@ void Shader::AttachUBO(const std::string_view blockName, const UniformBufferObje
 	
 	auto it = m_uniformBlockIndexCache.find(blockName.data());
 	if (it == m_uniformBlockIndexCache.end()) {
-		Log::Error("Error attaching UBO, no such uniform block: {:?}", blockName);
+		LOG_ERROR("Error attaching UBO, no such uniform block: {:?}", blockName);
 		return;
 	}
 	
@@ -174,7 +171,7 @@ void Shader::SetInt(std::string_view uniformName, int value) const {
 		glUniform1i(temp.location, static_cast<GLint>(value));
 	}
 	else
-		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		LOG_WARN("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetUint(std::string_view uniformName, unsigned int value) const {
@@ -184,7 +181,7 @@ void Shader::SetUint(std::string_view uniformName, unsigned int value) const {
 		glUniform1ui(temp.location, static_cast<GLuint>(value));
 	}
 	else
-		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		LOG_WARN("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetFloat(std::string_view uniformName, float value) const {
@@ -194,7 +191,7 @@ void Shader::SetFloat(std::string_view uniformName, float value) const {
 		glUniform1f(temp.location, static_cast<GLfloat>(value));
 	}
 	else
-		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		LOG_WARN("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetVec3(std::string_view uniformName, const glm::vec3& value) const {
@@ -204,7 +201,7 @@ void Shader::SetVec3(std::string_view uniformName, const glm::vec3& value) const
 		glUniform3fv(temp.location, 1, glm::value_ptr(value));
 	}
 	else
-		Log::Warn("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
+		LOG_WARN("Shader {:?} has no such uniform: {:?}", m_name, uniformName);
 }
 
 void Shader::SetMat4(std::string_view uniformName, const glm::mat4& value) const {
@@ -214,5 +211,5 @@ void Shader::SetMat4(std::string_view uniformName, const glm::mat4& value) const
 		glUniformMatrix4fv(temp.location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 	else
-		Log::Warn("Shader {:?} has no such uniform : {:?}", m_name, uniformName);
+		LOG_WARN("Shader {:?} has no such uniform : {:?}", m_name, uniformName);
 }
