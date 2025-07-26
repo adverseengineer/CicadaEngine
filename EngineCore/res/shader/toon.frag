@@ -28,7 +28,7 @@ float quant(float value, int steps) {
 
 float edge(vec3 normal, vec3 viewDir, float threshold) {
 	float edge = dot(normalize(normal), normalize(viewDir));
-	if (edge < threshold)
+	if (0 <= edge && edge < threshold)
 		return 0.0; //black outline
 	else
 		return 1.0; //no outline
@@ -60,8 +60,8 @@ void main() {
 	float mai = max(materialAmbientIntensity, 0.2f);
 
 	vec4 texFragColor = texture(tex, fragTexCoord) * fragColor;
-	vec4 ambientColor = vec4(mai * vec3(1.0f, 1.0f, 1.0f), 1.0f);
+	vec4 ambientColor = vec4(mai * vec3(1.0f), 1.0f);
 	color = (ambientColor + globalDiffuse + localDiffuse) * texFragColor;
-	color *= edge(fragNormal, viewDir, 0.5f);
-	color.a = 1.0f;
-}
+	//color *= edge(-fragNormal, viewDir, 0.4f);
+	//color.a = 1.0f; //TODO: edge detection not working rn. fix that
+}	
