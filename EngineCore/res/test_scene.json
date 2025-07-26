@@ -1,0 +1,21 @@
+{
+	"entities": [
+		{
+			"name": "teapot",
+			"transform": {
+				"position": [ -5.0, 0.0, 0.0 ],
+				"rotation": [ 0.0, 0.0, 1.0, 0.0 ],
+				"scale": [ 1.0, 1.0, 1.0 ]
+			},
+			"mesh": {
+				"model": "teapot.obj",
+				"primitive": "triangles"
+			},
+			"material": {
+				"texture": "teapot.png",
+				"shader": "diffuse"
+			}
+		}
+	],
+	"parentObjects": []
+}

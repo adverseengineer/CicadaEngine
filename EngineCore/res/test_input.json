@@ -1,0 +1,28 @@
+{
+	"axes": [
+		{
+			"name": "move_horizontal",
+			"positive_keys": [ "key_d", "key_right" ],
+			"negative_key": [ "key_a", "key_left" ]
+		},
+		{
+			"name": "move_vertical",
+			"positive_keys": [ "key_w", "key_up" ],
+			"negative_keys": [ "key_s", "key_down"]
+		}
+	],
+	"actions": [
+		{
+			"name": "jump",
+			"keys": [ "key_space" ]
+		},
+		{
+			"name": "interact",
+			"keys": [ "key_e" ]
+		},
+		{
+			"name": "exit",
+			"keys": [ "key_esc"]
+		}
+	]
+}
