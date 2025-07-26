@@ -1,8 +1,7 @@
 
 #include "FileSystem.h"
 #include "Shader.h"
-#include <glad/glad.h>
-#include <glm/glm.hpp>
+
 #include <glm/gtc/type_ptr.hpp>
 
 using namespace Cicada;
