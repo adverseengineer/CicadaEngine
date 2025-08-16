@@ -1,0 +1,8 @@
+--- !!ent &6
+Entity:
+    m_Name: Cube
+    m_Component:
+    - 4: {fileID: 8}
+    - 33: {fileID: 12}
+    - 65: {fileID: 13}
+    - 23: {fileID: 11}

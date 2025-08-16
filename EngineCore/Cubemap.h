@@ -1,21 +1,24 @@
 #pragma once
 
+#pragma once
+
 #include "Texture.h"
 #include "Util.h"
 
 namespace Cicada {
 
-class Texture2D : public Texture, public Asset<Texture2D> {
-friend class Asset<Texture2D>;
+class Cubemap : public Texture, public Asset<Cubemap> {
+friend class Asset<Cubemap>;
 private:
 	const static std::string s_fallbackPath;
-	GLsizei m_width;
-	GLsizei m_height;
+
+	GLsizei m_faceWidth;
+	GLsizei m_faceHeight;
 
 public:
 
-	Texture2D(std::string_view name, std::string_view filePath);
-	~Texture2D();
+	Cubemap(std::string_view name, std::string_view filePath);
+	~Cubemap();
 
 	//disallow copying a Texture, because it manages the lifetime of a resource
 	//TODO: allow copying, but generate a new GPU-side ID for the new texture to manage

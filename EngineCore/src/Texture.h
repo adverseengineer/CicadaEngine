@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ManagedObject.h"
+#include "Asset.h"
 #include <cstdint>
 #include <glad/glad.h>
 
@@ -8,6 +8,125 @@ namespace Cicada {
 
 class Texture {
 public:
+
+	enum class SourceFormat : GLenum {
+		RED = GL_RED,
+		RG = GL_RG,
+		RGB = GL_RGB,
+		BGR = GL_BGR,
+		RGBA = GL_RGBA,
+		BGRA = GL_BGRA,
+		RED_INT = GL_RED_INTEGER,
+		RG_INT = GL_RG_INTEGER,
+		RGB_INT = GL_RGB_INTEGER,
+		BGR_INT = GL_BGR_INTEGER,
+		RGBA_INT = GL_RGBA_INTEGER,
+		BGRA_INT = GL_BGRA_INTEGER,
+		STENCIL_INDEX = GL_STENCIL_INDEX,
+		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+		DEPTH_STENCIL = GL_DEPTH_STENCIL
+	};
+
+	enum class InternalFormat : GLenum {
+		//table 1
+		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+		DEPTH_STENCIL = GL_DEPTH_STENCIL,
+		RED = GL_RED,
+		RG = GL_RG,
+		RGB = GL_RGB,
+		RGBA = GL_RGBA,
+		//table 2
+		R8 = GL_R8,
+		R8_SNORM = GL_R8_SNORM,
+		R16 = GL_R16,
+		R16_SNORM = GL_R16_SNORM,
+		RG8 = GL_RG8,
+		RG8_SNORM = GL_RG8_SNORM,
+		RG16 = GL_RG16,
+		RG16_SNORM = GL_RG16_SNORM,
+		R3_G3_B2 = GL_R3_G3_B2,
+		RGB4 = GL_RGB4,
+		RGB5 = GL_RGB5,
+		RGB8 = GL_RGB8,
+		RGB8_SNORM = GL_RGB8_SNORM,
+		RGB10 = GL_RGB10,
+		RGB12 = GL_RGB12,
+		RGB16_SNORM = GL_RGB16_SNORM,
+		RGBA2 = GL_RGBA2,
+		RGBA4 = GL_RGBA4,
+		RGB5_A1 = GL_RGB5_A1,
+		RGBA8 = GL_RGBA8,
+		RGBA8_SNORM = GL_RGBA8_SNORM,
+		RGB10_A2 = GL_RGB10_A2,
+		RGB10_A2UI = GL_RGB10_A2UI,
+		RGBA12 = GL_RGBA12,
+		RGBA16 = GL_RGBA16,
+		SRGB8 = GL_SRGB8,
+		SRGB8_ALPHA8 = GL_SRGB8_ALPHA8,
+		R16F = GL_R16F,
+		RG16F = GL_RG16F,
+		RGB16F = GL_RGB16F,
+		RGBA16F = GL_RGBA16F,
+		R32F = GL_R32F,
+		RG32F = GL_RG32F,
+		RGB32F = GL_RGB32F,
+		RGBA32F = GL_RGBA32F,
+		R11F_G11F_B10F = GL_R11F_G11F_B10F,
+		RGB9_E5 = GL_RGB9_E5,
+		R8I = GL_R8I,
+		R8UI = GL_R8UI,
+		R16I = GL_R16I,
+		R16UI = GL_R16UI,
+		R32I = GL_R32I,
+		R32UI = GL_R32UI,
+		RG8I = GL_RG8I,
+		RG8UI = GL_RG8UI,
+		RG16I = GL_RG16I,
+		RG16UI = GL_RG16UI,
+		RG32I = GL_RG32I,
+		RG32UI = GL_RG32UI,
+		RGB8I = GL_RGB8I,
+		RGB8UI = GL_RGB8UI,
+		RGB16I = GL_RGB16I,
+		RGB16UI = GL_RGB16UI,
+		RGB32I = GL_RGB32I,
+		RGB32UI = GL_RGB32UI,
+		RGBA8I = GL_RGBA8I,
+		RGBA8UI = GL_RGBA8UI,
+		RGBA16I = GL_RGBA16I,
+		RGBA16UI = GL_RGBA16UI,
+		RGBA32I = GL_RGBA32I,
+		RGBA32UI = GL_RGBA32UI,
+		//table 3
+		COMPRESSED_RED = GL_COMPRESSED_RED,
+		COMPRESSED_RG = GL_COMPRESSED_RG,
+		COMPRESSED_RGB = GL_COMPRESSED_RGB,
+		COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
+		COMPRESSED_SRGB = GL_COMPRESSED_SRGB,
+		COMPRESSED_SRGB_ALPHA = GL_COMPRESSED_SRGB_ALPHA,
+		COMPRESSED_RED_RGTC1 = GL_COMPRESSED_RED_RGTC1,
+		COMPRESSED_SIGNED_RED_RGTC1 = GL_COMPRESSED_SIGNED_RED_RGTC1,
+		COMPRESSED_RG_RGTC2 = GL_COMPRESSED_RG_RGTC2,
+		COMPRESSED_SIGNED_RG_RGTC2 = GL_COMPRESSED_SIGNED_RG_RGTC2,
+		COMPRESSED_RGBA_BPTC_UNORM = GL_COMPRESSED_RGBA_BPTC_UNORM,
+		COMPRESSED_SRGB_ALPHA_BPTC_UNORM = GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM,
+		COMPRESSED_RGB_BPTC_SIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT,
+		COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT
+	};
+
+	enum class MinFilterMode : GLint {
+		Nearest = GL_NEAREST,
+		Linear = GL_LINEAR,
+		NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
+		NearestMipmapLinear = GL_NEAREST_MIPMAP_LINEAR,
+		LinearMipmapNearest = GL_LINEAR_MIPMAP_NEAREST,
+		LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
+	};
+
+	enum class MagFilterMode : GLint {
+		Nearest = GL_NEAREST,
+		Linear = GL_LINEAR
+	};
 
 	enum class WrapMode : int {
 		Repeat = GL_REPEAT,
@@ -17,60 +136,44 @@ public:
 		MirrorClampToEdge = GL_MIRROR_CLAMP_TO_EDGE
 	};
 
-	enum class FilterMode : int {
-		Nearest = GL_NEAREST,
-		Linear = GL_LINEAR,
-		NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
-		LinearMipmapNearest = GL_LINEAR_MIPMAP_NEAREST,
-		NearestMipmapLinear = GL_NEAREST_MIPMAP_LINEAR,
-		LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
-	};
-
-	//TODO: sort these out better
-	enum class Format : int {
-		//color formats
-		RGB = GL_RGB,
-		RGBA = GL_RGBA,
-		RGB8 = GL_RGB8,
-		RGBA8 = GL_RGBA8,
-		SRGB8 = GL_SRGB8,
-		SRGB8_Alpha8 = GL_SRGB8_ALPHA8,
-
-		//depth and stencil formats
-		DepthComponent16 = GL_DEPTH_COMPONENT16,
-		DepthComponent24 = GL_DEPTH_COMPONENT24,
-		DepthComponent32F = GL_DEPTH_COMPONENT32F,
-		Depth24Stencil8 = GL_DEPTH24_STENCIL8,
-		Depth32FStencil8 = GL_DEPTH32F_STENCIL8,
-
-		//compressed formats
-		CompressedRGB = GL_COMPRESSED_RGB,
-		CompressedRGBA = GL_COMPRESSED_RGBA,
-		CompressedSRGB = GL_COMPRESSED_SRGB,
-		CompressedSRGBAlpha = GL_COMPRESSED_SRGB_ALPHA
-	};
-
 protected:
+	GLuint m_texId;
+	GLenum m_texType;
+
 	const uint8_t* m_textureData = nullptr;
 	bool m_isLoadedFromFile = false;
 	bool m_isFallback = false;
 
-	unsigned int m_texId;
+	int m_numChannels = 0; //TODO: properly use this field with stb_load to detect source format
+	SourceFormat m_sourceFormat = SourceFormat::RGBA;
+	InternalFormat m_internalFormat = InternalFormat::RGBA;
 
-	Format m_internalFormat = Format::RGBA;
-	Format m_sourceFormat = Format::RGBA;
+	MinFilterMode m_minFilter = MinFilterMode::NearestMipmapLinear;
+	MagFilterMode m_magFilter = MagFilterMode::Linear;
 
-	FilterMode m_minFilter = FilterMode::Nearest;
-	FilterMode m_magFilter = FilterMode::Nearest;
-
-	WrapMode m_wrapU = WrapMode::Repeat;
-	WrapMode m_wrapV = WrapMode::Repeat;
+	WrapMode m_wrapS = WrapMode::Repeat;
+	WrapMode m_wrapT = WrapMode::Repeat;
+	WrapMode m_wrapR = WrapMode::Repeat;
 	
 public:
-	Texture();
+	Texture(GLenum texType);
 	~Texture();
 
+	void Bind() const;
+	void Unbind() const;
+	void AttachTexUnit(GLenum texUnit) const;
+
 	virtual void Upload() const = 0;
+
+	void SetSourceFormat(SourceFormat format);
+	void SetInternalFormat(InternalFormat format);
+
+	void SetMinFilter(MinFilterMode mode);
+	void SetMagFilter(MagFilterMode mode);
+
+	void SetWrapS(WrapMode mode);
+	void SetWrapT(WrapMode mode);
+	void SetWrapR(WrapMode mode);
 };
 
 }

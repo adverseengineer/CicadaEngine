@@ -182,13 +182,16 @@
     <ClInclude Include="src\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ManagedObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\UniformBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BufferObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cubemap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Asset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -239,6 +242,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\shader\toon.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\tex\crate.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\tex_schema.json">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

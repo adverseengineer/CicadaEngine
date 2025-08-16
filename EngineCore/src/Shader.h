@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ManagedObject.h"
+#include <Asset.h>
 #include "UniformBufferObject.h"
 
 #include <glad/glad.h>
@@ -8,8 +8,8 @@
 
 namespace Cicada {
 
-class Shader : public ManagedObject<Shader> {
-friend class ManagedObject<Shader>;
+class Shader : public Asset<Shader> {
+friend class Asset<Shader>;
 friend class Material;
 private:
 

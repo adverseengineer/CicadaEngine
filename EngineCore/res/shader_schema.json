@@ -1,13 +1,19 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"type": "object",
-	"required": [ "name", "path" ],
+	"required": [ "name", "vert_path", "frag_path" ],
 	"additionalProperties": false,
 	"properties": {
 		"name": {
 			"type": "string"
 		},
-		"path": {
+		"vert path": {
+			"type": "string"
+		},
+		"frag path": {
+			"type": "string"
+		},
+		"geom path": {
 			"type": "string"
 		}
 	}

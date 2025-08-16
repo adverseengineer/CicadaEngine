@@ -7,7 +7,7 @@ using namespace Cicada;
 
 const std::string Texture2D::s_fallbackPath = "res/tex/fallback.png";
 
-Texture2D::Texture2D(std::string_view name, std::string_view filePath) : ManagedObject(name) {
+Texture2D::Texture2D(std::string_view name, std::string_view filePath) : Texture(GL_TEXTURE_2D), Asset(name) {
 	
 	stbi_set_flip_vertically_on_load(true);
 	m_textureData = stbi_load(filePath.data(), &m_width, &m_height, &m_numChannels, 0);
@@ -38,56 +38,16 @@ Texture2D::~Texture2D() {
 	m_textureData = nullptr;
 }
 
-//call this to select the texture for modification
-void Texture2D::Bind() {
-	glBindTexture(GL_TEXTURE_2D, m_texId);
-}
-
-void Texture2D::AttachTexUnit(GLenum texUnit) const {
-	glActiveTexture(GL_TEXTURE0 + texUnit);
-	glBindTexture(GL_TEXTURE_2D, m_texId);
-}
-
 void Texture2D::Upload() const {
 	glBindTexture(GL_TEXTURE_2D, m_texId); //select the texture for modification
 	//set up the texture 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (int) m_wrapU);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (int) m_wrapV);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (int) m_wrapS);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (int) m_wrapT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (int) m_minFilter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (int) m_magFilter);
 	//send the texture data to the gpu
-	glTexImage2D(GL_TEXTURE_2D, 0, (int) m_internalFormat, m_width, m_height, 0, (int) m_sourceFormat, GL_UNSIGNED_BYTE, m_textureData);
+	glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(m_internalFormat), m_width, m_height, 0, static_cast<GLenum>(m_sourceFormat), GL_UNSIGNED_BYTE, m_textureData);
 	//generate mipmaps //TODO: research this more to decide if it needs to be its own function
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void Texture2D::SetWrapU(WrapMode mode) {
-
-	//TODO:
-}
-
-void Texture2D::SetWrapV(WrapMode mode) {
-
-	//TODO:
-}
-
-void Texture2D::SetInternalFormat(Format format) {
-
-	//TODO:
-}
-
-void Texture2D::SetSourceFormat(Format format) {
-
-	//TODO:
-}
-
-void Texture2D::SetMinFilter(FilterMode mode) {
-
-	//TODO:
-}
-
-void Texture2D::SetMagFilter(FilterMode mode) {
-
-	//TODO:
 }

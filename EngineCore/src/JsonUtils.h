@@ -15,19 +15,19 @@ namespace Cicada {
 class JsonUtils {
 public:
 
-    inline static bool ReadJson(const std::string& path, rapidjson::Document& out_result) {
+    inline static bool LoadDocumentFromFile(std::string_view path, rapidjson::Document& result) {
 
         std::string jsonSource;
-        if (!FileSystem::ReadFileToString(path.c_str(), jsonSource))
+        if (!FileSystem::ReadFileToString(path, jsonSource))
             return false;
 
-        out_result.Parse(jsonSource);
-        if (out_result.HasParseError()) {
+        result.Parse(jsonSource);
+        if (result.HasParseError()) {
             Log::Error("file {:?} is not valid JSON", path);
             Log::Error(
                 "Error(offset {:d}): {:s}",
-                out_result.GetErrorOffset(),
-                rapidjson::GetParseError_En(out_result.GetParseError())
+                result.GetErrorOffset(),
+                rapidjson::GetParseError_En(result.GetParseError())
             );
             return false;
         }

@@ -8,7 +8,7 @@
 
 using namespace Cicada;
 
-Mesh::Mesh(std::string_view name, std::string_view path) : ManagedObject(name) {
+Mesh::Mesh(std::string_view name, std::string_view path) : Asset(name) {
 	m_primitiveType = GL_TRIANGLES;
 	glGenVertexArrays(1, &m_vaoId);
 	glGenBuffers(1, &m_vboId);

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -191,8 +191,9 @@
     <ClInclude Include="3rdparty\glfw\include\glfw3native.h" />
     <ClInclude Include="3rdparty\OBJ_Loader.h" />
     <ClInclude Include="3rdparty\stb_image.h" />
+    <ClInclude Include="Cubemap.h" />
     <ClInclude Include="src\BufferObject.h" />
-    <ClInclude Include="src\ManagedObject.h" />
+    <ClInclude Include="src\Asset.h" />
     <ClInclude Include="src\UniformBufferObject.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\BoundingBox.h" />
@@ -243,6 +244,8 @@
     <None Include="res\test.lua" />
     <None Include="res\test_input.json" />
     <None Include="res\test_scene.json" />
+    <None Include="res\tex\crate.json" />
+    <None Include="res\tex_schema.json" />
     <None Include="src\ecs\components\TransformComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -250,7 +253,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties test_3scene_1json__JsonSchema="scene_schema.json" />
+      <UserProperties />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Texture2D.h"
+
 #include <cstdarg>
 #include <string>
 #include <unordered_map>
@@ -18,8 +19,8 @@ struct VertexAttribute {
 	void* m_byteOffset;
 };
 
-class Mesh : public ManagedObject<Mesh> {
-friend class ManagedObject<Mesh>;
+class Mesh : public Asset<Mesh> {
+friend class Asset<Mesh>;
 private:
 	unsigned int m_vaoId = 0;
 	unsigned int m_vboId = 0;

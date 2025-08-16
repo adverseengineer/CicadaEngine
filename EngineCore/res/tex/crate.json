@@ -1,0 +1,13 @@
+{
+	"name": "crate",
+	"path": "crate.png",
+	"texture type": "2D",
+	"source format": "RGBA",
+	"internal format": "RGBA",
+	"min filter": "nearest_mipmap_linear",
+	"mag filter": "linear",
+	"wrap s": "repeat",
+	"wrap t": "repeat",
+	"wrap r": "repeat",
+	"generate mipmaps": true
+}

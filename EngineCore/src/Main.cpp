@@ -82,15 +82,15 @@ void inspect_entity(entt::registry& registry, entt::entity entity) {
 			Log::Info("{}", typeid(Components).name());
 
 			if constexpr (std::is_same_v<Components, TransformComponent>) {
-				Log::Info("Position: ({}, {}, {})", component.localTransform[3][0], component.localTransform[3][1], component.localTransform[3][2]);
+				LOG_INFO("Position: ({}, {}, {})", component.localTransform[3][0], component.localTransform[3][1], component.localTransform[3][2]);
 			}
 			else if constexpr (std::is_same_v<Components, MeshComponent>) {
-				Log::Info("Mesh: ()");
+				LOG_INFO("Mesh: ()");
 			}
 			else if constexpr (std::is_same_v<Components, MaterialComponent>) {
 				Shader* tempShad = component.ptr->GetShader().get();
 				Texture* tempTex = component.ptr->GetTexture().get();
-				Log::Info("Material: (Shader: {}, Texture: {})", fmt::ptr(tempShad), fmt::ptr(tempTex));
+				LOG_INFO("Material: (Shader: {}, Texture: {})", fmt::ptr(tempShad), fmt::ptr(tempTex));
 			}
 		}
 	}(), ...); //expands over all component types
@@ -323,17 +323,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	
 	entt::registry reg;
 	SetupRegistry(reg);
-
-	//rapidjson::Document sceneSchema, sceneJson;
-	//JsonUtils::ReadJson("scene_schema.json", sceneSchema);
-	//JsonUtils::ReadJson("test_scene.json", sceneJson);
-
-	//bool ye = JsonUtils::ValidateAgainstSchema(sceneSchema, sceneJson);
-
-	//if (ye)
-		//Logger::Write(LogEntry::Level::Info, "All clear!");
-
-	//auto& objectsJson = sceneJson["gameObjects"];
 
 	for (auto entity : reg.storage<entt::entity>()) {
 		inspect_entity<TransformComponent, MeshComponent, MaterialComponent>(reg, entity);

@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "Texture2D.h"
+
 #include <variant>
 
 namespace Cicada {
@@ -13,9 +14,9 @@ using UniformValue = std::variant<
 	glm::mat2, glm::mat3, glm::mat4
 >;
 
-class Material : public ManagedObject<Material> {
-friend class ManagedObject<Material>;
-private:	
+class Material : public Asset<Material> {
+friend class Asset<Material>;
+private:
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<Texture2D> m_texture;
 
@@ -41,7 +42,7 @@ public:
 	void SetMat4(std::string_view uniformName, const glm::mat4& value) const;
 	
 	void SetUniform(std::string_view uniformName, const UniformValue& value) const {
-		
+		//TODO:	
 	}
 
 	//TODO: add any necessary manipulator functions for the texture too

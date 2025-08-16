@@ -3,7 +3,7 @@
 using namespace Cicada;
 
 Material::Material(std::string_view materialName, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture2D>& texture) :
-	ManagedObject(materialName), m_shader(shader), m_texture(texture) {
+	Asset(materialName), m_shader(shader), m_texture(texture) {
 	assert(shader != nullptr);
 }
 

@@ -6,7 +6,7 @@
 
 using namespace Cicada;
 
-Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) : ManagedObject(shaderName) {
+Shader::Shader(std::string_view shaderName, std::string_view vertSourcePath, std::string_view fragSourcePath) : Asset(shaderName) {
 	
 	static_assert(std::is_same<GLchar, char>::value, "GLchar must be char for this to work safely");
 
